@@ -34,7 +34,7 @@ try:
 	if totOpenOrder != 0:
 		if totOpenOrder == 1:
 			print('Open order:')
-		else if totOpenOrder < 1:
+		elif totOpenOrder < 1:
 			print(f'Open orders ({totOpenOrder}):')
 
 		[printOrder(n, i, len(openOrders)) for i,n in enumerate(openOrders, 1)]
