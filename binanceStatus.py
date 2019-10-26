@@ -52,27 +52,44 @@ def printAccountInfos(client):
 def printHelp():
 	print('parameters description...')
 
+def printTradeAllHist(tradeAllHist, seq, tot):
+	print(f'{seq}/{tot}) Symbol: [' + tradeAllHist['symbol'] + ']\n'
+		+ '\tTime: [' + str(tradeAllHist['time']) + ' | Update time: [' + str(tradeAllHist['updateTime']) + ']\n'
+		+ '\tOrder Id: [' + str(tradeAllHist['orderId']) + '| Order list Id: [' + str(tradeAllHist['orderListId']) + '] | Client Order Id: [' + tradeAllHist['clientOrderId'] + ']\n'
+		+ '\tPrice: [' + tradeAllHist['price'] + ' | Orig Qtd: [' + tradeAllHist['origQty'] + ' | Executed Qtd: [' + tradeAllHist['executedQty'] + 'Cummulative Quote Qtd: [' + tradeAllHist['cummulativeQuoteQty'] + ']\n'
+		+ '\tStatus: [' + tradeAllHist['status'] + '] | Time in Force: [' + tradeAllHist['timeInForce'] + ']\n'
+		+ '\tSide: [' + tradeAllHist['side'] + ']\n'
+		+ '\tType: [' + tradeAllHist['type'] + ']\n'
+		+ '\tStop Price: [' + tradeAllHist['stopPrice'] + ']\n'
+		+ '\tIs working: [' + str(tradeAllHist['isWorking']) + ']')
+
 def printTradeHistory(tradeHist, seq, tot):
-	print(
-	f'{seq}/{tot}) Symbol: [' + tradeHist['symbol'] + ']\n'
-	+ '\tTime: [' + str(tradeHist['time']) + ']\n'
-	+ '\tOrder Id: [' + str(tradeHist['orderId']) + ' | Id: [' + str(tradeHist['id']) + ' Order List Id: [' + str(tradeHist['orderListId']) + ']\n'
-	+ '\tPrice: [' + tradeHist['price'] + '] | Qtd: [' + tradeHist['qty'] + '] | Quote Qtd: [' + tradeHist['quoteQty'] + ']\n'
-	+ '\tCommission: [' + tradeHist['commission'] + 'Commission asset: [' + tradeHist['commissionAsset'] + ']\n'
-	+ '\tBuyer: [' + str(tradeHist['isBuyer']) + '] | Maker: [' + str(tradeHist['isMaker']) + '] | TradeHist: [' + str(tradeHist['isBestMatch']) + ']')
+	print(f'{seq}/{tot}) Symbol: [' + tradeHist['symbol'] + ']\n'
+		+ '\tTime: [' + str(tradeHist['time']) + ']\n'
+		+ '\tOrder Id: [' + str(tradeHist['orderId']) + ' | Id: [' + str(tradeHist['id']) + ' Order List Id: [' + str(tradeHist['orderListId']) + ']\n'
+		+ '\tPrice: [' + tradeHist['price'] + '] | Qtd: [' + tradeHist['qty'] + '] | Quote Qtd: [' + tradeHist['quoteQty'] + ']\n'
+		+ '\tCommission: [' + tradeHist['commission'] + 'Commission asset: [' + tradeHist['commissionAsset'] + ']\n'
+		+ '\tBuyer: [' + str(tradeHist['isBuyer']) + '] | Maker: [' + str(tradeHist['isMaker']) + '] | TradeHist: [' + str(tradeHist['isBestMatch']) + ']')
 
 def printAccountHistory(client, symb):
-	print('=4 get_my_trades(symbol=BNBBTC)=============================================================================================================')
+
 	tradeHist = client.get_my_trades(symbol=symb)
 	tradeHistTot = len(tradeHist)
 
-	[printTradeHistory(n, i, tradeHistTot) for i,n in enumerate(tradeHist, 1)]
+	print(f'Trade history {symb}:')
 
+	[printTradeHistory(n, i, tradeHistTot) for i,n in enumerate(tradeHist, 1)]
 
 	print('=8 get_dust_log() =============================================================================================================')
 	print(client.get_dust_log())
-	print('=11 get_all_orders(symbol=BNBBTC) =============================================================================================================')
-	print(client.get_all_orders(symbol=symb))
+	print('==============================================================================================================')
+
+	tradeAllHist = client.get_all_orders(symbol=symb)
+	tradeAllHistTot = len(tradeAllHist)
+
+	print(f'Trade history {symb}:')
+
+	[printTradeAllHist(n, i, tradeAllHistTot) for i,n in enumerate(tradeAllHist, 1)]
 
 def printAccountDetails(client):
 	print('=5 get_asset_details() =============================================================================================================')
