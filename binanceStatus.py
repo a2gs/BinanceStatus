@@ -52,9 +52,23 @@ def printAccountInfos(client):
 def printHelp():
 	print('parameters description...')
 
+def printTradeHistory(tradeHist, seq, tot):
+	print(
+	f'{seq}/{tot}) Symbol: [' + tradeHist['symbol'] + ']\n'
+	+ '\tTime: [' + str(tradeHist['time']) + ']\n'
+	+ '\tOrder Id: [' + str(tradeHist['orderId']) + ' | Id: [' + str(tradeHist['id']) + ' Order List Id: [' + str(tradeHist['orderListId']) + ']\n'
+	+ '\tPrice: [' + tradeHist['price'] + '] | Qtd: [' + tradeHist['qty'] + '] | Quote Qtd: [' + tradeHist['quoteQty'] + ']\n'
+	+ '\tCommission: [' + tradeHist['commission'] + 'Commission asset: [' + tradeHist['commissionAsset'] + ']\n'
+	+ '\tBuyer: [' + str(tradeHist['isBuyer']) + '] | Maker: [' + str(tradeHist['isMaker']) + '] | TradeHist: [' + str(tradeHist['isBestMatch']) + ']')
+
 def printAccountHistory(client, symb):
 	print('=4 get_my_trades(symbol=BNBBTC)=============================================================================================================')
-	print(client.get_my_trades(symbol=symb))
+	tradeHist = client.get_my_trades(symbol=symb)
+	tradeHistTot = len(tradeHist)
+
+	[printTradeHistory(n, i, tradeHistTot) for i,n in enumerate(tradeHist, 1)]
+
+
 	print('=8 get_dust_log() =============================================================================================================')
 	print(client.get_dust_log())
 	print('=11 get_all_orders(symbol=BNBBTC) =============================================================================================================')
