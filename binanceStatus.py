@@ -36,20 +36,6 @@ def printAccountInfos(client):
 	if len(acc['balances']) != 0:
 		[printAccount(n) for n in acc['balances'] if float(n['free']) != 0.0 or float(n['locked']) != 0.0]
 
-#	print('=2=============================================================================================================')
-#	print(client.get_asset_balance(asset='BTC'))
-#	print('=3=============================================================================================================')
-#	print(client.get_account_status())
-#	print('=4=============================================================================================================')
-#	print(client.get_my_trades(symbol='BNBBTC'))
-#	print('=5=============================================================================================================')
-#	print(client.get_asset_details())
-#	print('=6=============================================================================================================')
-#	print(client.get_trade_fee())
-#	print('=7=============================================================================================================')
-#	print(client.get_dust_log())
-#	print('=8=============================================================================================================')
-
 	# Orders
 	openOrders = client.get_open_orders()
 	totOpenOrder = len(openOrders)
@@ -66,6 +52,20 @@ def printAccountInfos(client):
 
 def printHelp():
 	pass
+
+def printAccountHist(client):
+	print('=2 get_asset_balance(asset=BTC)=============================================================================================================')
+	print(client.get_asset_balance(asset='BTC'))
+	print('=3 get_account_status()=============================================================================================================')
+	print(client.get_account_status())
+	print('=4 get_my_trades(symbol=BNBBTC)=============================================================================================================')
+	print(client.get_my_trades(symbol='BNBBTC'))
+	print('=5 get_asset_details() =============================================================================================================')
+	print(client.get_asset_details())
+	print('=6 get_trade_fee() =============================================================================================================')
+	print(client.get_trade_fee())
+	print('=7 get_dust_log() =============================================================================================================')
+	print(client.get_dust_log())
 
 if __name__ == '__main__':
 
@@ -99,5 +99,10 @@ if __name__ == '__main__':
 	if client.get_system_status()['status'] != 0:
 		print('Binance out of service')
 
+	# Wallet/Account information
 	if sys.argv[1] == '-i' and len(sys.argv) == 2:
 		printAccountInfos(client)
+
+	# Account history (trades, dusts, etc)
+	if sys.argv[1] == '-h' and len(sys.argv) == 2:
+		printAccountHist(client)
