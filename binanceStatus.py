@@ -23,6 +23,9 @@ def printOrder(order, seq, tot):
 def printAccount(accBalance):
 	print('Asset balance [' + accBalance['asset'] + '] | Free [' + accBalance['free'] + '] | Locked [' + accBalance['locked'] + ']')
 
+def printHistory(client):
+	pass
+
 def printAccountInfos(client):
 
 	acc = client.get_account()
@@ -61,7 +64,14 @@ def printAccountInfos(client):
 	else:
 		print('No open order')
 
+def printHelp():
+	def
+
 if __name__ == '__main__':
+
+	if len(sys.argv) <= 1:
+		printHelp()
+		sys.exit(0)
 
 	try:
 		client = Client(os.getenv('BINANCE_APIKEY', 'NOTDEF_APIKEY'), os.getenv('BINANCE_SEKKEY', 'NOTDEF_APIKEY'), {"verify": True, "timeout": 20})
@@ -80,4 +90,3 @@ if __name__ == '__main__':
 	# Exchange status
 	if client.get_system_status()['status'] != 0:
 		print('Binance out of service')
-		sys.exit(0)
