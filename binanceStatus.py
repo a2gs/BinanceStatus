@@ -23,9 +23,6 @@ def printOrder(order, seq, tot):
 def printAccount(accBalance):
 	print('Asset balance [' + accBalance['asset'] + '] | Free [' + accBalance['free'] + '] | Locked [' + accBalance['locked'] + ']')
 
-def printHistory(client):
-	pass
-
 def printAccountInfos(client):
 
 	acc = client.get_account()
@@ -55,13 +52,13 @@ def printAccountInfos(client):
 def printHelp():
 	print('parameters description...')
 
-def printAccountHist(client):
+def printAccountHistory(client, symb):
 	print('=4 get_my_trades(symbol=BNBBTC)=============================================================================================================')
-	print(client.get_my_trades(symbol='BNBBTC'))
+	print(client.get_my_trades(symbol=symb))
 	print('=8 get_dust_log() =============================================================================================================')
 	print(client.get_dust_log())
-	print('=11 get_all_orders(symbol=BNBBTC, limit=10) =============================================================================================================')
-	print(client.get_all_orders(symbol='BNBBTC', limit=10))
+	print('=11 get_all_orders(symbol=BNBBTC) =============================================================================================================')
+	print(client.get_all_orders(symbol=symb))
 
 def printAccountDetails(client):
 	print('=5 get_asset_details() =============================================================================================================')
@@ -109,8 +106,8 @@ if __name__ == '__main__':
 		printAccountInfos(client)
 
 	# Account history (trades, dusts, etc)
-	elif sys.argv[1] == '-h' and len(sys.argv) == 2:
-		printAccountHist(client)
+	elif sys.argv[1] == '-h' and len(sys.argv) == 3:
+		printAccountHistory(client, sys.argv[2])
 
 	# Account details (fees)
 	elif sys.argv[1] == '-d' and len(sys.argv) == 2:
