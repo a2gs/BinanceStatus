@@ -73,8 +73,18 @@ if __name__ == '__main__':
 		printHelp()
 		sys.exit(0)
 
+	binanceAPIKey = os.getenv('BINANCE_APIKEY', 'NOTDEF_APIKEY')
+	if binanceAPIKey == 'NOTDEF_APIKEY':
+		print('Environment variable BINANCE_APIKEY not defined!')
+		sys.exit(0)
+
+	binanceSEKKey = os.getenv('BINANCE_SEKKEY', 'NOTDEF_APIKEY')
+	if binanceSEKKey == 'NOTDEF_APIKEY':
+		print('Environment variable BINANCE_SEKKEY not defined!')
+		sys.exit(0)
+
 	try:
-		client = Client(os.getenv('BINANCE_APIKEY', 'NOTDEF_APIKEY'), os.getenv('BINANCE_SEKKEY', 'NOTDEF_APIKEY'), {"verify": True, "timeout": 20})
+		client = Client(binanceAPIKey, binanceSEKKey, {"verify": True, "timeout": 20})
 
 	except BinanceAPIException as e:
 		print(f'Binance API exception: {e.status_code} - {e.message}')
