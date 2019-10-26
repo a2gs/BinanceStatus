@@ -29,9 +29,11 @@ def printHistory(client):
 def printAccountInfos(client):
 
 	acc = client.get_account()
-	print('Can trade: ' + str(acc['canTrade']) + ' | Can withdraw: ' + str(acc['canWithdraw']) + ' | Can deposit: ' + str(acc['canDeposit']) + ' | Account type: ' + str(acc['accountType']))
-
 	totAccBalance = len(acc['balances'])
+	accStatus = client.get_account_status()
+
+	print('Can trade: ' + str(acc['canTrade']) + ' | Can withdraw: ' + str(acc['canWithdraw']) + ' | Can deposit: ' + str(acc['canDeposit']) + ' | Account type: ' + str(acc['accountType']))
+	print('(Account status detail: ' + accStatus['msg'] + ' | Success: ' + str(accStatus['success']) + ')')
 
 	if len(acc['balances']) != 0:
 		[printAccount(n) for n in acc['balances'] if float(n['free']) != 0.0 or float(n['locked']) != 0.0]
@@ -54,10 +56,6 @@ def printHelp():
 	pass
 
 def printAccountHist(client):
-	print('=2 get_asset_balance(asset=BTC)=============================================================================================================')
-	print(client.get_asset_balance(asset='BTC'))
-	print('=3 get_account_status()=============================================================================================================')
-	print(client.get_account_status())
 	print('=4 get_my_trades(symbol=BNBBTC)=============================================================================================================')
 	print(client.get_my_trades(symbol='BNBBTC'))
 	print('=5 get_asset_details() =============================================================================================================')
@@ -66,6 +64,10 @@ def printAccountHist(client):
 	print(client.get_trade_fee())
 	print('=7 get_dust_log() =============================================================================================================')
 	print(client.get_dust_log())
+	print('=8 get_dust_log() =============================================================================================================')
+	print(client.get_dust_log())
+	print('=11 get_all_orders(symbol=BNBBTC, limit=10) =============================================================================================================')
+	print(client.get_all_orders(symbol='BNBBTC', limit=10))
 
 if __name__ == '__main__':
 
