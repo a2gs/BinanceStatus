@@ -5,7 +5,7 @@
 # andre.scota@gmail.com
 # MIT license
 
-import os
+import os, sys
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceWithdrawException, BinanceRequestException
 
@@ -23,22 +23,14 @@ def printOrder(order, seq, tot):
 def printAccount(accBalance):
 	print('Asset balance [' + accBalance['asset'] + '] | Free [' + accBalance['free'] + '] | Locked [' + accBalance['locked'] + ']')
 
-try:
-	client = Client(os.getenv('BINANCE_APIKEY', 'NOTDEF_APIKEY'), os.getenv('BINANCE_SEKKEY', 'NOTDEF_APIKEY'), {"verify": True, "timeout": 20})
-
-	# Exchange status
-	if client.get_system_status()['status'] != 0:
-		print('Binance out of service')
-		sys.exit(0)
+def printAccountInfos(client):
 
 	acc = client.get_account()
 	print('Can trade: ' + str(acc['canTrade']) + ' | Can withdraw: ' + str(acc['canWithdraw']) + ' | Can deposit: ' + str(acc['canDeposit']) + ' | Account type: ' + str(acc['accountType']))
 
 	totAccBalance = len(acc['balances'])
 
-#	if totAccBalance != 0:
 	if len(acc['balances']) != 0:
-#		[printAccount(n, i, totAccBalance) for i,n in enumerate(acc['balances'], 1) if float(n['free']) != 0.0 or float(n['locked']) != 0.0]
 		[printAccount(n) for n in acc['balances'] if float(n['free']) != 0.0 or float(n['locked']) != 0.0]
 
 #	print('=2=============================================================================================================')
@@ -69,11 +61,23 @@ try:
 	else:
 		print('No open order')
 
-except BinanceAPIException as e:
-	print(f'Binance API exception: {e.status_code} - {e.message}')
+if __name__ == '__main__':
 
-except BinanceRequestException as e:
-	print(f'Binance request exception: {e.status_code} - {e.message}')
+	try:
+		client = Client(os.getenv('BINANCE_APIKEY', 'NOTDEF_APIKEY'), os.getenv('BINANCE_SEKKEY', 'NOTDEF_APIKEY'), {"verify": True, "timeout": 20})
 
-except BinanceWithdrawException as e:
-	print(f'Binance withdraw exception: {e.status_code} - {e.message}')
+	except BinanceAPIException as e:
+		print(f'Binance API exception: {e.status_code} - {e.message}')
+
+	except BinanceRequestException as e:
+		print(f'Binance request exception: {e.status_code} - {e.message}')
+
+	except BinanceWithdrawException as e:
+		print(f'Binance withdraw exception: {e.status_code} - {e.message}')
+
+	printAccountInfos(client)
+
+	# Exchange status
+	if client.get_system_status()['status'] != 0:
+		print('Binance out of service')
+		sys.exit(0)
