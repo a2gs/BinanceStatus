@@ -58,16 +58,18 @@ def printHelp():
 def printAccountHist(client):
 	print('=4 get_my_trades(symbol=BNBBTC)=============================================================================================================')
 	print(client.get_my_trades(symbol='BNBBTC'))
-	print('=5 get_asset_details() =============================================================================================================')
-	print(client.get_asset_details())
-	print('=6 get_trade_fee() =============================================================================================================')
-	print(client.get_trade_fee())
-	print('=7 get_dust_log() =============================================================================================================')
-	print(client.get_dust_log())
 	print('=8 get_dust_log() =============================================================================================================')
 	print(client.get_dust_log())
 	print('=11 get_all_orders(symbol=BNBBTC, limit=10) =============================================================================================================')
 	print(client.get_all_orders(symbol='BNBBTC', limit=10))
+
+def printAccountDetails(client):
+	print('=5 get_asset_details() =============================================================================================================')
+	print(client.get_asset_details())
+	print('=6 get_trade_fee() =============================================================================================================')
+	print(client.get_trade_fee())
+
+# ---------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
@@ -108,3 +110,7 @@ if __name__ == '__main__':
 	# Account history (trades, dusts, etc)
 	if sys.argv[1] == '-h' and len(sys.argv) == 2:
 		printAccountHist(client)
+
+	# Account details (fees)
+	if sys.argv[1] == '-d' and len(sys.argv) == 2:
+		printAccountDetails(client)
