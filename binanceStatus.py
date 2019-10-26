@@ -65,7 +65,7 @@ def printAccountInfos(client):
 		print('No open order')
 
 def printHelp():
-	def
+	pass
 
 if __name__ == '__main__':
 
@@ -85,8 +85,9 @@ if __name__ == '__main__':
 	except BinanceWithdrawException as e:
 		print(f'Binance withdraw exception: {e.status_code} - {e.message}')
 
-	printAccountInfos(client)
-
 	# Exchange status
 	if client.get_system_status()['status'] != 0:
 		print('Binance out of service')
+
+	if sys.argv[1] == '-i' and len(sys.argv) == 2:
+		printAccountInfos(client)
