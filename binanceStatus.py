@@ -53,7 +53,7 @@ def printAccountInfos(client):
 		print('No open order')
 
 def printHelp():
-	pass
+	print('parameters description...')
 
 def printAccountHist(client):
 	print('=4 get_my_trades(symbol=BNBBTC)=============================================================================================================')
@@ -102,15 +102,21 @@ if __name__ == '__main__':
 	# Exchange status
 	if client.get_system_status()['status'] != 0:
 		print('Binance out of service')
+		sys.exit(0)
 
 	# Wallet/Account information
 	if sys.argv[1] == '-i' and len(sys.argv) == 2:
 		printAccountInfos(client)
 
 	# Account history (trades, dusts, etc)
-	if sys.argv[1] == '-h' and len(sys.argv) == 2:
+	elif sys.argv[1] == '-h' and len(sys.argv) == 2:
 		printAccountHist(client)
 
 	# Account details (fees)
-	if sys.argv[1] == '-d' and len(sys.argv) == 2:
+	elif sys.argv[1] == '-d' and len(sys.argv) == 2:
 		printAccountDetails(client)
+
+	else:
+		print('Parameters error.')
+		printHelp()
+		sys.exit(0)
