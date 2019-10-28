@@ -49,8 +49,13 @@ def printAccountInfos(client):
 	else:
 		print('No open order')
 
-def printHelp():
-	print('parameters description...')
+def printHelp(execName):
+	print(f'{execName} -h <ASSET>\n\tAccount history (trades, dusts, etc)\n')
+	print(f'{execName} -i\n\tWallet/Account information\n')
+	print(f'{execName} -d\n\tAccount details (fees)\n')
+	print(f'{execName} -s\n\tPlace a sell order\n')
+	print(f'{execName} -b\n\tPlace a buy order\n')
+	print(f'{execName} -c \n\tCancel a order\n')
 
 def printTradeAllHist(tradeAllHist, seq, tot):
 	print(f'{seq}/{tot}) Symbol: [' + tradeAllHist['symbol'] + ']\n'
@@ -102,7 +107,7 @@ def printAccountDetails(client):
 if __name__ == '__main__':
 
 	if len(sys.argv) <= 1:
-		printHelp()
+		printHelp(sys.argv[0])
 		sys.exit(0)
 
 	binanceAPIKey = os.getenv('BINANCE_APIKEY', 'NOTDEF_APIKEY')
@@ -146,5 +151,5 @@ if __name__ == '__main__':
 
 	else:
 		print('Parameters error.')
-		printHelp()
+		printHelp(sys.argv[0])
 		sys.exit(0)
