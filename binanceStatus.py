@@ -25,9 +25,19 @@ def printAccount(accBalance):
 
 def printAccountInfos(client):
 
-	acc = client.get_account()
+	try:
+		acc = client.get_account()
+	except:
+		print('Erro at client.get_account()')
+		return
+
 	totAccBalance = len(acc['balances'])
-	accStatus = client.get_account_status()
+
+	try:
+		accStatus = client.get_account_status()
+	except:
+		print('Erro at client.get_account_status()')
+		return
 
 	print('Can trade: ' + str(acc['canTrade']) + ' | Can withdraw: ' + str(acc['canWithdraw']) + ' | Can deposit: ' + str(acc['canDeposit']) + ' | Account type: ' + str(acc['accountType']))
 	print('(Account status detail: ' + accStatus['msg'] + ' | Success: ' + str(accStatus['success']) + ')')
@@ -36,7 +46,12 @@ def printAccountInfos(client):
 		[printAccount(n) for n in acc['balances'] if float(n['free']) != 0.0 or float(n['locked']) != 0.0]
 
 	# Orders
-	openOrders = client.get_open_orders()
+	try:
+		openOrders = client.get_open_orders()
+	except:
+		print('Erro at client.get_open_orders()')
+		return
+
 	totOpenOrder = len(openOrders)
 
 	if totOpenOrder != 0:
@@ -78,7 +93,12 @@ def printTradeHistory(tradeHist, seq, tot):
 
 def printAccountHistory(client, symb):
 
-	tradeHist = client.get_my_trades(symbol=symb)
+	try:
+		tradeHist = client.get_my_trades(symbol=symb)
+	except:
+		print(f'Erro at client.get_my_trades(symbol={symb})')
+		return
+
 	tradeHistTot = len(tradeHist)
 
 	print(f'Trade history {symb}:')
@@ -89,7 +109,12 @@ def printAccountHistory(client, symb):
 	print(client.get_dust_log())
 	print('==============================================================================================================')
 
-	tradeAllHist = client.get_all_orders(symbol=symb)
+	try:
+		tradeAllHist = client.get_all_orders(symbol=symb)
+	except:
+		print(f'Erro at client.get_all_orders(symbol={symb})')
+		return
+
 	tradeAllHistTot = len(tradeAllHist)
 
 	print(f'Trade history {symb}:')
@@ -133,9 +158,14 @@ if __name__ == '__main__':
 		print(f'Binance withdraw exception: {e.status_code} - {e.message}')
 
 	# Exchange status
-	if client.get_system_status()['status'] != 0:
-		print('Binance out of service')
+	try:
+		if client.get_system_status()['status'] != 0:
+			print('Binance out of service')
+			sys.exit(0)
+	except:
+		print('Erro at client.get_system_status()')
 		sys.exit(0)
+	
 
 	# Wallet/Account information
 	if sys.argv[1] == '-i' and len(sys.argv) == 2:
