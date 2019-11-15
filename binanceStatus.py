@@ -74,6 +74,9 @@ def printHelp(execName):
 	print(f'\t\t{execName} -s LIMIT [symbol] [qtd] [price] (TODO: STOP PARAMETERS)\n')
 
 	print(f'{execName} -b\n\tPlace a buy order\n')
+	print(f'\t\t{execName} -b MARKET [symbol] [qtd]')
+	print(f'\t\t{execName} -b LIMIT [symbol] [qtd] [price] (TODO: STOP PARAMETERS)\n')
+
 	print(f'{execName} -c \n\tCancel a order\n')
 
 def printTradeAllHist(tradeAllHist, seq, tot):
@@ -179,11 +182,53 @@ def sellLimitOrder(client, symb, qtd, prc):
 	else:
 		print(order)
 
-def buyLimitOrder(client):
-	pass
+def buyLimitOrder(client, symb, qtd, prc):
+	print(f'Limit order for {symb} with quantity {qtd} at price {prc}')
 
-def buyMarketOrder(client):
-	pass
+	try:
+		order = client.order_limit_buy(symbol=symb, quantity=qtd, price=prc)
+	except BinanceRequestException as e:
+		print('Erro BinanceRequestException')
+	except BinanceAPIException as e:
+		print('Erro BinanceAPIException')
+	except BinanceOrderException as e:
+		print('Erro BinanceOrderException')
+	except BinanceOrderMinAmountException as e:
+		print('Erro BinanceOrderMinAmountException')
+	except BinanceOrderMinPriceException as e:
+		print('Erro BinanceOrderMinPriceException')
+	except BinanceOrderMinTotalException as e:
+		print('Erro BinanceOrderMinTotalException')
+	except BinanceOrderUnknownSymbolException as e:
+		print('Erro BinanceOrderUnknownSymbolException')
+	except BinanceOrderInactiveSymbolException as e:
+		print('Erro BinanceOrderInactiveSymbolException')
+	else:
+		print(order)
+
+def buyMarketOrder(client, symb, qtd):
+	print(f'Market order for symbol {symb} with quantity {qtd}')
+
+	try:
+		order = client.order_market_buy(symbol=symb, quantity=qtd) 
+	except BinanceRequestException as e:
+		print('Erro BinanceRequestException')
+	except BinanceAPIException as e:
+		print('Erro BinanceAPIException')
+	except BinanceOrderException as e:
+		print('Erro BinanceOrderException')
+	except BinanceOrderMinAmountException as e:
+		print('Erro BinanceOrderMinAmountException')
+	except BinanceOrderMinPriceException as e:
+		print('Erro BinanceOrderMinPriceException')
+	except BinanceOrderMinTotalException as e:
+		print('Erro BinanceOrderMinTotalException')
+	except BinanceOrderUnknownSymbolException as e:
+		print('Erro BinanceOrderUnknownSymbolException')
+	except BinanceOrderInactiveSymbolException as e:
+		print('Erro BinanceOrderInactiveSymbolException')
+	else:
+		print(order)
 
 # ---------------------------------------------------------------------------
 
