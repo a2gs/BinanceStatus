@@ -294,7 +294,7 @@ if __name__ == '__main__':
 			buyLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5])
 
 		else:
-			print('Parameters error for sell order')
+			print('Parameters error for buy order')
 
 	# Sell order
 	elif sys.argv[1] == '-s' and len(sys.argv) > 2:
