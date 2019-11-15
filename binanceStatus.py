@@ -186,7 +186,7 @@ if __name__ == '__main__':
 		printAccountDetails(client)
 
 	# Sell order
-	elif sys.argv[1] == '-s' and len(sys.argv) < 2:
+	elif sys.argv[1] == '-s' and len(sys.argv) > 2:
 
 		# Market order
 		if sys.argv[2] == 'MARKET' and len(sys.argv) == 5:
