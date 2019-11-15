@@ -68,7 +68,11 @@ def printHelp(execName):
 	print(f'{execName} -h <ASSET>\n\tAccount history (trades, dusts, etc)\n')
 	print(f'{execName} -i\n\tWallet/Account information\n')
 	print(f'{execName} -d\n\tAccount details (fees)\n')
-	print(f'{execName} -s\n\tPlace a sell order\n')
+
+	print(f'{execName} -s\n\tPlace a sell order')
+	print(f'\t\t{execName} -s MARKET [symbol] [qtd]')
+	print(f'\t\t{execName} -s LIMIT [symbol] [qtd] [price] (TODO: STOP PARAMETERS)\n')
+
 	print(f'{execName} -b\n\tPlace a buy order\n')
 	print(f'{execName} -c \n\tCancel a order\n')
 
@@ -130,8 +134,50 @@ def printAccountDetails(client):
 def sellMarketOrder(client, symb, qtd):
 	print(f'Market order for symbol {symb} with quantity {qtd}')
 
+	try:
+		order = client.order_market_sell(symbol=symb, quantity=qtd) 
+	except BinanceRequestException as e:
+		print('Erro BinanceRequestException')
+	except BinanceAPIException as e:
+		print('Erro BinanceAPIException')
+	except BinanceOrderException as e:
+		print('Erro BinanceOrderException')
+	except BinanceOrderMinAmountException as e:
+		print('Erro BinanceOrderMinAmountException')
+	except BinanceOrderMinPriceException as e:
+		print('Erro BinanceOrderMinPriceException')
+	except BinanceOrderMinTotalException as e:
+		print('Erro BinanceOrderMinTotalException')
+	except BinanceOrderUnknownSymbolException as e:
+		print('Erro BinanceOrderUnknownSymbolException')
+	except BinanceOrderInactiveSymbolException as e:
+		print('Erro BinanceOrderInactiveSymbolException')
+	else:
+		print(order)
+
 def sellLimitOrder(client, symb, qtd, prc):
 	print(f'Limit order for {symb} with quantity {qtd} at price {prc}')
+
+	try:
+		order = client.order_limit_sell(symbol=symb, quantity=qtd, price=prc)
+	except BinanceRequestException as e:
+		print('Erro BinanceRequestException')
+	except BinanceAPIException as e:
+		print('Erro BinanceAPIException')
+	except BinanceOrderException as e:
+		print('Erro BinanceOrderException')
+	except BinanceOrderMinAmountException as e:
+		print('Erro BinanceOrderMinAmountException')
+	except BinanceOrderMinPriceException as e:
+		print('Erro BinanceOrderMinPriceException')
+	except BinanceOrderMinTotalException as e:
+		print('Erro BinanceOrderMinTotalException')
+	except BinanceOrderUnknownSymbolException as e:
+		print('Erro BinanceOrderUnknownSymbolException')
+	except BinanceOrderInactiveSymbolException as e:
+		print('Erro BinanceOrderInactiveSymbolException')
+	else:
+		print(order)
 
 # ---------------------------------------------------------------------------
 
@@ -195,6 +241,9 @@ if __name__ == '__main__':
 		# Limit order
 		elif sys.argv[2] == 'LIMIT' and len(sys.argv) == 6:
 			sellLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5])
+
+		else:
+			print('Parameters error for sell order')
 
 	else:
 		print('Parameters error.')
