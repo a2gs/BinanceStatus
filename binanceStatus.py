@@ -127,6 +127,12 @@ def printAccountDetails(client):
 	print('=6 get_trade_fee() =============================================================================================================')
 	print(client.get_trade_fee())
 
+def sellMarketOrder(client, symb, qtd):
+	print(f'Market order for symbol {symb} with quantity {qtd}')
+
+def sellLimitOrder(client, symb, qtd, prc):
+	print(f'Limit order for {symb} with quantity {qtd} at price {prc}')
+
 # ---------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -178,6 +184,14 @@ if __name__ == '__main__':
 	# Account details (fees)
 	elif sys.argv[1] == '-d' and len(sys.argv) == 2:
 		printAccountDetails(client)
+
+	# Sell Market order ------> TODO: IndexError: list index out of range
+	elif sys.argv[1] == '-s' and sys.argv[2] == 'MARKET' and len(sys.argv) == 5:
+		sellMarketOrder(client, sys.argv[3], sys.argv[4])
+
+	# Sell Limit order ------> TODO: IndexError: list index out of range
+	elif sys.argv[1] == '-s' and sys.argv[2] == 'LIMIT' and len(sys.argv) == 6:
+		sellLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5])
 
 	else:
 		print('Parameters error.')
