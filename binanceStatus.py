@@ -185,13 +185,16 @@ if __name__ == '__main__':
 	elif sys.argv[1] == '-d' and len(sys.argv) == 2:
 		printAccountDetails(client)
 
-	# Sell Market order ------> TODO: IndexError: list index out of range
-	elif sys.argv[1] == '-s' and sys.argv[2] == 'MARKET' and len(sys.argv) == 5:
-		sellMarketOrder(client, sys.argv[3], sys.argv[4])
+	# Sell order
+	elif sys.argv[1] == '-s' and len(sys.argv) < 2:
 
-	# Sell Limit order ------> TODO: IndexError: list index out of range
-	elif sys.argv[1] == '-s' and sys.argv[2] == 'LIMIT' and len(sys.argv) == 6:
-		sellLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5])
+		# Market order
+		if sys.argv[2] == 'MARKET' and len(sys.argv) == 5:
+			sellMarketOrder(client, sys.argv[3], sys.argv[4])
+
+		# Limit order
+		elif sys.argv[2] == 'LIMIT' and len(sys.argv) == 6:
+			sellLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5])
 
 	else:
 		print('Parameters error.')
