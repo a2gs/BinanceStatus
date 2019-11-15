@@ -179,6 +179,12 @@ def sellLimitOrder(client, symb, qtd, prc):
 	else:
 		print(order)
 
+def buyLimitOrder(client):
+	pass
+
+def buyMarketOrder(client):
+	pass
+
 # ---------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -230,6 +236,20 @@ if __name__ == '__main__':
 	# Account details (fees)
 	elif sys.argv[1] == '-d' and len(sys.argv) == 2:
 		printAccountDetails(client)
+
+	# Buy order
+	elif sys.argv[1] == '-b' and len(sys.argv) > 2:
+
+		# Market order
+		if sys.argv[2] == 'MARKET' and len(sys.argv) == 5:
+			buyMarketOrder(client, sys.argv[3], sys.argv[4])
+
+		# Limit order
+		elif sys.argv[2] == 'LIMIT' and len(sys.argv) == 6:
+			buyLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5])
+
+		else:
+			print('Parameters error for sell order')
 
 	# Sell order
 	elif sys.argv[1] == '-s' and len(sys.argv) > 2:
