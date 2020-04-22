@@ -9,15 +9,26 @@ import os, sys
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceWithdrawException, BinanceRequestException
 
+def printMarginOrder(order, seq, tot):
+	printOrder(order, seq, tot)
+
+def printMarginAssets(asset, seq):
+	print(f"{seq}) Asset: [{asset['asset']}]");
+	print(f"\tBorrowed.: [{asset['borrowed']}]");
+	print(f"\tFree.....: [{asset['free']}]");
+	print(f"\tLocked...: [{asset['locked']}]");
+	print(f"\tNet asset: [{asset['netAsset']}]\n");
+
 def printOrder(order, seq, tot):
-	print(f'{seq}/{tot}) Order id [' + str(order['orderId']) + '] data:\n' 
-		+ '\tPrice.......: [' + order['price']          + ']\n'
-		+ '\tQtd.........: [' + order['origQty']        + ']\n'
-		+ '\tQtd executed: [' + order['executedQty']    + ']\n'
-		+ '\tSide........: [' + order['side']           + ']\n'
-		+ '\tType........: [' + order['type']           + ']\n'
-		+ '\tStop price..: [' + order['stopPrice']      + ']\n'
-		+ '\tIs working..: [' + str(order['isWorking']) + ']')
+	print(f"{seq}/{tot}) Order id [{order['orderId']}] data:")
+	print(f"\tSymbol......: [{order['symbol']}]")
+	print(f"\tPrice.......: [{order['price']}]")
+	print(f"\tQtd.........: [{order['origQty']}]")
+	print(f"\tQtd executed: [{order['executedQty']}]")
+	print(f"\tSide........: [{order['side']}]")
+	print(f"\tType........: [{order['type']}]")
+	print(f"\tStop price..: [{order['stopPrice']}]")
+	print(f"\tIs working..: [{order['isWorking']}]\n")
 
 #def printAccount(accBalance, seq, tot):
 def printAccount(accBalance):
@@ -62,7 +73,44 @@ def printAccountInfos(client):
 
 		[printOrder(n, i, totOpenOrder) for i,n in enumerate(openOrders, 1)]
 	else:
-		print('No open order')
+		print('No open orders')
+
+	# MARGIN
+
+	marginInfo = client.get_margin_account()
+	if marginInfo['borrowEnabled'] == False:
+		return
+
+	print("* MARGIN *")
+
+	print(f"Margin level..........: [{marginInfo['marginLevel']}]")
+	print(f"Total asset of BTC....: [{marginInfo['totalAssetOfBtc']}]")
+	print(f"Total liability of BTC: [{marginInfo['totalLiabilityOfBtc']}]")
+	print(f"Total Net asset of BTC: [{marginInfo['totalNetAssetOfBtc']}]")
+	print(f"Trade enabled.........? [{marginInfo['tradeEnabled']}]")
+
+	print('Borrowed assets:')
+	[printMarginAssets(n, i) for i,n in enumerate(marginInfo['userAssets'], 1) if float(n['netAsset']) != 0.0]
+
+	# Margin Orders
+	try:
+		openMarginOrders = client.get_open_margin_orders()
+	except:
+		print('Erro at client.get_open_margin_orders()')
+		return
+
+	totOpenMarginOrder = len(openMarginOrders)
+
+	if totOpenMarginOrder != 0:
+		if totOpenMarginOrder == 1:
+			print('Open margin order:')
+		elif totOpenMarginOrder < 1:
+			print(f'Open margin orders ({totOpenOrder}):')
+
+		[printMarginOrder(n, i, totOpenMarginOrder) for i,n in enumerate(openMarginOrders, 1)]
+	else:
+		print('No open margin orders')
+
 
 def printHelp(execName):
 	print(f'{execName} -h <ASSET>\n\tAccount history (trades, dusts, etc)\n')
