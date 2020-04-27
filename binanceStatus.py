@@ -128,15 +128,15 @@ def printHelp(execName):
 	print(f'{execName} -c \n\tCancel a order\n')
 
 def printTradeAllHist(tradeAllHist, seq, tot):
-	print(f'{seq}/{tot}) Symbol: [' + tradeAllHist['symbol'] + ']\n'
-		+ '\tTime: [' + str(tradeAllHist['time']) + ' | Update time: [' + str(tradeAllHist['updateTime']) + ']\n'
-		+ '\tOrder Id: [' + str(tradeAllHist['orderId']) + '| Order list Id: [' + str(tradeAllHist['orderListId']) + '] | Client Order Id: [' + tradeAllHist['clientOrderId'] + ']\n'
-		+ '\tPrice: [' + tradeAllHist['price'] + ' | Orig Qtd: [' + tradeAllHist['origQty'] + ' | Executed Qtd: [' + tradeAllHist['executedQty'] + 'Cummulative Quote Qtd: [' + tradeAllHist['cummulativeQuoteQty'] + ']\n'
-		+ '\tStatus: [' + tradeAllHist['status'] + '] | Time in Force: [' + tradeAllHist['timeInForce'] + ']\n'
-		+ '\tSide: [' + tradeAllHist['side'] + ']\n'
-		+ '\tType: [' + tradeAllHist['type'] + ']\n'
-		+ '\tStop Price: [' + tradeAllHist['stopPrice'] + ']\n'
-		+ '\tIs working: [' + str(tradeAllHist['isWorking']) + ']')
+	print(f"{seq}/{tot}) Symbol: [{tradeAllHist['symbol']}]")
+	print(f"\tTime: [{tradeAllHist['time']}] Update time: [{tradeAllHist['updateTime']}]")
+	print(f"\tOrder Id: [{tradeAllHist['orderId']}] | Order list Id: [{tradeAllHist['orderListId']}] | Client Order Id: [{tradeAllHist['clientOrderId']}]")
+	print(f"\tPrice: [{tradeAllHist['price']} | Orig Qtd: [{tradeAllHist['origQty']} | Executed Qtd: [{tradeAllHist['executedQty']} | Cummulative Quote Qtd: [{tradeAllHist['cummulativeQuoteQty']}]")
+	print(f"\tStatus: [{tradeAllHist['status']} | Time in Force: [{tradeAllHist['timeInForce']}]")
+	print(f"\tSide: [{tradeAllHist['side']}]")
+	print(f"\tType: [{tradeAllHist['type']}]")
+	print(f"\tStop Price: [{tradeAllHist['stopPrice']}]")
+	print(f"\tIs working: [{tradeAllHist['isWorking']}]")
 
 def printTradeHistory(tradeHist, seq, tot):
 	print(f'{seq}/{tot}) Symbol: [' + tradeHist['symbol'] + ']\n'
@@ -176,11 +176,31 @@ def printAccountHistory(client, symb):
 
 	[printTradeAllHist(n, i, tradeAllHistTot) for i,n in enumerate(tradeAllHist, 1)]
 
+def printDetailsAssets(ass, detAss, seq, tot):
+	print(f"{seq}/{tot}) Asset: [{ass}]");
+	print(f"\tMin. withdraw amount: [{detAss['minWithdrawAmount']}]");
+	print(f"\tDeposit status......: [{detAss['depositStatus']}]");
+	print(f"\tWithdraw fee........: [{detAss['withdrawFee']}]");
+	print(f"\tWithdraw status.....: [{detAss['withdrawStatus']}]");
+	dt = detAss.get('depositTip', '')
+	if dt != '':
+		print(f"\tDeposit tip.........: [{dt}]");
+
+def printTradeFee(tf, seq, tot):
+	print(f"{seq}/{tot}) Symbol: [{tf['symbol']}]\tMaker: [{tf['maker']}]\tTaker: [{tf['taker']}]");
+
 def printAccountDetails(client):
-	print('=5 get_asset_details() =============================================================================================================')
-	print(client.get_asset_details())
-	print('=6 get_trade_fee() =============================================================================================================')
-	print(client.get_trade_fee())
+	try:
+		assDet = client.get_asset_details()
+		tradFee = client.get_trade_fee()
+	except BinanceWithdrawException as e:
+		print('Erro BinanceWithdrawException')
+
+	print('Details on Assets')
+	[printDetailsAssets(n, assDet['assetDetail'][n], i, len(assDet['assetDetail'])) for i,n in enumerate(assDet['assetDetail'].keys(), 1)]
+
+	print('Trade Fee:')
+	[printTradeFee(n, i, len(tradFee['tradeFee'])) for i,n in enumerate(tradFee['tradeFee'], 1)]
 
 def sellMarketOrder(client, symb, qtd):
 	print(f'Market order for symbol {symb} with quantity {qtd}')
