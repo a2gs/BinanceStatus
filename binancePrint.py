@@ -38,22 +38,36 @@ def printHelp(execName):
 
 def printTradeAllHist(tradeAllHist, seq, tot):
 	print(f"{seq}/{tot}) Symbol: [{tradeAllHist['symbol']}]")
-	print(f"\tTime: [{tradeAllHist['time']}] Update time: [{tradeAllHist['updateTime']}]")
-	print(f"\tOrder Id: [{tradeAllHist['orderId']}] | Order list Id: [{tradeAllHist['orderListId']}] | Client Order Id: [{tradeAllHist['clientOrderId']}]")
-	print(f"\tPrice: [{tradeAllHist['price']} | Orig Qtd: [{tradeAllHist['origQty']} | Executed Qtd: [{tradeAllHist['executedQty']} | Cummulative Quote Qtd: [{tradeAllHist['cummulativeQuoteQty']}]")
-	print(f"\tStatus: [{tradeAllHist['status']} | Time in Force: [{tradeAllHist['timeInForce']}]")
-	print(f"\tSide: [{tradeAllHist['side']}]")
-	print(f"\tType: [{tradeAllHist['type']}]")
-	print(f"\tStop Price: [{tradeAllHist['stopPrice']}]")
-	print(f"\tIs working: [{tradeAllHist['isWorking']}]")
+	print(f"\tTime.................: [{tradeAllHist['time']}]")
+	print(f"\tUpdate time..........: [{tradeAllHist['updateTime']}]")
+	print(f"\tOrder Id.............: [{tradeAllHist['orderId']}]")
+#	print(f"\tOrder list Id........: [{tradeAllHist['orderListId']}]")
+	print(f"\tClient Order Id......: [{tradeAllHist['clientOrderId']}]")
+	print(f"\tPrice................: [{tradeAllHist['price']}]")
+	print(f"\tOrig Qtd.............: [{tradeAllHist['origQty']}]")
+	print(f"\tExecuted Qtd.........: [{tradeAllHist['executedQty']}]")
+	print(f"\tCummulative Quote Qtd: [{tradeAllHist['cummulativeQuoteQty']}]")
+	print(f"\tStatus...............: [{tradeAllHist['status']}]")
+	print(f"\tTime in Force........: [{tradeAllHist['timeInForce']}]")
+	print(f"\tSide.................: [{tradeAllHist['side']}]")
+	print(f"\tType.................: [{tradeAllHist['type']}]")
+	print(f"\tStop Price...........: [{tradeAllHist['stopPrice']}]")
+	print(f"\tIs working...........: [{tradeAllHist['isWorking']}]")
 
 def printTradeHistory(tradeHist, seq, tot):
-	print(f'{seq}/{tot}) Symbol: [' + tradeHist['symbol'] + ']\n'
-		+ '\tTime: [' + str(tradeHist['time']) + ']\n'
-		+ '\tOrder Id: [' + str(tradeHist['orderId']) + ' | Id: [' + str(tradeHist['id']) + ' Order List Id: [' + str(tradeHist['orderListId']) + ']\n'
-		+ '\tPrice: [' + tradeHist['price'] + '] | Qtd: [' + tradeHist['qty'] + '] | Quote Qtd: [' + tradeHist['quoteQty'] + ']\n'
-		+ '\tCommission: [' + tradeHist['commission'] + 'Commission asset: [' + tradeHist['commissionAsset'] + ']\n'
-		+ '\tBuyer: [' + str(tradeHist['isBuyer']) + '] | Maker: [' + str(tradeHist['isMaker']) + '] | TradeHist: [' + str(tradeHist['isBestMatch']) + ']')
+	print(f"{seq}/{tot}) Symbol: [{tradeHist['symbol']}]")
+	print(f"\tTime............: [{tradeHist['time']}]")
+	print(f"\tOrder Id........: [{tradeHist['orderId']}]")
+	print(f"\tId..............: [{tradeHist['id']}]")
+#	print(f"\tOrder List Id...: [{tradeHist['orderListId']}]")
+	print(f"\tPrice...........: [{tradeHist['price']}]")
+	print(f"\tQtd.............: [{tradeHist['qty']}]")
+	print(f"\tQuote Qtd.......: [{tradeHist['quoteQty']}]")
+	print(f"\tCommission......: [{tradeHist['commission']}]")
+	print(f"\tCommission asset: [{tradeHist['commissionAsset']}]")
+	print(f"\tBuyer...........: [{tradeHist['isBuyer']}]")
+	print(f"\tMaker...........: [{tradeHist['isMaker']}]")
+	print(f"\tTradeHist.......: [{tradeHist['isBestMatch']}]")
 
 def printMarginAssets(asset, seq):
 	print(f"{seq}) Asset: [{asset['asset']}]");
