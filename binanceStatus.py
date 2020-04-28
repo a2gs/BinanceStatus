@@ -10,6 +10,8 @@ from binancePrint import printMarginOrder, printDetailsAssets, printTradeFee, pr
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceWithdrawException, BinanceRequestException
 
+exportToXls = False
+
 def printAccountInfos(client):
 	try:
 		acc = client.get_account()
@@ -275,6 +277,11 @@ if __name__ == '__main__':
 		print('Erro at client.get_system_status()')
 		sys.exit(0)
 	
+	if '--xls' in sys.argv:
+		exportToXls = True
+		sys.argv.remove('--xls')
+	else:
+		exportToXls = False
 
 	# Wallet/Account information
 	if sys.argv[1] == '-i' and len(sys.argv) == 2:

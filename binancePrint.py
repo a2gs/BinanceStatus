@@ -36,6 +36,8 @@ def printHelp(execName):
 
 	print(f'{execName} -c \n\tCancel a order\n')
 
+	print(f'{execName} [...] --xls\n\tOutput with TAB separator\n')
+
 def printTradeAllHist(tradeAllHist, seq, tot):
 	print(f"{seq}/{tot}) Symbol: [{tradeAllHist['symbol']}]")
 	print(f"\tTime.................: [{tradeAllHist['time']}]")
