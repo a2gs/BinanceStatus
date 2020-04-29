@@ -6,8 +6,8 @@
 # MIT license
 
 import os, sys
-from binancePrint import printMarginOrder, printDetailsAssets, printTradeFee, printHelp, printTradeAllHist
-from binancePrint import printTradeHistory, printMarginAssets, printOrder, printAccount, printDustTrade
+from binancePrint import printMarginOrder, printDetailsAssets, printTradeFee, printHelp, printTradeAllHist, printInfoSymbolValues
+from binancePrint import printTradeHistory, printMarginAssets, printOrder, printAccount, printDustTrade, print24hPrcChangSts
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceWithdrawException, BinanceRequestException
 
@@ -64,7 +64,7 @@ def printAccountInfos(client):
 		elif totOpenOrder < 1:
 			print(f"Open orders ({totOpenOrder}):")
 
-		[printOrder(n, i, totOpenOrder) for i,n in enumerate(openOrders, 1)]
+		[printOrder(n, i, totOpenOrder) for i, n in enumerate(openOrders, 1)]
 	else:
 		print("No open orders")
 
@@ -83,7 +83,7 @@ def printAccountInfos(client):
 	print(f"Trade enabled.........? [{marginInfo['tradeEnabled']}]")
 
 	print('Borrowed assets:')
-	[printMarginAssets(n, i) for i,n in enumerate(marginInfo['userAssets'], 1) if float(n['netAsset']) != 0.0]
+	[printMarginAssets(n, i) for i, n in enumerate(marginInfo['userAssets'], 1) if float(n['netAsset']) != 0.0]
 
 	# Margin Orders
 	try:
@@ -106,7 +106,7 @@ def printAccountInfos(client):
 		elif totOpenMarginOrder < 1:
 			print(f"Open margin orders ({totOpenOrder}):")
 
-		[printMarginOrder(n, i, totOpenMarginOrder) for i,n in enumerate(openMarginOrders, 1)]
+		[printMarginOrder(n, i, totOpenMarginOrder) for i, n in enumerate(openMarginOrders, 1)]
 	else:
 		print('No open margin orders')
 
@@ -122,7 +122,7 @@ def printAccountHistory(client, symb):
 	tradeHistTot = len(tradeHist)
 
 	print(f"Trade history {symb}:")
-	[printTradeHistory(n, i, tradeHistTot) for i,n in enumerate(tradeHist, 1)]
+	[printTradeHistory(n, i, tradeHistTot) for i, n in enumerate(tradeHist, 1)]
 
 	print(f"All trade history {symb}:")
 
@@ -135,7 +135,7 @@ def printAccountHistory(client, symb):
 	tradeAllHistTot = len(tradeAllHist)
 
 	print(f"Trade history {symb}:")
-	[printTradeAllHist(n, i, tradeAllHistTot) for i,n in enumerate(tradeAllHist, 1)]
+	[printTradeAllHist(n, i, tradeAllHistTot) for i, n in enumerate(tradeAllHist, 1)]
 
 	try:
 		allDust = client.get_dust_log()
@@ -149,7 +149,7 @@ def printAccountHistory(client, symb):
 	allDustTot = len(allDust['results']['rows'])
 
 	print("Log of small amounts exchanged for BNB:")
-	[printDustTrade(n, i, allDustTot) for i,n in enumerate(allDust['results']['rows'], 1)]
+	[printDustTrade(n, i, allDustTot) for i, n in enumerate(allDust['results']['rows'], 1)]
 
 # ---------------------------------------------------
 
@@ -162,10 +162,10 @@ def printAccountDetails(client):
 		return
 
 	print('Details on Assets')
-	[printDetailsAssets(n, assDet['assetDetail'][n], i, len(assDet['assetDetail'])) for i,n in enumerate(assDet['assetDetail'].keys(), 1)]
+	[printDetailsAssets(n, assDet['assetDetail'][n], i, len(assDet['assetDetail'])) for i, n in enumerate(assDet['assetDetail'].keys(), 1)]
 
 	print('Trade Fee:')
-	[printTradeFee(n, i, len(tradFee['tradeFee'])) for i,n in enumerate(tradFee['tradeFee'], 1)]
+	[printTradeFee(n, i, len(tradFee['tradeFee'])) for i, n in enumerate(tradFee['tradeFee'], 1)]
 
 # ---------------------------------------------------
 
@@ -329,6 +329,46 @@ def buyMarketOrder(client, symb, qtd):
 
 # ---------------------------------------------------
 
+def binanceInterval(i):
+	if   i == '12h': return Client.KLINE_INTERVAL_12HOUR
+	elif i == '15m': return Client.KLINE_INTERVAL_15MINUTE
+	elif i == '1d':  return Client.KLINE_INTERVAL_1DAY
+	elif i == '1h':  return Client.KLINE_INTERVAL_1HOUR
+	elif i == '1m':  return Client.KLINE_INTERVAL_1MINUTE
+	elif i == '1M':  return Client.KLINE_INTERVAL_1MONTH
+	elif i == '1w':  return Client.KLINE_INTERVAL_1WEEK
+	elif i == '2h':  return Client.KLINE_INTERVAL_2HOUR
+	elif i == '30m': return Client.KLINE_INTERVAL_30MINUTE
+	elif i == '3d':  return Client.KLINE_INTERVAL_3DAY
+	elif i == '3m':  return Client.KLINE_INTERVAL_3MINUTE
+	elif i == '4h':  return Client.KLINE_INTERVAL_4HOUR
+	elif i == '5m':  return Client.KLINE_INTERVAL_5MINUTE
+	elif i == '6h':  return Client.KLINE_INTERVAL_6HOUR
+	elif i == '8h':  return Client.KLINE_INTERVAL_8HOUR
+	else:            return ""
+
+# ---------------------------------------------------
+
+def printInfoSymbol(client, symb, interv, candlesTot):
+	print(f"Symbol [{symb}] in interval [{interv}]");
+
+	try:
+		sumbPrc = client.get_klines(symbol=symb, interval = binanceInterval(interv), limit = candlesTot)
+	except BinanceAPIException as e:
+		print(f"Erro at client.get_klines() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		print(f"Erro at client.get_klines() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		print("Erro at client.get_klines()")
+		return
+
+	totsumbPrc = len(sumbPrc)
+	[printInfoSymbolValues(n, i, totsumbPrc) for i, n in enumerate(sumbPrc, 1)]
+
+# ---------------------------------------------------
+
 def printListSymbols(client):
 	ei = client.get_exchange_info()
 
@@ -359,8 +399,29 @@ def printListSymbols(client):
 
 # ---------------------------------------------------
 
-def printInfoSymbol(client, symb):
+def printInfoDetailsSymbol(client, symb):
 	print(client.get_symbol_info(symb))
+
+# ---------------------------------------------------
+
+def print24hPriceChangeStats(client):
+	print("24 hour price change statistics:")
+
+	try:
+		ga = client.get_ticker()
+	except BinanceAPIException as e:
+		print(f"Erro at client.get_ticker() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		print(f"Erro at client.get_ticker() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		print("Erro at client.get_ticker()")
+		return
+
+	totGa = len(ga)
+
+	[print24hPrcChangSts(n, i, totGa) for i, n in enumerate(ga, 1)]
 
 # ---------------------------------------------------
 
@@ -433,9 +494,17 @@ if __name__ == '__main__':
 	elif sys.argv[1] == "-l" and len(sys.argv) == 2:
 		printListSymbols(client)
 
-	# Information about a symbol
-	elif sys.argv[1] == "-v" and len(sys.argv) == 3:
-		printInfoSymbol(client, sys.argv[2])
+	# Information (prices) about a symbol
+	elif sys.argv[1] == "-v" and len(sys.argv) == 5:
+		printInfoSymbol(client, sys.argv[2], sys.argv[3], int(sys.argv[4]))
+
+	# Information (details) about a symbol
+	elif sys.argv[1] == "-V" and len(sys.argv) == 3:
+		printInfoDetailsSymbol(client, sys.argv[2])
+
+	# 24 hour price change statistics
+	elif sys.argv[1] == "-p" and len(sys.argv) == 2:
+		print24hPriceChangeStats(client)
 
 	# Buy order
 	elif sys.argv[1] == "-b" and len(sys.argv) > 2:
