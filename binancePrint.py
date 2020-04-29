@@ -35,19 +35,25 @@ def printTradeFee(tf, seq, tot):
 	print(f"{seq}/{tot}) Symbol: [{tf['symbol']}]\tMaker: [{tf['maker']}]\tTaker: [{tf['taker']}]");
 
 def printHelp(execName):
-	print(f'{execName} -h <ASSET>\n\tAccount history (trades, dusts, etc)\n')
+	print(f'{execName} -h [symbol]\n\tAccount history (trades, dusts, etc)\n')
 	print(f'{execName} -i\n\tWallet/Account information\n')
 	print(f'{execName} -d\n\tAccount details (fees)\n')
 
 	print(f'{execName} -s\n\tPlace a sell order')
 	print(f'\t\t{execName} -s MARKET [symbol] [qtd]')
-	print(f'\t\t{execName} -s LIMIT [symbol] [qtd] [price] (TODO: STOP PARAMETERS)\n')
+	print(f'\t\t{execName} -s LIMIT [symbol] [qtd] [price]')
+	print(f'\t\t{execName} -s STOP [symbol] [qtd] [price] [stopPrice]\n')
 
-	print(f'{execName} -b\n\tPlace a buy order\n')
+	print(f'{execName} -b\n\tPlace a buy order')
 	print(f'\t\t{execName} -b MARKET [symbol] [qtd]')
-	print(f'\t\t{execName} -b LIMIT [symbol] [qtd] [price] (TODO: STOP PARAMETERS)\n')
+	print(f'\t\t{execName} -b LIMIT [symbol] [qtd] [price]')
+	print(f'\t\t{execName} -b STOP [symbol] [qtd] [price] [stopPrice]\n')
 
 	print(f'{execName} -c \n\tCancel a order\n')
+
+	print(f'{execName} -l\n\tList of symbols and rate\n')
+
+	print(f'{execName} -v [symbol]\n\tInformation about a symbol\n')
 
 	print(f'{execName} [...] --xls\n\tOutput with TAB separator\n')
 
@@ -103,4 +109,4 @@ def printOrder(order, seq, tot):
 	print(f"\tIs working..: [{order['isWorking']}]\n")
 
 def printAccount(accBalance):
-	print('Asset balance [' + accBalance['asset'] + '] | Free [' + accBalance['free'] + '] | Locked [' + accBalance['locked'] + ']')
+	print(f"Asset balance [{accBalance['asset']}] | Free [{accBalance['free']}] | Locked [{accBalance['locked']}]")
