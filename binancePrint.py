@@ -8,6 +8,19 @@
 def printMarginOrder(order, seq, tot):
 	printOrder(order, seq, tot)
 
+def printDustTrade(order, seq, tot):
+	print(f"{seq}/{tot}) Total transfered BNB amount for this exchange: [{order['transfered_total']}]")
+	print(f"\tTotal service charge amount for this exchange: [{order['service_charge_total']}]")
+	print(f"\tTransaction Id...............................: [{order['tran_id']}]")
+	print(f"\tOperate time.................................: [{order['operate_time']}]")
+	print("\tLogs:")
+	for logs in order['logs']:
+		print(f"\t\tFrom Asset...........: [{logs['fromAsset']}]")
+		print(f"\t\tAmount...............: [{logs['amount']}]")
+		print(f"\t\tService Charge Amount: [{logs['serviceChargeAmount']}]")
+		print(f"\t\tTransfered Amount....: [{logs['transferedAmount']}]")
+		print(f"\t\tUId..................: [{logs['uid']}]")
+
 def printDetailsAssets(ass, detAss, seq, tot):
 	print(f"{seq}/{tot}) Asset: [{ass}]");
 	print(f"\tMin. withdraw amount: [{detAss['minWithdrawAmount']}]");

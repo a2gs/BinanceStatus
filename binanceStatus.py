@@ -6,7 +6,8 @@
 # MIT license
 
 import os, sys
-from binancePrint import printMarginOrder, printDetailsAssets, printTradeFee, printHelp, printTradeAllHist, printTradeHistory, printMarginAssets, printOrder, printAccount
+from binancePrint import printMarginOrder, printDetailsAssets, printTradeFee, printHelp, printTradeAllHist
+from binancePrint import printTradeHistory, printMarginAssets, printOrder, printAccount, printDustTrade
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceWithdrawException, BinanceRequestException
 
@@ -44,7 +45,7 @@ def printAccountInfos(client):
 
 	if totOpenOrder != 0:
 		if totOpenOrder == 1:
-			print('Open order:')
+			print('* SPOT *')
 		elif totOpenOrder < 1:
 			print(f'Open orders ({totOpenOrder}):')
 
@@ -100,12 +101,9 @@ def printAccountHistory(client, symb):
 	tradeHistTot = len(tradeHist)
 
 	print(f'Trade history {symb}:')
-
 	[printTradeHistory(n, i, tradeHistTot) for i,n in enumerate(tradeHist, 1)]
 
-	print('=8 get_dust_log() =============================================================================================================')
-	print(client.get_dust_log())
-	print('==============================================================================================================')
+	print(f'All trade history {symb}:')
 
 	try:
 		tradeAllHist = client.get_all_orders(symbol=symb)
@@ -116,8 +114,18 @@ def printAccountHistory(client, symb):
 	tradeAllHistTot = len(tradeAllHist)
 
 	print(f'Trade history {symb}:')
-
 	[printTradeAllHist(n, i, tradeAllHistTot) for i,n in enumerate(tradeAllHist, 1)]
+
+	try:
+		allDust = client.get_dust_log()
+	except:
+		print(f'Erro at client.get_dust_log()')
+		return
+
+	allDustTot = len(allDust['results']['rows'])
+
+	print(f'Log of small amounts exchanged for BNB:')
+	[printDustTrade(n, i, allDustTot) for i,n in enumerate(allDust['results']['rows'], 1)]
 
 # ---------------------------------------------------
 
