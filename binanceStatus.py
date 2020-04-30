@@ -6,14 +6,13 @@
 # MIT license
 
 import os, sys
-from binancePrint import printMarginOrder, printDetailsAssets, printTradeFee, printHelp, printTradeAllHist, printInfoSymbolValues
-from binancePrint import printTradeHistory, printMarginAssets, printOrder, printAccount, printDustTrade, print24hPrcChangSts
+import binancePrint as BP
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceWithdrawException, BinanceRequestException
 
 exportToXls = False
 
-def printAccountInfos(client):
+def accountInfos(client):
 	try:
 		acc = client.get_account()
 	except BinanceAPIException as e:
@@ -25,8 +24,6 @@ def printAccountInfos(client):
 	except:
 		print("Erro at client.get_account()")
 		return
-
-	totAccBalance = len(acc['balances'])
 
 	try:
 		accStatus = client.get_account_status()
@@ -41,7 +38,10 @@ def printAccountInfos(client):
 	print(f"(Account status detail: [{accStatus['msg']}] Success: [{accStatus['success']}]")
 
 	if len(acc['balances']) != 0:
-		[printAccount(n) for n in acc['balances'] if float(n['free']) != 0.0 or float(n['locked']) != 0.0]
+		if exportToXls == True:
+			pass
+		else:
+			[BP.printAccount(n) for n in acc['balances'] if float(n['free']) != 0.0 or float(n['locked']) != 0.0]
 
 	# Orders
 	try:
@@ -64,7 +64,11 @@ def printAccountInfos(client):
 		elif totOpenOrder < 1:
 			print(f"Open orders ({totOpenOrder}):")
 
-		[printOrder(n, i, totOpenOrder) for i, n in enumerate(openOrders, 1)]
+		if exportToXls == True:
+			BP.printOrderXLSHEADER()
+			[BP.printOrderXLS(n) for n in openOrders]
+		else:
+			[BP.printOrder(n, i, totOpenOrder) for i, n in enumerate(openOrders, 1)]
 	else:
 		print("No open orders")
 
@@ -82,8 +86,12 @@ def printAccountInfos(client):
 	print(f"Total Net asset of BTC: [{marginInfo['totalNetAssetOfBtc']}]")
 	print(f"Trade enabled.........? [{marginInfo['tradeEnabled']}]")
 
-	print('Borrowed assets:')
-	[printMarginAssets(n, i) for i, n in enumerate(marginInfo['userAssets'], 1) if float(n['netAsset']) != 0.0]
+	if exportToXls == True:
+		BP.printMarginAssetsXLSHEADER()
+		[BP.printMarginAssetsXLS(n) for n in marginInfo['userAssets'] if float(n['netAsset']) != 0.0]
+	else:
+		print('Borrowed assets:')
+		[BP.printMarginAssets(n, i) for i, n in enumerate(marginInfo['userAssets'], 1) if float(n['netAsset']) != 0.0]
 
 	# Margin Orders
 	try:
@@ -106,13 +114,16 @@ def printAccountInfos(client):
 		elif totOpenMarginOrder < 1:
 			print(f"Open margin orders ({totOpenOrder}):")
 
-		[printMarginOrder(n, i, totOpenMarginOrder) for i, n in enumerate(openMarginOrders, 1)]
+		if exportToXls == True:
+			pass
+		else:
+			[BP.printMarginOrder(n, i, totOpenMarginOrder) for i, n in enumerate(openMarginOrders, 1)]
 	else:
 		print('No open margin orders')
 
 # ---------------------------------------------------
 
-def printAccountHistory(client, symb):
+def accountHistory(client, symb):
 	try:
 		tradeHist = client.get_my_trades(symbol=symb)
 	except:
@@ -121,8 +132,12 @@ def printAccountHistory(client, symb):
 
 	tradeHistTot = len(tradeHist)
 
-	print(f"Trade history {symb}:")
-	[printTradeHistory(n, i, tradeHistTot) for i, n in enumerate(tradeHist, 1)]
+	if exportToXls == True:
+		BP.printTradeHistoryXLSHEADER()
+		[BP.printTradeHistoryXLS(n) for n in tradeHist]
+	else:
+		print(f"Trade history {symb}:")
+		[BP.printTradeHistory(n, i, tradeHistTot) for i, n in enumerate(tradeHist, 1)]
 
 	print(f"All trade history {symb}:")
 
@@ -134,8 +149,12 @@ def printAccountHistory(client, symb):
 
 	tradeAllHistTot = len(tradeAllHist)
 
-	print(f"Trade history {symb}:")
-	[printTradeAllHist(n, i, tradeAllHistTot) for i, n in enumerate(tradeAllHist, 1)]
+	if exportToXls == True:
+		BP.printTradeAllHistXLSHEADER()
+		[BP.printTradeAllHistXLS(n) for n in tradeAllHist]
+	else:
+		print(f"Trade history {symb}:")
+		[BP.printTradeAllHist(n, i, tradeAllHistTot) for i, n in enumerate(tradeAllHist, 1)]
 
 	try:
 		allDust = client.get_dust_log()
@@ -148,12 +167,15 @@ def printAccountHistory(client, symb):
 
 	allDustTot = len(allDust['results']['rows'])
 
-	print("Log of small amounts exchanged for BNB:")
-	[printDustTrade(n, i, allDustTot) for i, n in enumerate(allDust['results']['rows'], 1)]
+	if exportToXls == True:
+		pass
+	else:
+		print("Log of small amounts exchanged for BNB:")
+		[BP.printDustTrade(n, i, allDustTot) for i, n in enumerate(allDust['results']['rows'], 1)]
 
 # ---------------------------------------------------
 
-def printAccountDetails(client):
+def accountDetails(client):
 	try:
 		assDet = client.get_asset_details()
 		tradFee = client.get_trade_fee()
@@ -161,11 +183,18 @@ def printAccountDetails(client):
 		print(f"Erro BinanceWithdrawException: [{e.status_code} - {e.message}]")
 		return
 
-	print('Details on Assets')
-	[printDetailsAssets(n, assDet['assetDetail'][n], i, len(assDet['assetDetail'])) for i, n in enumerate(assDet['assetDetail'].keys(), 1)]
+	if exportToXls == True:
+		pass
+	else:
+		print('Details on Assets')
+		[BP.printDetailsAssets(n, assDet['assetDetail'][n], i, len(assDet['assetDetail'])) for i, n in enumerate(assDet['assetDetail'].keys(), 1)]
 
-	print('Trade Fee:')
-	[printTradeFee(n, i, len(tradFee['tradeFee'])) for i, n in enumerate(tradFee['tradeFee'], 1)]
+	if exportToXls == True:
+		BP.printTradeFeeXLSHEADER()
+		[BP.printTradeFeeXLS(n) for n in tradFee['tradeFee']]
+	else:
+		print('Trade Fee:')
+		[BP.printTradeFee(n, i, len(tradFee['tradeFee'])) for i, n in enumerate(tradFee['tradeFee'], 1)]
 
 # ---------------------------------------------------
 
@@ -349,8 +378,7 @@ def binanceInterval(i):
 
 # ---------------------------------------------------
 
-def printInfoSymbol(client, symb, interv, candlesTot):
-	print(f"Symbol [{symb}] in interval [{interv}]");
+def infoSymbol(client, symb, interv, candlesTot):
 
 	try:
 		sumbPrc = client.get_klines(symbol=symb, interval = binanceInterval(interv), limit = candlesTot)
@@ -364,12 +392,17 @@ def printInfoSymbol(client, symb, interv, candlesTot):
 		print("Erro at client.get_klines()")
 		return
 
-	totsumbPrc = len(sumbPrc)
-	[printInfoSymbolValues(n, i, totsumbPrc) for i, n in enumerate(sumbPrc, 1)]
+	if exportToXls == True:
+		BP.printInfoSymbolValuesXLSHEADER()
+		[BP.printInfoSymbolValuesXLS(n) for n in sumbPrc]
+	else:
+		print(f"Symbol [{symb}] in interval [{interv}]");
+		totsumbPrc = len(sumbPrc)
+		[BP.printInfoSymbolValues(n, i, totsumbPrc) for i, n in enumerate(sumbPrc, 1)]
 
 # ---------------------------------------------------
 
-def printListSymbols(client):
+def listSymbols(client):
 	ei = client.get_exchange_info()
 
 '''
@@ -399,13 +432,12 @@ def printListSymbols(client):
 
 # ---------------------------------------------------
 
-def printInfoDetailsSymbol(client, symb):
+def infoDetailsSymbol(client, symb):
 	print(client.get_symbol_info(symb))
 
 # ---------------------------------------------------
 
-def print24hPriceChangeStats(client):
-	print("24 hour price change statistics:")
+def h24PriceChangeStats(client):
 
 	try:
 		ga = client.get_ticker()
@@ -421,7 +453,12 @@ def print24hPriceChangeStats(client):
 
 	totGa = len(ga)
 
-	[print24hPrcChangSts(n, i, totGa) for i, n in enumerate(ga, 1)]
+	if exportToXls == True:
+		BP.print24hPrcChangStsXLSHEADER()
+		[BP.print24hPrcChangStsXLS(n) for n in ga]
+	else:
+		print("24 hour price change statistics:")
+		[BP.print24hPrcChangSts(n, i, totGa) for i, n in enumerate(ga, 1)]
 
 # ---------------------------------------------------
 
@@ -480,31 +517,31 @@ if __name__ == '__main__':
 
 	# Wallet/Account information
 	if sys.argv[1] == "-i" and len(sys.argv) == 2:
-		printAccountInfos(client)
+		accountInfos(client)
 
 	# Account history (trades, dusts, etc)
 	elif sys.argv[1] == "-h" and len(sys.argv) == 3:
-		printAccountHistory(client, sys.argv[2])
+		accountHistory(client, sys.argv[2])
 
 	# Account details (fees)
 	elif sys.argv[1] == "-d" and len(sys.argv) == 2:
-		printAccountDetails(client)
+		accountDetails(client)
 
 	# Rate limits and list of symbols
 	elif sys.argv[1] == "-l" and len(sys.argv) == 2:
-		printListSymbols(client)
+		listSymbols(client)
 
 	# Information (prices) about a symbol
 	elif sys.argv[1] == "-v" and len(sys.argv) == 5:
-		printInfoSymbol(client, sys.argv[2], sys.argv[3], int(sys.argv[4]))
+		infoSymbol(client, sys.argv[2], sys.argv[3], int(sys.argv[4]))
 
 	# Information (details) about a symbol
 	elif sys.argv[1] == "-V" and len(sys.argv) == 3:
-		printInfoDetailsSymbol(client, sys.argv[2])
+		infoDetailsSymbol(client, sys.argv[2])
 
 	# 24 hour price change statistics
 	elif sys.argv[1] == "-p" and len(sys.argv) == 2:
-		print24hPriceChangeStats(client)
+		h24PriceChangeStats(client)
 
 	# Buy order
 	elif sys.argv[1] == "-b" and len(sys.argv) > 2:
