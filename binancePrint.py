@@ -10,7 +10,7 @@ import time
 def printHelp(execName):
 	print("1) Account:")
 	print(f'{execName} -h [symbol]\n\tAccount history (trades, dusts, etc)\n')
-	print(f'{execName} -i\n\tWallet/Account information\n')
+	print(f'{execName} -i\n\tWallet/Account information (open orders)\n')
 	print(f'{execName} -d\n\tAccount details (fees)\n')
 
 	print("2) Trade:")
@@ -35,11 +35,12 @@ def printHelp(execName):
 
 	print(f'{execName} -V [symbol]\n\tInformation (details) about a symbol\n')
 
-	print(f'{execName} [...] --xls\n\tOutput with TAB separator\n')
+	print(f'{execName} [...] --xls >> output.xls\n\tOutput with TAB separator\n')
 
 def printMarginOrder(order, seq, tot):
 	printOrder(order, seq, tot)
 
+# ----------------------------------------------------------------------------
 def printInfoSymbolValues(symbPrc, seq, tot):
 	print(f"{seq}/{tot}) Candle:")
 	print(f"Open time...................: [{time.ctime(symbPrc[0]/1000)}]")
@@ -53,6 +54,34 @@ def printInfoSymbolValues(symbPrc, seq, tot):
 	print(f"Number of trades............: [{symbPrc[8]}]")
 	print(f"Taker buy base asset volume.: [{symbPrc[9]}]")
 	print(f"Taker buy quote asset volume: [{symbPrc[10]}]\n")
+
+def printInfoSymbolValuesXLSHEADER():
+	print("Open time\t"
+	      "Close time\t"
+	      "High\t"
+	      "Open\t"
+	      "Close\t"
+	      "Low\t"
+	      "Volume\t"
+	      "Quote asset volume\t"
+	      "Number of trades\t"
+	      "Taker buy base asset volume\t"
+	      "Taker buy quote asset volume")
+
+def printInfoSymbolValuesXLS(symbPrc):
+	print(f"{time.ctime(symbPrc[0]/1000)}\t"
+	      f"{time.ctime(symbPrc[6]/1000)}\t"
+	      f"{symbPrc[2]}\t"
+	      f"{symbPrc[1]}\t"
+	      f"{symbPrc[4]}\t"
+	      f"{symbPrc[3]}\t"
+	      f"{symbPrc[5]}\t"
+	      f"{symbPrc[7]}\t"
+	      f"{symbPrc[8]}\t"
+	      f"{symbPrc[9]}\t"
+	      f"{symbPrc[10]}")
+
+# ----------------------------------------------------------------------------
 
 def print24hPrcChangSts(priceSts, seq, tot):
 	print(f"{seq}/{tot}) Symbol: [{priceSts['symbol']}]")
@@ -77,6 +106,54 @@ def print24hPrcChangSts(priceSts, seq, tot):
 	print(f"\tLast Id...............: [{priceSts['lastId']}]")
 	print(f"\tCount.................: [{priceSts['count']}]\n")
 
+def print24hPrcChangStsXLSHEADER():
+	print("Symbol\t"
+	      "Price Change\t"
+	      "Price Change Percent\t"
+	      "Weighted Avarege Price\t"
+	      "Previous Close Price\t"
+	      "Last Price\t"
+	      "Last Qty\t"
+	      "Bid Price\t"
+	      "Bid Qty\t"
+	      "Ask Price\t"
+	      "Ask Qty\t"
+	      "Open Price\t"
+	      "High Price\t"
+	      "Low Price\t"
+	      "Volume\t"
+	      "Quote Volume\t"
+	      "Open Time\t"
+	      "Close Time\t"
+	      "First Id\t"
+	      "Last Id\t"
+	      "Count")
+
+def print24hPrcChangStsXLS(priceSts):
+	print(f"{priceSts['symbol']}\t"
+	      f"{priceSts['priceChange']}\t"
+	      f"{priceSts['priceChangePercent']}\t"
+	      f"{priceSts['weightedAvgPrice']}\t"
+	      f"{priceSts['prevClosePrice']}\t"
+	      f"{priceSts['lastPrice']}\t"
+	      f"{priceSts['lastQty']}\t"
+	      f"{priceSts['bidPrice']}\t"
+	      f"{priceSts['bidQty']}\t"
+	      f"{priceSts['askPrice']}\t"
+	      f"{priceSts['askQty']}\t"
+	      f"{priceSts['openPrice']}\t"
+	      f"{priceSts['highPrice']}\t"
+	      f"{priceSts['lowPrice']}\t"
+	      f"{priceSts['volume']}\t"
+	      f"{priceSts['quoteVolume']}\t"
+	      f"{time.ctime(priceSts['openTime']/1000)}\t"
+	      f"{time.ctime(priceSts['closeTime']/1000)}\t"
+	      f"{priceSts['firstId']}\t"
+	      f"{priceSts['lastId']}\t"
+	      f"{priceSts['count']}")
+
+# ----------------------------------------------------------------------------
+
 def printDustTrade(order, seq, tot):
 	print(f"{seq}/{tot}) Total transfered BNB amount for this exchange: [{order['transfered_total']}]")
 	print(f"\tTotal service charge amount for this exchange: [{order['service_charge_total']}]")
@@ -90,6 +167,8 @@ def printDustTrade(order, seq, tot):
 		print(f"\t\tTransfered Amount....: [{logs['transferedAmount']}]")
 		print(f"\t\tUId..................: [{logs['uid']}]\n")
 
+# ----------------------------------------------------------------------------
+
 def printDetailsAssets(ass, detAss, seq, tot):
 	print(f"{seq}/{tot}) Asset: [{ass}]");
 	print(f"\tMin. withdraw amount: [{detAss['minWithdrawAmount']}]");
@@ -100,8 +179,22 @@ def printDetailsAssets(ass, detAss, seq, tot):
 	print(f"\tWithdraw fee........: [{detAss['withdrawFee']}]");
 	print(f"\tWithdraw status.....: [{detAss['withdrawStatus']}]\n");
 
+# ----------------------------------------------------------------------------
+
 def printTradeFee(tf, seq, tot):
 	print(f"{seq}/{tot}) Symbol: [{tf['symbol']}]\tMaker: [{tf['maker']}]\tTaker: [{tf['taker']}]");
+
+def printTradeFeeXLSHEADER():
+	print("Symbol\t"
+	      "Maker\t"
+	      "Taker");
+
+def printTradeFeeXLS(tf):
+	print(f"{tf['symbol']}\t"
+	      f"{tf['maker']}\t"
+	      f"{tf['taker']}");
+
+# ----------------------------------------------------------------------------
 
 def printTradeAllHist(tradeAllHist, seq, tot):
 	print(f"{seq}/{tot}) Symbol: [{tradeAllHist['symbol']}]")
@@ -121,12 +214,47 @@ def printTradeAllHist(tradeAllHist, seq, tot):
 	print(f"\tStop Price...........: [{tradeAllHist['stopPrice']}]")
 	print(f"\tIs working...........: [{tradeAllHist['isWorking']}]\n")
 
+def printTradeAllHistXLSHEADER():
+	print(f"Symbol\t"
+	       "Time\t"
+	       "Update time\t"
+	       "Order Id\t"
+	       "Client Order Id\t"
+	       "Price\t"
+	       "Orig Qtd\t"
+	       "Executed Qtd\t"
+	       "Cummulative Quote Qtd\t"
+	       "Status\t"
+	       "Time in Force\t"
+	       "Side\t"
+	       "Type\t"
+	       "Stop Price\t"
+	       "Is working")
+
+def printTradeAllHistXLS(tradeAllHist):
+	print(f"{tradeAllHist['symbol']}\t"
+	      f"{time.ctime(tradeAllHist['time']/1000)}\t"
+	      f"{time.ctime(tradeAllHist['updateTime']/1000)}\t"
+	      f"{tradeAllHist['orderId']}\t"
+	      f"{tradeAllHist['clientOrderId']}\t"
+	      f"{tradeAllHist['price']}\t"
+	      f"{tradeAllHist['origQty']}\t"
+	      f"{tradeAllHist['executedQty']}\t"
+	      f"{tradeAllHist['cummulativeQuoteQty']}\t"
+	      f"{tradeAllHist['status']}\t"
+	      f"{tradeAllHist['timeInForce']}\t"
+	      f"{tradeAllHist['side']}\t"
+	      f"{tradeAllHist['type']}\t"
+	      f"{tradeAllHist['stopPrice']}\t"
+	      f"{tradeAllHist['isWorking']}")
+
+# ----------------------------------------------------------------------------
+
 def printTradeHistory(tradeHist, seq, tot):
 	print(f"{seq}/{tot}) Symbol: [{tradeHist['symbol']}]")
 	print(f"\tTime............: [{time.ctime(tradeHist['time']/1000)}]")
 	print(f"\tOrder Id........: [{tradeHist['orderId']}]")
 	print(f"\tId..............: [{tradeHist['id']}]")
-#	print(f"\tOrder List Id...: [{tradeHist['orderListId']}]")
 	print(f"\tPrice...........: [{tradeHist['price']}]")
 	print(f"\tQtd.............: [{tradeHist['qty']}]")
 	print(f"\tQuote Qtd.......: [{tradeHist['quoteQty']}]")
@@ -134,7 +262,37 @@ def printTradeHistory(tradeHist, seq, tot):
 	print(f"\tCommission asset: [{tradeHist['commissionAsset']}]")
 	print(f"\tBuyer...........: [{tradeHist['isBuyer']}]")
 	print(f"\tMaker...........: [{tradeHist['isMaker']}]")
-	print(f"\tTradeHist.......: [{tradeHist['isBestMatch']}]\n")
+	print(f"\tTrade History...: [{tradeHist['isBestMatch']}]\n")
+
+def printTradeHistoryXLSHEADER():
+	print("Symbol\t"
+	      "Time\t"
+	      "Order Id\t"
+	      "Id\t"
+	      "Price\t"
+	      "Qtd\t"
+	      "Quote Qtd\t"
+	      "Commission\t"
+	      "Commission asset\t"
+	      "Buyer\t"
+	      "Maker\t"
+	      "TradeHist")
+
+def printTradeHistoryXLS(tradeHist):
+	print(f"{tradeHist['symbol']}\t"
+	      f"{time.ctime(tradeHist['time']/1000)}\t"
+	      f"{tradeHist['orderId']}\t"
+	      f"{tradeHist['id']}\t"
+	      f"{tradeHist['price']}\t"
+	      f"{tradeHist['qty']}\t"
+	      f"{tradeHist['quoteQty']}\t"
+	      f"{tradeHist['commission']}\t"
+	      f"{tradeHist['commissionAsset']}\t"
+	      f"{tradeHist['isBuyer']}\t"
+	      f"{tradeHist['isMaker']}\t"
+	      f"{tradeHist['isBestMatch']}")
+
+# ----------------------------------------------------------------------------
 
 def printMarginAssets(asset, seq):
 	print(f"{seq}) Asset: [{asset['asset']}]");
@@ -143,8 +301,24 @@ def printMarginAssets(asset, seq):
 	print(f"\tLocked...: [{asset['locked']}]");
 	print(f"\tNet asset: [{asset['netAsset']}]\n");
 
+def printMarginAssetsXLSHEADER():
+	print("Asset\t"
+	      "Borrowed\t"
+	      "Free\t"
+	      "Locked\t"
+	      "Net asset")
+
+def printMarginAssetsXLS(asset):
+	print(f"{asset['asset']}\t"
+	      f"{asset['borrowed']}\t"
+	      f"{asset['free']}\t"
+	      f"{asset['locked']}\t"
+	      f"{asset['netAsset']}")
+
+# ----------------------------------------------------------------------------
+
 def printOrder(order, seq, tot):
-	print(f"{seq}/{tot}) Order id [{order['orderId']}] data:")
+	print(f"{seq}/{tot}) Order id [{order['orderId']}]:")
 	print(f"\tSymbol......: [{order['symbol']}]")
 	print(f"\tPrice.......: [{order['price']}]")
 	print(f"\tQtd.........: [{order['origQty']}]")
@@ -153,6 +327,30 @@ def printOrder(order, seq, tot):
 	print(f"\tType........: [{order['type']}]")
 	print(f"\tStop price..: [{order['stopPrice']}]")
 	print(f"\tIs working..: [{order['isWorking']}]\n")
+
+def printOrderXLSHEADER():
+	print("Order id\t"
+	      "Symbol\t"
+	      "Price\t"
+	      "Qtd\t"
+	      "Qtd executed\t"
+	      "Side\t"
+	      "Type\t"
+	      "Stop price\t"
+	      "Is working")
+
+def printOrderXLS(order):
+	print(f"{order['orderId']}\t"
+	      f"{order['symbol']}\t"
+	      f"{order['price']}\t"
+	      f"{order['origQty']}\t"
+	      f"{order['executedQty']}\t"
+	      f"{order['side']}\t"
+	      f"{order['type']}\t"
+	      f"{order['stopPrice']}\t"
+	      f"{order['isWorking']}")
+
+# ----------------------------------------------------------------------------
 
 def printAccount(accBalance):
 	print(f"Asset balance [{accBalance['asset']}] | Free [{accBalance['free']}] | Locked [{accBalance['locked']}]")
