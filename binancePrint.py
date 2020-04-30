@@ -37,10 +37,19 @@ def printHelp(execName):
 
 	print(f'{execName} [...] --xls >> output.xls\n\tOutput with TAB separator\n')
 
+# ----------------------------------------------------------------------------
+
 def printMarginOrder(order, seq, tot):
 	printOrder(order, seq, tot)
 
+def printMarginOrderXLSHEADER():
+	printOrderXLSHEADER()
+
+def printMarginOrderXLS(order):
+	printOrderXLS(order)
+
 # ----------------------------------------------------------------------------
+
 def printInfoSymbolValues(symbPrc, seq, tot):
 	print(f"{seq}/{tot}) Candle:")
 	print(f"Open time...................: [{time.ctime(symbPrc[0]/1000)}]")
@@ -354,3 +363,9 @@ def printOrderXLS(order):
 
 def printAccount(accBalance):
 	print(f"Asset balance [{accBalance['asset']}] | Free [{accBalance['free']}] | Locked [{accBalance['locked']}]")
+
+def printAccountXLSHEADER():
+	print("Asset balance\tFree\tLocked")
+
+def printAccountXLS(accBalance):
+	print(f"{accBalance['asset']}\t{accBalance['free']}\t{accBalance['locked']}")

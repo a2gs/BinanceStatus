@@ -12,34 +12,42 @@ from binance.exceptions import BinanceAPIException, BinanceWithdrawException, Bi
 
 exportToXls = False
 
+def errPrint(*args, **kwargs):
+	print(*args, file = sys.stderr, **kwargs)
+
 def accountInfos(client):
 	try:
 		acc = client.get_account()
 	except BinanceAPIException as e:
-		print(f"Erro at client.get_account() BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro at client.get_account() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return
 	except BinanceRequestException as e:
-		print(f"Erro at client.get_account() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro at client.get_account() BinanceRequestException: [{e.status_code} - {e.message}]")
 		return
 	except:
-		print("Erro at client.get_account()")
+		errPrint("Erro at client.get_account()")
 		return
 
 	try:
 		accStatus = client.get_account_status()
 	except BinanceWithdrawException as e:
-		print(f"Erro at client.get_account_status() BinanceWithdrawException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro at client.get_account_status() BinanceWithdrawException: [{e.status_code} - {e.message}]")
 		return
 	except:
-		print("Erro at client.get_account_status()")
+		errPrint("Erro at client.get_account_status()")
 		return
 
-	print(f"Can trade: [{acc['canTrade']}] Can withdraw: [{acc['canWithdraw']}] Can deposit: [{acc['canDeposit']}] Account type: [{acc['accountType']}]")
-	print(f"(Account status detail: [{accStatus['msg']}] Success: [{accStatus['success']}]")
+	if exportToXls == True:
+		print(f"Can trade\t{acc['canTrade']}\nCan withdraw\t{acc['canWithdraw']}\nCan deposit\t{acc['canDeposit']}\nAccount type\t{acc['accountType']}")
+		print(f"Account status detail\t{accStatus['msg']}\nSuccess\t{accStatus['success']}\n")
+	else:
+		print(f"Can trade: [{acc['canTrade']}] Can withdraw: [{acc['canWithdraw']}] Can deposit: [{acc['canDeposit']}] Account type: [{acc['accountType']}]")
+		print(f"(Account status detail: [{accStatus['msg']}] Success: [{accStatus['success']}]\n")
 
 	if len(acc['balances']) != 0:
 		if exportToXls == True:
-			pass
+			BP.printAccountXLSHEADER()
+			[BP.printAccountXLS(n) for n in acc['balances'] if float(n['free']) != 0.0 or float(n['locked']) != 0.0]
 		else:
 			[BP.printAccount(n) for n in acc['balances'] if float(n['free']) != 0.0 or float(n['locked']) != 0.0]
 
@@ -47,13 +55,13 @@ def accountInfos(client):
 	try:
 		openOrders = client.get_open_orders()
 	except BinanceRequestException as e:
-		print("Erro at client.get_open_orders() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro at client.get_open_orders() BinanceRequestException: [{e.status_code} - {e.message}]")
 		return
 	except BinanceAPIException as e:
-		print("Erro at client.get_open_orders() BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro at client.get_open_orders() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return
 	except:
-		print("Erro at client.get_open_orders()")
+		errPrint("Erro at client.get_open_orders()")
 		return
 
 	totOpenOrder = len(openOrders)
@@ -80,16 +88,20 @@ def accountInfos(client):
 
 	print("\n* MARGIN *")
 
-	print(f"Margin level..........: [{marginInfo['marginLevel']}]")
-	print(f"Total asset of BTC....: [{marginInfo['totalAssetOfBtc']}]")
-	print(f"Total liability of BTC: [{marginInfo['totalLiabilityOfBtc']}]")
-	print(f"Total Net asset of BTC: [{marginInfo['totalNetAssetOfBtc']}]")
-	print(f"Trade enabled.........? [{marginInfo['tradeEnabled']}]")
-
 	if exportToXls == True:
+		print("Margin level\tTotal asset of BTC\tTotal liability of BTC\tTotal Net asset of BTC\tTrade enabled")
+		print(f"{marginInfo['marginLevel']}\t{marginInfo['totalAssetOfBtc']}\t{marginInfo['totalLiabilityOfBtc']}\t{marginInfo['totalNetAssetOfBtc']}\t{marginInfo['tradeEnabled']}\n")
+
+		print('Borrowed assets:')
 		BP.printMarginAssetsXLSHEADER()
 		[BP.printMarginAssetsXLS(n) for n in marginInfo['userAssets'] if float(n['netAsset']) != 0.0]
 	else:
+		print(f"Margin level..........: [{marginInfo['marginLevel']}]")
+		print(f"Total asset of BTC....: [{marginInfo['totalAssetOfBtc']}]")
+		print(f"Total liability of BTC: [{marginInfo['totalLiabilityOfBtc']}]")
+		print(f"Total Net asset of BTC: [{marginInfo['totalNetAssetOfBtc']}]")
+		print(f"Trade enabled.........? [{marginInfo['tradeEnabled']}]\n")
+
 		print('Borrowed assets:')
 		[BP.printMarginAssets(n, i) for i, n in enumerate(marginInfo['userAssets'], 1) if float(n['netAsset']) != 0.0]
 
@@ -97,25 +109,25 @@ def accountInfos(client):
 	try:
 		openMarginOrders = client.get_open_margin_orders()
 	except BinanceRequestException as e:
-		print("Erro at client.get_open_margin_orders() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro at client.get_open_margin_orders() BinanceRequestException: [{e.status_code} - {e.message}]")
 		return
 	except BinanceAPIException as e:
-		print("Erro at client.get_open_margin_orders() BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro at client.get_open_margin_orders() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return
 	except:
-		print('Erro at client.get_open_margin_orders()')
+		errPrint("Erro at client.get_open_margin_orders()")
 		return
 
 	totOpenMarginOrder = len(openMarginOrders)
 
 	if totOpenMarginOrder != 0:
-		if totOpenMarginOrder == 1:
-			print("Open margin order:")
-		elif totOpenMarginOrder < 1:
-			print(f"Open margin orders ({totOpenOrder}):")
+		print("");
+		if   totOpenMarginOrder == 1: print("Open margin order:")
+		elif totOpenMarginOrder <  1: print(f"Open margin orders ({totOpenOrder}):")
 
 		if exportToXls == True:
-			pass
+			BP.printMarginOrderXLSHEADER()
+			[BP.printMarginOrderXLS(n) for n in openMarginOrders]
 		else:
 			[BP.printMarginOrder(n, i, totOpenMarginOrder) for i, n in enumerate(openMarginOrders, 1)]
 	else:
@@ -127,7 +139,7 @@ def accountHistory(client, symb):
 	try:
 		tradeHist = client.get_my_trades(symbol=symb)
 	except:
-		print(f"Erro at client.get_my_trades(symbol={symb})")
+		errPrint(f"Erro at client.get_my_trades(symbol={symb})")
 		return
 
 	tradeHistTot = len(tradeHist)
@@ -144,7 +156,7 @@ def accountHistory(client, symb):
 	try:
 		tradeAllHist = client.get_all_orders(symbol=symb)
 	except:
-		print(f"Erro at client.get_all_orders(symbol={symb})")
+		errPrint(f"Erro at client.get_all_orders(symbol={symb})")
 		return
 
 	tradeAllHistTot = len(tradeAllHist)
@@ -159,10 +171,10 @@ def accountHistory(client, symb):
 	try:
 		allDust = client.get_dust_log()
 	except BinanceWithdrawException as e:
-		print(f"Erro at client.get_dust_log() BinanceWithdrawException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro at client.get_dust_log() BinanceWithdrawException: [{e.status_code} - {e.message}]")
 		return
 	except:
-		print("Erro at client.get_dust_log()")
+		errPrint("Erro at client.get_dust_log()")
 		return
 
 	allDustTot = len(allDust['results']['rows'])
@@ -180,7 +192,7 @@ def accountDetails(client):
 		assDet = client.get_asset_details()
 		tradFee = client.get_trade_fee()
 	except BinanceWithdrawException as e:
-		print(f"Erro BinanceWithdrawException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceWithdrawException: [{e.status_code} - {e.message}]")
 		return
 
 	if exportToXls == True:
@@ -204,21 +216,21 @@ def sellMarketOrder(client, symb, qtd):
 	try:
 		order = client.order_market_sell(symbol = symb, quantity = qtd) 
 	except BinanceRequestException as e:
-		print(f"Erro order_market_sell() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell() BinanceRequestException: [{e.status_code} - {e.message}]")
 	except BinanceAPIException as e:
-		print(f"Erro order_market_sell() BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell() BinanceAPIException: [{e.status_code} - {e.message}]")
 	except BinanceOrderException as e:
-		print(f"Erro order_market_sell() BinanceOrderException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell() BinanceOrderException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinAmountException as e:
-		print(f"Erro order_market_sell() BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell() BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinPriceException as e:
-		print(f"Erro order_market_sell() BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell() BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinTotalException as e:
-		print(f"Erro order_market_sell() BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell() BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
 	except BinanceOrderUnknownSymbolException as e:
-		print(f"Erro order_market_sell() BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell() BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
 	except BinanceOrderInactiveSymbolException as e:
-		print(f"Erro order_market_sell() BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell() BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 	else:
 		print(order)
 
@@ -232,21 +244,21 @@ def sellStopOrder(client, symb, qtd, prc, stopprice):
 		                                quantity = {qtd}, stopPrice = {stopprice}, price = {prc})
 
 	except BinanceRequestException as e:
-		print(f"Erro create_oco_order() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceRequestException: [{e.status_code} - {e.message}]")
 	except BinanceAPIException as e:
-		print(f"Erro create_oco_order() BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceAPIException: [{e.status_code} - {e.message}]")
 	except BinanceOrderException as e:
-		print(f"Erro create_oco_order() BinanceOrderException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceOrderException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinAmountException as e:
-		print(f"Erro create_oco_order() BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinPriceException as e:
-		print(f"Erro create_oco_order() BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinTotalException as e:
-		print(f"Erro create_oco_order() BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
 	except BinanceOrderUnknownSymbolException as e:
-		print(f"Erro create_oco_order() BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
 	except BinanceOrderInactiveSymbolException as e:
-		print(f"Erro create_oco_order() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceRequestException: [{e.status_code} - {e.message}]")
 	else:
 		print(order)
 
@@ -258,21 +270,21 @@ def sellLimitOrder(client, symb, qtd, prc):
 	try:
 		order = client.order_limit_sell(symbol = symb, quantity = qtd, price = prc)
 	except BinanceRequestException as e:
-		print(f"Erro order_limit_sell() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell() BinanceRequestException: [{e.status_code} - {e.message}]")
 	except BinanceAPIException as e:
-		print(f"Erro order_limit_sell() BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell() BinanceAPIException: [{e.status_code} - {e.message}]")
 	except BinanceOrderException as e:
-		print(f"Erro order_limit_sell() BinanceOrderException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell() BinanceOrderException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinAmountException as e:
-		print(f"Erro order_limit_sell() BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell() BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinPriceException as e:
-		print(f"Erro order_limit_sell() BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell() BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinTotalException as e:
-		print(f"Erro order_limit_sell() BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell() BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
 	except BinanceOrderUnknownSymbolException as e:
-		print(f"Erro order_limit_sell() BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell() BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
 	except BinanceOrderInactiveSymbolException as e:
-		print(f"Erro order_limit_sell() BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell() BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 	else:
 		print(order)
 
@@ -286,21 +298,21 @@ def buyStopOrder(client, symb, qtd, prc):
 		                                quantity = {qtd}, stopPrice = {stopprice}, price = {prc})
 
 	except BinanceRequestException as e:
-		print(f"Erro create_oco_order() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceRequestException: [{e.status_code} - {e.message}]")
 	except BinanceAPIException as e:
-		print(f"Erro create_oco_order() BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceAPIException: [{e.status_code} - {e.message}]")
 	except BinanceOrderException as e:
-		print(f"Erro create_oco_order() BinanceOrderException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceOrderException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinAmountException as e:
-		print(f"Erro create_oco_order() BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinPriceException as e:
-		print(f"Erro create_oco_order() BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinTotalException as e:
-		print(f"Erro create_oco_order() BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
 	except BinanceOrderUnknownSymbolException as e:
-		print(f"Erro create_oco_order() BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
 	except BinanceOrderInactiveSymbolException as e:
-		print(f"Erro create_oco_order() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order() BinanceRequestException: [{e.status_code} - {e.message}]")
 	else:
 		print(order)
 
@@ -312,21 +324,21 @@ def buyLimitOrder(client, symb, qtd, prc):
 	try:
 		order = client.order_limit_buy(symbol=symb, quantity=qtd, price=prc)
 	except BinanceRequestException as e:
-		print(f"Erro BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceRequestException: [{e.status_code} - {e.message}]")
 	except BinanceAPIException as e:
-		print(f"Erro BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceAPIException: [{e.status_code} - {e.message}]")
 	except BinanceOrderException as e:
-		print(f"Erro BinanceOrderException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceOrderException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinAmountException as e:
-		print(f"Erro BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinPriceException as e:
-		print(f"Erro BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinTotalException as e:
-		print(f"Erro BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
 	except BinanceOrderUnknownSymbolException as e:
-		print(f"Erro BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
 	except BinanceOrderInactiveSymbolException as e:
-		print(f"Erro BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 	else:
 		print(order)
 
@@ -338,21 +350,21 @@ def buyMarketOrder(client, symb, qtd):
 	try:
 		order = client.order_market_buy(symbol=symb, quantity=qtd) 
 	except BinanceRequestException as e:
-		print(f"Erro BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceRequestException: [{e.status_code} - {e.message}]")
 	except BinanceAPIException as e:
-		print(f"Erro BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceAPIException: [{e.status_code} - {e.message}]")
 	except BinanceOrderException as e:
-		print(f"Erro BinanceOrderException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceOrderException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinAmountException as e:
-		print(f"Erro BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinPriceException as e:
-		print(f"Erro BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinTotalException as e:
-		print(f"Erro BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
 	except BinanceOrderUnknownSymbolException as e:
-		print(f"Erro BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
 	except BinanceOrderInactiveSymbolException as e:
-		print(f"Erro BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 	else:
 		print(order)
 
@@ -383,13 +395,13 @@ def infoSymbol(client, symb, interv, candlesTot):
 	try:
 		sumbPrc = client.get_klines(symbol=symb, interval = binanceInterval(interv), limit = candlesTot)
 	except BinanceAPIException as e:
-		print(f"Erro at client.get_klines() BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro at client.get_klines() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return
 	except BinanceRequestException as e:
-		print(f"Erro at client.get_klines() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro at client.get_klines() BinanceRequestException: [{e.status_code} - {e.message}]")
 		return
 	except:
-		print("Erro at client.get_klines()")
+		errPrint("Erro at client.get_klines()")
 		return
 
 	if exportToXls == True:
@@ -442,13 +454,13 @@ def h24PriceChangeStats(client):
 	try:
 		ga = client.get_ticker()
 	except BinanceAPIException as e:
-		print(f"Erro at client.get_ticker() BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro at client.get_ticker() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return
 	except BinanceRequestException as e:
-		print(f"Erro at client.get_ticker() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro at client.get_ticker() BinanceRequestException: [{e.status_code} - {e.message}]")
 		return
 	except:
-		print("Erro at client.get_ticker()")
+		errPrint("Erro at client.get_ticker()")
 		return
 
 	totGa = len(ga)
@@ -500,13 +512,13 @@ if __name__ == '__main__':
 	# Exchange status
 	try:
 		if client.get_system_status()['status'] != 0:
-			print("Binance out of service")
+			errPrint("Binance out of service")
 			sys.exit(0)
 	except BinanceAPIException as e:
-		print(f"Erro at client.get_system_status() BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro at client.get_system_status() BinanceAPIException: [{e.status_code} - {e.message}]")
 		sys.exit(0)
 	except:
-		print("Erro at client.get_system_status()")
+		errPrint("Erro at client.get_system_status()")
 		sys.exit(0)
 	
 	if "--xls" in sys.argv:
