@@ -8,11 +8,13 @@
 import time
 
 def printHelp(execName):
+	print("------------------------------------------------------------------------")
 	print("1) Account:")
 	print(f'{execName} -h [symbol]\n\tAccount history (trades, dusts, etc)\n')
 	print(f'{execName} -i\n\tWallet/Account information (open orders)\n')
 	print(f'{execName} -d\n\tAccount details (fees)\n')
 
+	print("------------------------------------------------------------------------")
 	print("2) Trade:")
 	print(f'{execName} -s\n\tPlace a SPOT sell order')
 	print(f'\t\t{execName} -s MARKET [symbol] [qtd]')
@@ -38,6 +40,7 @@ def printHelp(execName):
 
 	print(f'{execName} -cm \n\tCancel a MARGIN order\n')
 
+	print("------------------------------------------------------------------------")
 	print("3) Market:")
 	print(f'{execName} -p \n\t24 hour price change statistics\n')
 
@@ -47,6 +50,7 @@ def printHelp(execName):
 
 	print(f'{execName} -V [symbol]\n\tInformation (details) about a symbol\n')
 
+	print("------------------------------------------------------------------------")
 	print("4) Miscellaneous:")
 	print(f'{execName} [...] --xls >> output.xls\n\tOutput with TAB separator\n')
 	print(f'{execName} [...] -Y\n\tForce ALL CONFIRMATIONS = YES\n')
