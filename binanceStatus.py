@@ -6,6 +6,7 @@
 # MIT license
 
 import os, sys
+from time import ctime
 import binancePrint as BP
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceWithdrawException, BinanceRequestException
@@ -196,17 +197,22 @@ def accountDetails(client):
 		return
 
 	if exportToXls == True:
-		pass
-	else:
 		print('Details on Assets')
-		[BP.printDetailsAssets(n, assDet['assetDetail'][n], i, len(assDet['assetDetail'])) for i, n in enumerate(assDet['assetDetail'].keys(), 1)]
+		BP.printDetailsAssetsXLSHEADER()
+		[BP.printDetailsAssetsXLS(n, assDet['assetDetail'][n]) for n in assDet['assetDetail'].keys()]
 
-	if exportToXls == True:
+		print('\nTrade Fee')
 		BP.printTradeFeeXLSHEADER()
 		[BP.printTradeFeeXLS(n) for n in tradFee['tradeFee']]
+
 	else:
+		print('Details on Assets:')
+		adTot = len(assDet['assetDetail'])
+		[BP.printDetailsAssets(n, assDet['assetDetail'][n], i, adTot) for i, n in enumerate(assDet['assetDetail'].keys(), 1)]
+
 		print('Trade Fee:')
-		[BP.printTradeFee(n, i, len(tradFee['tradeFee'])) for i, n in enumerate(tradFee['tradeFee'], 1)]
+		adTot = len(tradFee['tradeFee'])
+		[BP.printTradeFee(n, i, adTot) for i, n in enumerate(tradFee['tradeFee'], 1)]
 
 # ---------------------------------------------------
 
@@ -414,38 +420,59 @@ def infoSymbol(client, symb, interv, candlesTot):
 
 # ---------------------------------------------------
 
-def listSymbols(client):
-	ei = client.get_exchange_info()
+def listSymbolsRateLimits(client):
+	try:
+		ei = client.get_exchange_info()
+	except BinanceAPIException as e:
+		errPrint(f"Erro at client.get_exchange_info() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		errPrint(f"Erro at client.get_exchange_info() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		errPrint("Erro at client.get_exchange_info()")
+		return
 
-'''
-{
-'timezone': 'UTC', 'serverTime': 1588128229701, 'rateLimits': [
-       {'rateLimitType': 'REQUEST_WEIGHT', 'interval': 'MINUTE', 'intervalNum': 1, 'limit': 1200},
-       {'rateLimitType': 'ORDERS', 'interval': 'SECOND', 'intervalNum': 10, 'limit': 100},
-       {'rateLimitType': 'ORDERS', 'interval': 'DAY', 'intervalNum': 1, 'limit': 200000}],
-'exchangeFilters': [],
-'symbols': [
-            {
-            'symbol': 'ETHBTC', 'status': 'TRADING', 'baseAsset': 'ETH', 'baseAssetPrecision': 8, 'quoteAsset': 'BTC', 'quotePrecision': 8, 'quoteAssetPrecision': 8,
-            'baseCommissionPrecision': 8, 'quoteCommissionPrecision': 8,
-            'orderTypes': ['LIMIT', 'LIMIT_MAKER', 'MARKET', 'STOP_LOSS_LIMIT', 'TAKE_PROFIT_LIMIT'],
-            'icebergAllowed': True, 'ocoAllowed': True, 'quoteOrderQtyMarketAllowed': True, 'isSpotTradingAllowed': True, 'isMarginTradingAllowed': True,
-            'filters': [
-                    {'filterType': 'PRICE_FILTER', 'minPrice': '0.00000100', 'maxPrice': '100000.00000000', 'tickSize': '0.00000100'},
-                    {'filterType': 'PERCENT_PRICE', 'multiplierUp': '5', 'multiplierDown': '0.2', 'avgPriceMins': 5},
-                    {'filterType': 'LOT_SIZE', 'minQty': '0.00100000', 'maxQty': '100000.00000000', 'stepSize': '0.00100000'},
-                    {'filterType': 'MIN_NOTIONAL', 'minNotional': '0.00010000', 'applyToMarket': True, 'avgPriceMins': 5},
-                    {'filterType': 'ICEBERG_PARTS', 'limit': 10},
-                    {'filterType': 'MARKET_LOT_SIZE', 'minQty': '0.00000000', 'maxQty': '15063.23609972', 'stepSize': '0.00000000'},
-                    {'filterType': 'MAX_NUM_ALGO_ORDERS', 'maxNumAlgoOrders': 5}],
-            'permissions': ['SPOT', 'MARGIN']
-            }
-'''
+	if exportToXls == True:
+		print("Rate Limits")
+		BP.printListRateLimitXLSHEADER()
+		[BP.printListRateLimitXLS(n) for n in ei['rateLimits']]
+
+		print("\nSymbols")
+		BP.printListSymbolsXLSHEADER()
+		[BP.printListSymbolsXLS(n) for n in ei['symbols']]
+
+	else:
+		print("Rate Limits:")
+		totei = len(ei['rateLimits'])
+		[BP.printListRateLimit(n, i, totei) for i, n in enumerate(ei['rateLimits'], 1)]
+
+		print("Symbols:")
+		totei = len(ei['symbols'])
+		[BP.printListSymbols(n, i, totei) for i, n in enumerate(ei['symbols'], 1)]
 
 # ---------------------------------------------------
 
 def infoDetailsSymbol(client, symb):
-	print(client.get_symbol_info(symb))
+	try:
+		si = client.get_symbol_info(symb)
+	except BinanceAPIException as e:
+		errPrint(f"Erro at client.get_symbol_info() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		errPrint(f"Erro at client.get_symbol_info() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		errPrint("Erro at client.get_symbol_info()")
+		return
+
+	if exportToXls == True:
+		BP.printListSymbolsXLSHEADER()
+		BP.printListSymbolsXLS(si)
+
+	else:
+		print("Symbol: [{symb}]")
+		BP.printListSymbols(si)
 
 # ---------------------------------------------------
 
@@ -541,7 +568,7 @@ if __name__ == '__main__':
 
 	# Rate limits and list of symbols
 	elif sys.argv[1] == "-l" and len(sys.argv) == 2:
-		listSymbols(client)
+		listSymbolsRateLimits(client)
 
 	# Information (prices) about a symbol
 	elif sys.argv[1] == "-v" and len(sys.argv) == 5:

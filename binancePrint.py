@@ -29,7 +29,7 @@ def printHelp(execName):
 	print("3) Market:")
 	print(f'{execName} -p \n\t24 hour price change statistics\n')
 
-	print(f'{execName} -l\n\tList of symbols and rate\n')
+	print(f'{execName} -l\n\tList of symbols and rate/limits\n')
 
 	print(f'{execName} -v [symbol] [interval] [qtd candles]\n\tInformation (prices) about a symbol.\n\t[interval] is one of \'1m\', \'3m\', \'5m\', \'15m\', \'30m\', \'2h\', \'4h\', \'6h\', \'8h\', \'12h\', \'1h\', \'1d\', \'3d\', \'1w\', \'1M\'\n')
 
@@ -39,7 +39,7 @@ def printHelp(execName):
 
 # ----------------------------------------------------------------------------
 
-def printMarginOrder(order, seq, tot):
+def printMarginOrder(order, seq = 0, tot = 0):
 	printOrder(order, seq, tot)
 
 def printMarginOrderXLSHEADER():
@@ -50,7 +50,7 @@ def printMarginOrderXLS(order):
 
 # ----------------------------------------------------------------------------
 
-def printInfoSymbolValues(symbPrc, seq, tot):
+def printInfoSymbolValues(symbPrc, seq = 0, tot = 0):
 	print(f"{seq}/{tot}) Candle:")
 	print(f"Open time...................: [{time.ctime(symbPrc[0]/1000)}]")
 	print(f"Close time..................: [{time.ctime(symbPrc[6]/1000)}]")
@@ -92,7 +92,7 @@ def printInfoSymbolValuesXLS(symbPrc):
 
 # ----------------------------------------------------------------------------
 
-def print24hPrcChangSts(priceSts, seq, tot):
+def print24hPrcChangSts(priceSts, seq = 0, tot = 0):
 	print(f"{seq}/{tot}) Symbol: [{priceSts['symbol']}]")
 	print(f"\tPrice Change..........: [{priceSts['priceChange']}]")
 	print(f"\tPrice Change Percent..: [{priceSts['priceChangePercent']}]")
@@ -163,7 +163,7 @@ def print24hPrcChangStsXLS(priceSts):
 
 # ----------------------------------------------------------------------------
 
-def printDustTrade(order, seq, tot):
+def printDustTrade(order, seq = 0, tot = 0):
 	print(f"{seq}/{tot}) Total transfered BNB amount for this exchange: [{order['transfered_total']}]")
 	print(f"\tTotal service charge amount for this exchange: [{order['service_charge_total']}]")
 	print(f"\tTransaction Id...............................: [{order['tran_id']}]")
@@ -177,8 +177,7 @@ def printDustTrade(order, seq, tot):
 		print(f"\t\tUId..................: [{logs['uid']}]\n")
 
 # ----------------------------------------------------------------------------
-
-def printDetailsAssets(ass, detAss, seq, tot):
+def printDetailsAssets(ass, detAss, seq = 0, tot = 0):
 	print(f"{seq}/{tot}) Asset: [{ass}]");
 	print(f"\tMin. withdraw amount: [{detAss['minWithdrawAmount']}]");
 	print(f"\tDeposit status......: [{detAss['depositStatus']}]");
@@ -188,9 +187,15 @@ def printDetailsAssets(ass, detAss, seq, tot):
 	print(f"\tWithdraw fee........: [{detAss['withdrawFee']}]");
 	print(f"\tWithdraw status.....: [{detAss['withdrawStatus']}]\n");
 
+def printDetailsAssetsXLSHEADER():
+	print("Asset\tMin. withdraw amount\tDeposit status\tDeposit tip\tWithdraw fee\tWithdraw status")
+
+def printDetailsAssetsXLS(ass, detAss):
+	print(f"{ass}\t{detAss['minWithdrawAmount']}\t{detAss['depositStatus']}\t{detAss.get('depositTip', '')}\t{detAss['withdrawFee']}\t{detAss['withdrawStatus']}");
+
 # ----------------------------------------------------------------------------
 
-def printTradeFee(tf, seq, tot):
+def printTradeFee(tf, seq = 0, tot = 0):
 	print(f"{seq}/{tot}) Symbol: [{tf['symbol']}]\tMaker: [{tf['maker']}]\tTaker: [{tf['taker']}]");
 
 def printTradeFeeXLSHEADER():
@@ -205,7 +210,7 @@ def printTradeFeeXLS(tf):
 
 # ----------------------------------------------------------------------------
 
-def printTradeAllHist(tradeAllHist, seq, tot):
+def printTradeAllHist(tradeAllHist, seq = 0, tot = 0):
 	print(f"{seq}/{tot}) Symbol: [{tradeAllHist['symbol']}]")
 	print(f"\tTime.................: [{time.ctime(tradeAllHist['time']/1000)}]")
 	print(f"\tUpdate time..........: [{time.ctime(tradeAllHist['updateTime']/1000)}]")
@@ -259,7 +264,7 @@ def printTradeAllHistXLS(tradeAllHist):
 
 # ----------------------------------------------------------------------------
 
-def printTradeHistory(tradeHist, seq, tot):
+def printTradeHistory(tradeHist, seq = 0, tot = 0):
 	print(f"{seq}/{tot}) Symbol: [{tradeHist['symbol']}]")
 	print(f"\tTime............: [{time.ctime(tradeHist['time']/1000)}]")
 	print(f"\tOrder Id........: [{tradeHist['orderId']}]")
@@ -303,7 +308,7 @@ def printTradeHistoryXLS(tradeHist):
 
 # ----------------------------------------------------------------------------
 
-def printMarginAssets(asset, seq):
+def printMarginAssets(asset, seq = 0):
 	print(f"{seq}) Asset: [{asset['asset']}]");
 	print(f"\tBorrowed.: [{asset['borrowed']}]");
 	print(f"\tFree.....: [{asset['free']}]");
@@ -326,7 +331,7 @@ def printMarginAssetsXLS(asset):
 
 # ----------------------------------------------------------------------------
 
-def printOrder(order, seq, tot):
+def printOrder(order, seq = 0, tot = 0):
 	print(f"{seq}/{tot}) Order id [{order['orderId']}]:")
 	print(f"\tSymbol......: [{order['symbol']}]")
 	print(f"\tPrice.......: [{order['price']}]")
@@ -369,3 +374,88 @@ def printAccountXLSHEADER():
 
 def printAccountXLS(accBalance):
 	print(f"{accBalance['asset']}\t{accBalance['free']}\t{accBalance['locked']}")
+
+# ----------------------------------------------------------------------------
+
+def printListRateLimit(limits, seq = 0, tot = 0):
+	print(f"{seq}/{tot}) Type: [{limits['rateLimitType']}]");
+	print(f"Interval.......: [{limits['interval']}]");
+	print(f"IntervalNum....: [{limits['intervalNum']}]");
+	print(f"Limit..........: [{limits['limit']}]\n");
+
+def printListSymbols(symbs, seq = 0, tot = 0):
+	print(f"{seq}/{tot}) Symbol: [{symbs['symbol']}]");
+	print(f"\tStatus........................: [{symbs['status']}]");
+	print(f"\tBase Asset....................: [{symbs['baseAsset']}]");
+	print(f"\tBase Asset Precision..........: [{symbs['baseAssetPrecision']}]");
+	print(f"\tQuote Asset...................: [{symbs['quoteAsset']}]");
+	print(f"\tQuote Precision...............: [{symbs['quotePrecision']}]");
+	print(f"\tQuote Asset Precision.........: [{symbs['quoteAssetPrecision']}]");
+	print(f"\tBase Commission Precision.....: [{symbs['baseCommissionPrecision']}]");
+	print(f"\tQuote Commission Precision....: [{symbs['quoteCommissionPrecision']}]");
+	print(f"\tIceberg Allowed...............: [{symbs['icebergAllowed']}]");
+	print(f"\tOco Allowed...................: [{symbs['ocoAllowed']}]");
+	print(f"\tQuote Order Qty Market Allowed: [{symbs['quoteOrderQtyMarketAllowed']}]");
+	print(f"\tIs Spot Trading Allowed.......: [{symbs['isSpotTradingAllowed']}]");
+	print(f"\tIs Margin Trading Allowed.....: [{symbs['isMarginTradingAllowed']}]");
+	print(f"\tOrder Types...................: [{', '.join(symbs['orderTypes'])}]");
+	print(f"\tPermissions...................: [{', '.join(symbs['permissions'])}]");
+
+	print("\tFilters:");
+	for n in symbs['filters']:
+		print(f"\t\tType: [{n['filterType']}]");
+
+		sf = n.get('minPrice', '')
+		if sf != '': print(f"\t\t\tMin Price.........: [{sf}]");
+
+		sf = n.get('maxPrice', '')
+		if sf != '': print(f"\t\t\tMax Price..........: [{sf}]");
+
+		sf = n.get('tickSize', '')
+		if sf != '': print(f"\t\t\tTick Size..........: [{sf}]");
+
+		sf = n.get('multiplierUp', '')
+		if sf != '': print(f"\t\t\tMultiplier Up......: [{sf}]");
+
+		sf = n.get('multiplierDown', '')
+		if sf != '': print(f"\t\t\tMultiplier Down....: [{sf}]");
+
+		sf = n.get('avgPriceMins', '')
+		if sf != '': print(f"\t\t\tAvg Price Mins.....: [{sf}]");
+
+		sf = n.get('minQty', '')
+		if sf != '': print(f"\t\t\tMin Qty............: [{sf}]");
+
+		sf = n.get('maxQty', '')
+		if sf != '': print(f"\t\t\tMax Qty............: [{sf}]");
+
+		sf = n.get('stepSize', '')
+		if sf != '': print(f"\t\t\tStep Size..........: [{sf}]");
+
+		sf = n.get('minNotional', '')
+		if sf != '': print(f"\t\t\tMin Notional.......: [{sf}]");
+
+		sf = n.get('applyToMarket', '')
+		if sf != '': print(f"\t\t\tApply To Market....: [{sf}]");
+
+		sf = n.get('avgPriceMins', '')
+		if sf != '': print(f"\t\t\tAvg Price Mins.....: [{sf}]");
+
+		sf = n.get('maxNumAlgoOrders', '')
+		if sf != '': print(f"\t\t\tMax Num Algo Orders: [{sf}]");
+
+def printListRateLimitXLSHEADER():
+	print("Type\tInterval\tIntervalNum\tLimit")
+
+def printListRateLimitXLS(limits):
+	print(f"{limits['rateLimitType']}\t{limits['interval']}\t{limits['intervalNum']}\t{limits['limit']}");
+
+def printListSymbolsXLSHEADER():
+	print("Symbol\tStatus\tBase Asset\tBase Asset Precision\tQuote Asset\tQuote Precision\tQuote Asset Precision\tBase Commission Precision\tQuote Commission Precision\tIceberg Allowed\tOco Allowed\tQuote Order Qty Market Allowed\tIs Spot Trading Allowed\tIs Margin Trading Allowed\tOrder Types\tPermissions")
+
+def printListSymbolsXLS(symb):
+	print(f"{symb['symbol']}\t{symb['status']}\t{symb['baseAsset']}\t{symb['baseAssetPrecision']}\t{symb['quoteAsset']}\t{symb['quotePrecision']}\t{symb['quoteAssetPrecision']}\t{symb['baseCommissionPrecision']}\t{symb['quoteCommissionPrecision']}\t{symb['icebergAllowed']}\t{symb['ocoAllowed']}\t{symb['quoteOrderQtyMarketAllowed']}\t{symb['isSpotTradingAllowed']}\t{symb['isMarginTradingAllowed']}\t{', '.join(symb['orderTypes'])}\t{', '.join(symb['permissions'])}")
+
+	print("\tFilters\tType\tMin Price\tMax Price\tTick Size\tMultiplier Up\tMultiplier Down\tAvg Price Mins\tMin Qty\tMax Qty\tStep Size\tMin Notional\tApply To Market\tAvg Price Mins\tMax Num Algo Orders")
+	for n in symb['filters']:
+		print(f"\t\t{n['filterType']}\t{n.get('minPrice', '')}\t{n.get('maxPrice', '')}\t{n.get('tickSize', '')}\t{n.get('multiplierUp', '')}\t{n.get('multiplierDown', '')}\t{n.get('avgPriceMins', '')}\t{n.get('minQty', '')}\t{n.get('maxQty', '')}\t{n.get('stepSize', '')}\t{n.get('minNotional', '')}\t{n.get('applyToMarket', '')}\t{n.get('avgPriceMins', '')}\t{n.get('maxNumAlgoOrders', '')}")
