@@ -14,17 +14,29 @@ def printHelp(execName):
 	print(f'{execName} -d\n\tAccount details (fees)\n')
 
 	print("2) Trade:")
-	print(f'{execName} -s\n\tPlace a sell order')
+	print(f'{execName} -s\n\tPlace a SPOT sell order')
 	print(f'\t\t{execName} -s MARKET [symbol] [qtd]')
 	print(f'\t\t{execName} -s LIMIT [symbol] [qtd] [price]')
 	print(f'\t\t{execName} -s STOP [symbol] [qtd] [price] [stopPrice]\n')
 
-	print(f'{execName} -b\n\tPlace a buy order')
+	print(f'{execName} -b\n\tPlace a SPOT buy order')
 	print(f'\t\t{execName} -b MARKET [symbol] [qtd]')
 	print(f'\t\t{execName} -b LIMIT [symbol] [qtd] [price]')
 	print(f'\t\t{execName} -b STOP [symbol] [qtd] [price] [stopPrice]\n')
 
-	print(f'{execName} -c \n\tCancel a order\n')
+	print(f'{execName} -c \n\tCancel a SPOT order\n')
+
+	print(f'{execName} -sm\n\tPlace a MARGIN sell order')
+	print(f'\t\t{execName} -sm MARKET [symbol] [qtd]')
+	print(f'\t\t{execName} -sm LIMIT [symbol] [qtd] [price]')
+	print(f'\t\t{execName} -sm STOP [symbol] [qtd] [price] [stopPrice]\n')
+
+	print(f'{execName} -bm\n\tPlace a MARGIN buy order')
+	print(f'\t\t{execName} -bm MARKET [symbol] [qtd]')
+	print(f'\t\t{execName} -bm LIMIT [symbol] [qtd] [price]')
+	print(f'\t\t{execName} -bm STOP [symbol] [qtd] [price] [stopPrice]\n')
+
+	print(f'{execName} -cm \n\tCancel a MARGIN order\n')
 
 	print("3) Market:")
 	print(f'{execName} -p \n\t24 hour price change statistics\n')
@@ -35,7 +47,9 @@ def printHelp(execName):
 
 	print(f'{execName} -V [symbol]\n\tInformation (details) about a symbol\n')
 
+	print("4) Miscellaneous:")
 	print(f'{execName} [...] --xls >> output.xls\n\tOutput with TAB separator\n')
+	print(f'{execName} [...] -Y\n\tForce ALL CONFIRMATIONS = YES\n')
 
 # ----------------------------------------------------------------------------
 
@@ -459,3 +473,49 @@ def printListSymbolsXLS(symb):
 	print("\tFilters\tType\tMin Price\tMax Price\tTick Size\tMultiplier Up\tMultiplier Down\tAvg Price Mins\tMin Qty\tMax Qty\tStep Size\tMin Notional\tApply To Market\tAvg Price Mins\tMax Num Algo Orders")
 	for n in symb['filters']:
 		print(f"\t\t{n['filterType']}\t{n.get('minPrice', '')}\t{n.get('maxPrice', '')}\t{n.get('tickSize', '')}\t{n.get('multiplierUp', '')}\t{n.get('multiplierDown', '')}\t{n.get('avgPriceMins', '')}\t{n.get('minQty', '')}\t{n.get('maxQty', '')}\t{n.get('stepSize', '')}\t{n.get('minNotional', '')}\t{n.get('applyToMarket', '')}\t{n.get('avgPriceMins', '')}\t{n.get('maxNumAlgoOrders', '')}")
+
+# ----------------------------------------------------------------------------
+
+def print_OM_Sell_PlacedOrder(order):
+	printPlacedOrder(order)
+
+def print_OCO_Sell_PlacedOrder(order):
+	printPlacedOrder(order)
+
+def print_LO_Sell_PlacedOrder(order):
+	printPlacedOrder(order)
+
+def print_OCO_Buy_PlacedOrder(order):
+	printPlacedOrder(order)
+
+def print_OL_Buy_PlacedOrder(order):
+	printPlacedOrder(order)
+
+def print_OM_Buy_PlacedOrder(order):
+	printPlacedOrder(order)
+
+def print_Margin_PlacedOrder(order):
+	printPlacedOrder(order)
+
+def printPlacedOrder(order):
+	print(f"Symbol: [{order['symbol']}")
+	print(f"\tSide.................: [{order['side']}")
+	print(f"\tType.................: [{order['type']}")
+	print(f"\tTransaction Time.....: [{order['transactTime']}")
+	print(f"\tPrice................: [{order['price']}")
+	print(f"\tOrig Qtd.............: [{order['origQty']}")
+	print(f"\tExecuted Qtd.........: [{order['executedQty']}")
+	print(f"\tCummulative Quote Qtd: [{order['cummulativeQuoteQty']}")
+	print(f"\tStatus...............: [{order['status']}")
+	print(f"\tTime In Force........: [{order['timeInForce']}")
+	print(f"\tOrder Id.............: [{order['orderId']}")
+	print(f"\tClient Order Id......: [{order['clientOrderId']}")
+
+	if 'fills' not in order:
+		return
+
+	for f in order['fills']:
+		print(f"\t\tPrice...........: [{f['price']}")
+		print(f"\t\tQty.............: [{f['qty']}")
+		print(f"\t\tCommission......: [{f['commission']}")
+		print(f"\t\tCommission Asset: [{f['commissionAsset']}")

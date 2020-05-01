@@ -12,9 +12,62 @@ from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceWithdrawException, BinanceRequestException
 
 exportToXls = False
+corfirmationYES = False
 
 def errPrint(*args, **kwargs):
 	print(*args, file = sys.stderr, **kwargs)
+
+def askConfirmation():
+	global corfirmationYES
+
+	if corfirmationYES == False:
+		conf = input("Confirm Order? [N / y]")
+
+		if conf != 'Y' and conf != 'y':
+			print("CANCELED!")
+			return False
+
+	return True
+
+# ---------------------------------------------------
+
+def binanceInterval(i: str):
+	if   i == '12h': return Client.KLINE_INTERVAL_12HOUR
+	elif i == '15m': return Client.KLINE_INTERVAL_15MINUTE
+	elif i == '1d':  return Client.KLINE_INTERVAL_1DAY
+	elif i == '1h':  return Client.KLINE_INTERVAL_1HOUR
+	elif i == '1m':  return Client.KLINE_INTERVAL_1MINUTE
+	elif i == '1M':  return Client.KLINE_INTERVAL_1MONTH
+	elif i == '1w':  return Client.KLINE_INTERVAL_1WEEK
+	elif i == '2h':  return Client.KLINE_INTERVAL_2HOUR
+	elif i == '30m': return Client.KLINE_INTERVAL_30MINUTE
+	elif i == '3d':  return Client.KLINE_INTERVAL_3DAY
+	elif i == '3m':  return Client.KLINE_INTERVAL_3MINUTE
+	elif i == '4h':  return Client.KLINE_INTERVAL_4HOUR
+	elif i == '5m':  return Client.KLINE_INTERVAL_5MINUTE
+	elif i == '6h':  return Client.KLINE_INTERVAL_6HOUR
+	elif i == '8h':  return Client.KLINE_INTERVAL_8HOUR
+
+	return ''
+
+def binanceOrderType(t: str):
+	if   t == 'LIMIT':             return Client.ORDER_TYPE_LIMIT
+	elif t == 'LIMIT_MAKER':       return Client.ORDER_TYPE_LIMIT_MAKER
+	elif t == 'MARKET':            return Client.ORDER_TYPE_MARKET 
+	elif t == 'STOP_LOSS':         return Client.ORDER_TYPE_STOP_LOSS 
+	elif t == 'STOP_LOSS_LIMIT':   return Client.ORDER_TYPE_STOP_LOSS_LIMIT 
+	elif t == 'TAKE_PROFIT':       return Client.ORDER_TYPE_TAKE_PROFIT 
+	elif t == 'TAKE_PROFIT_LIMIT': return Client.ORDER_TYPE_TAKE_PROFIT_LIMIT 
+
+	return ''
+
+def binanceSide(s: str):
+	if   s == 'BUY':  return Client.SIDE_BUY
+	elif s == 'SELL': return  Client.SIDE_SELL
+
+	return ''
+
+# ---------------------------------------------------
 
 def accountInfos(client):
 	try:
@@ -217,182 +270,221 @@ def accountDetails(client):
 # ---------------------------------------------------
 
 def sellMarketOrder(client, symb, qtd):
-	print(f"Market order for symbol {symb} with quantity {qtd}")
+	print(f"SPOT order for symbol {symb} with quantity {qtd}")
+
+	if askConfirmation() == False:
+		return
 
 	try:
 		order = client.order_market_sell(symbol = symb, quantity = qtd) 
 	except BinanceRequestException as e:
-		errPrint(f"Erro order_market_sell() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell BinanceRequestException: [{e.status_code} - {e.message}]")
 	except BinanceAPIException as e:
-		errPrint(f"Erro order_market_sell() BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell BinanceAPIException: [{e.status_code} - {e.message}]")
 	except BinanceOrderException as e:
-		errPrint(f"Erro order_market_sell() BinanceOrderException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell BinanceOrderException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinAmountException as e:
-		errPrint(f"Erro order_market_sell() BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinPriceException as e:
-		errPrint(f"Erro order_market_sell() BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinTotalException as e:
-		errPrint(f"Erro order_market_sell() BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
 	except BinanceOrderUnknownSymbolException as e:
-		errPrint(f"Erro order_market_sell() BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
 	except BinanceOrderInactiveSymbolException as e:
-		errPrint(f"Erro order_market_sell() BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_sell BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 	else:
-		print(order)
+		print_OM_Sell_PlacedOrder(order)
 
 # ---------------------------------------------------
 
 def sellStopOrder(client, symb, qtd, prc, stopprice):
-	print(f"Stop sell order for {symb} with quantity {qtd} at price {prc} and stop price {stopprice}")
+	print(f"SPOT Stop sell order for {symb} with quantity {qtd} at price {prc} and stop price {stopprice}")
 
 	try:
 		order = client.create_oco_order(symbol = {symb}, side = SIDE_SELL, stopLimitTimeInForce = TIME_IN_FORCE_GTC,
 		                                quantity = {qtd}, stopPrice = {stopprice}, price = {prc})
 
+	if askConfirmation() == False:
+		return
+
 	except BinanceRequestException as e:
-		errPrint(f"Erro create_oco_order() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceRequestException: [{e.status_code} - {e.message}]")
 	except BinanceAPIException as e:
-		errPrint(f"Erro create_oco_order() BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceAPIException: [{e.status_code} - {e.message}]")
 	except BinanceOrderException as e:
-		errPrint(f"Erro create_oco_order() BinanceOrderException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceOrderException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinAmountException as e:
-		errPrint(f"Erro create_oco_order() BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinPriceException as e:
-		errPrint(f"Erro create_oco_order() BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinTotalException as e:
-		errPrint(f"Erro create_oco_order() BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
 	except BinanceOrderUnknownSymbolException as e:
-		errPrint(f"Erro create_oco_order() BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
 	except BinanceOrderInactiveSymbolException as e:
-		errPrint(f"Erro create_oco_order() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceRequestException: [{e.status_code} - {e.message}]")
 	else:
-		print(order)
+		print_OCO_Sell_PlacedOrder(order)
 
 # ---------------------------------------------------
 
 def sellLimitOrder(client, symb, qtd, prc):
-	print(f"Limit order for {symb} with quantity {qtd} at price {prc}")
+	print(f"SPOT Limit order for {symb} with quantity {qtd} at price {prc}")
+
+	if askConfirmation() == False:
+		return
 
 	try:
 		order = client.order_limit_sell(symbol = symb, quantity = qtd, price = prc)
 	except BinanceRequestException as e:
-		errPrint(f"Erro order_limit_sell() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell BinanceRequestException: [{e.status_code} - {e.message}]")
 	except BinanceAPIException as e:
-		errPrint(f"Erro order_limit_sell() BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell BinanceAPIException: [{e.status_code} - {e.message}]")
 	except BinanceOrderException as e:
-		errPrint(f"Erro order_limit_sell() BinanceOrderException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell BinanceOrderException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinAmountException as e:
-		errPrint(f"Erro order_limit_sell() BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinPriceException as e:
-		errPrint(f"Erro order_limit_sell() BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinTotalException as e:
-		errPrint(f"Erro order_limit_sell() BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
 	except BinanceOrderUnknownSymbolException as e:
-		errPrint(f"Erro order_limit_sell() BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
 	except BinanceOrderInactiveSymbolException as e:
-		errPrint(f"Erro order_limit_sell() BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_sell BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 	else:
-		print(order)
+		print_LO_Sell_PlacedOrder(order)
 
 # ---------------------------------------------------
 
 def buyStopOrder(client, symb, qtd, prc):
-	print(f"Stop buy order for {symb} with quantity {qtd} at price {prc} and stop price {stopprice}")
+	print(f"SPOT Stop buy order for {symb} with quantity {qtd} at price {prc} and stop price {stopprice}")
+
+	if askConfirmation() == False:
+		return
 
 	try:
 		order = client.create_oco_order(symbol = {symb}, side = SIDE_BUY, stopLimitTimeInForce = TIME_IN_FORCE_GTC,
 		                                quantity = {qtd}, stopPrice = {stopprice}, price = {prc})
 
 	except BinanceRequestException as e:
-		errPrint(f"Erro create_oco_order() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceRequestException: [{e.status_code} - {e.message}]")
 	except BinanceAPIException as e:
-		errPrint(f"Erro create_oco_order() BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceAPIException: [{e.status_code} - {e.message}]")
 	except BinanceOrderException as e:
-		errPrint(f"Erro create_oco_order() BinanceOrderException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceOrderException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinAmountException as e:
-		errPrint(f"Erro create_oco_order() BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinPriceException as e:
-		errPrint(f"Erro create_oco_order() BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinTotalException as e:
-		errPrint(f"Erro create_oco_order() BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
 	except BinanceOrderUnknownSymbolException as e:
-		errPrint(f"Erro create_oco_order() BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
 	except BinanceOrderInactiveSymbolException as e:
-		errPrint(f"Erro create_oco_order() BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro create_oco_order BinanceRequestException: [{e.status_code} - {e.message}]")
 	else:
-		print(order)
+		print_OCO_Buy_PlacedOrder(order)
+
+# ---------------------------------------------------
+
+def orderMargin(symbOrd: str, sideOrd, typeOrd, qtdOrd = 0, prcOrd = 0.0):
+
+	print("MARGIN Order")
+	print(f"Symbol..: [{symbOrd}]"
+	print(f"Quantity: [{qtdOrd}]")
+	print(f"Price...: [{priceOrd}]")
+	print(f"Side....: [{sideOrd}]")
+	print(f"Type....: [{typeOrd}]")
+
+	if askConfirmation() == False:
+		return
+
+	try:
+		order = client.create_margin_order(symbol      = symbOrd,
+		                                   side        = binanceSide(sideOrd),
+		                                   type        = binanceOrderType(typeOrd),
+		                                   timeInForce = TIME_IN_FORCE_GTC,
+		                                   quantity    = qtdOrd,
+		                                   price       = prcOrd)
+
+	except BinanceRequestException as e:
+		errPrint(f"Erro create_margin_order BinanceRequestException: [{e.status_code} - {e.message}]")
+	except BinanceAPIException as e:
+		errPrint(f"Erro create_margin_order BinanceAPIException: [{e.status_code} - {e.message}]")
+	except BinanceOrderException as e:
+		errPrint(f"Erro create_margin_order BinanceOrderException: [{e.status_code} - {e.message}]")
+	except BinanceOrderMinAmountException as e:
+		errPrint(f"Erro create_margin_order BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+	except BinanceOrderMinPriceException as e:
+		errPrint(f"Erro create_margin_order BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+	except BinanceOrderMinTotalException as e:
+		errPrint(f"Erro create_margin_order BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+	except BinanceOrderUnknownSymbolException as e:
+		errPrint(f"Erro create_margin_order BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+	except BinanceOrderInactiveSymbolException as e:
+		errPrint(f"Erro create_margin_order BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
+	else:
+		print_Margin_Order(order)
 
 # ---------------------------------------------------
 
 def buyLimitOrder(client, symb, qtd, prc):
-	print(f'Limit order for {symb} with quantity {qtd} at price {prc}')
+	print(f'SPOT order for {symb} with quantity {qtd} at price {prc}')
+
+	if askConfirmation() == False:
+		return
 
 	try:
 		order = client.order_limit_buy(symbol=symb, quantity=qtd, price=prc)
 	except BinanceRequestException as e:
-		errPrint(f"Erro BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_buy BinanceRequestException: [{e.status_code} - {e.message}]")
 	except BinanceAPIException as e:
-		errPrint(f"Erro BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_buy BinanceAPIException: [{e.status_code} - {e.message}]")
 	except BinanceOrderException as e:
-		errPrint(f"Erro BinanceOrderException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_buy BinanceOrderException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinAmountException as e:
-		errPrint(f"Erro BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_buy BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinPriceException as e:
-		errPrint(f"Erro BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_buy BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinTotalException as e:
-		errPrint(f"Erro BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_buy BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
 	except BinanceOrderUnknownSymbolException as e:
-		errPrint(f"Erro BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_buy BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
 	except BinanceOrderInactiveSymbolException as e:
-		errPrint(f"Erro BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_limit_buy BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 	else:
-		print(order)
+		print_OL_Buy_PlacedOrder(order)
 
 # ---------------------------------------------------
 
 def buyMarketOrder(client, symb, qtd):
-	print(f"Market order for symbol {symb} with quantity {qtd}")
+	print(f"SPOT order for symbol {symb} with quantity {qtd}")
+
+	if askConfirmation() == False:
+		return
 
 	try:
 		order = client.order_market_buy(symbol=symb, quantity=qtd) 
 	except BinanceRequestException as e:
-		errPrint(f"Erro BinanceRequestException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_buy BinanceRequestException: [{e.status_code} - {e.message}]")
 	except BinanceAPIException as e:
-		errPrint(f"Erro BinanceAPIException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_buy BinanceAPIException: [{e.status_code} - {e.message}]")
 	except BinanceOrderException as e:
-		errPrint(f"Erro BinanceOrderException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_buy BinanceOrderException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinAmountException as e:
-		errPrint(f"Erro BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_buy BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinPriceException as e:
-		errPrint(f"Erro BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_buy BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
 	except BinanceOrderMinTotalException as e:
-		errPrint(f"Erro BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_buy BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
 	except BinanceOrderUnknownSymbolException as e:
-		errPrint(f"Erro BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_buy BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
 	except BinanceOrderInactiveSymbolException as e:
-		errPrint(f"Erro BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
+		errPrint(f"Erro order_market_buy BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 	else:
-		print(order)
-
-# ---------------------------------------------------
-
-def binanceInterval(i):
-	if   i == '12h': return Client.KLINE_INTERVAL_12HOUR
-	elif i == '15m': return Client.KLINE_INTERVAL_15MINUTE
-	elif i == '1d':  return Client.KLINE_INTERVAL_1DAY
-	elif i == '1h':  return Client.KLINE_INTERVAL_1HOUR
-	elif i == '1m':  return Client.KLINE_INTERVAL_1MINUTE
-	elif i == '1M':  return Client.KLINE_INTERVAL_1MONTH
-	elif i == '1w':  return Client.KLINE_INTERVAL_1WEEK
-	elif i == '2h':  return Client.KLINE_INTERVAL_2HOUR
-	elif i == '30m': return Client.KLINE_INTERVAL_30MINUTE
-	elif i == '3d':  return Client.KLINE_INTERVAL_3DAY
-	elif i == '3m':  return Client.KLINE_INTERVAL_3MINUTE
-	elif i == '4h':  return Client.KLINE_INTERVAL_4HOUR
-	elif i == '5m':  return Client.KLINE_INTERVAL_5MINUTE
-	elif i == '6h':  return Client.KLINE_INTERVAL_6HOUR
-	elif i == '8h':  return Client.KLINE_INTERVAL_8HOUR
-	else:            return ""
+		print_OM_Buy_PlacedOrder(order)
 
 # ---------------------------------------------------
 
@@ -547,12 +639,19 @@ if __name__ == '__main__':
 	except:
 		errPrint("Erro at client.get_system_status()")
 		sys.exit(0)
-	
+
+	# Miscellaneous
 	if "--xls" in sys.argv:
 		exportToXls = True
 		sys.argv.remove("--xls")
 	else:
 		exportToXls = False
+	
+	if "-Y" in sys.argv:
+		corfirmationYES = True
+		sys.argv.remove("-Y")
+	else:
+		corfirmationYES = False
 
 	# Wallet/Account information
 	if sys.argv[1] == "-i" and len(sys.argv) == 2:
@@ -582,7 +681,7 @@ if __name__ == '__main__':
 	elif sys.argv[1] == "-p" and len(sys.argv) == 2:
 		h24PriceChangeStats(client)
 
-	# Buy order
+	# SPOT Buy order
 	elif sys.argv[1] == "-b" and len(sys.argv) > 2:
 
 		# Market order
@@ -598,9 +697,9 @@ if __name__ == '__main__':
 			buyStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
 
 		else:
-			print("Parameters error for buy order")
+			print("Parameters error for SPOT buy order")
 
-	# Sell order
+	# SPOT Sell order
 	elif sys.argv[1] == "-s" and len(sys.argv) > 2:
 
 		# Market order
@@ -616,7 +715,49 @@ if __name__ == '__main__':
 			sellStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
 
 		else:
-			print("Parameters error for sell order")
+			print("Parameters error for SPOT sell order")
+
+	# MARGIN Buy order
+	elif sys.argv[1] == "-bm" and len(sys.argv) > 2:
+
+		# Market order
+		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
+			#orderMargin()
+			pass
+
+		# Limit order
+		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
+			#orderMargin()
+			pass
+
+		# OCO
+		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
+			#orderMargin()
+			pass
+
+		else:
+			print("Parameters error for MARGIN buy order")
+
+	# MARGIN Sell order
+	elif sys.argv[1] == "-sm" and len(sys.argv) > 2:
+
+		# Market order
+		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
+			#orderMargin()
+			pass
+
+		# Limit order
+		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
+			#orderMargin()
+			pass
+
+		# OCO
+		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
+			#orderMargin()
+			pass
+
+		else:
+			print("Parameters error for MARGIN sell order")
 
 	else:
 		print("Parameters error.")
