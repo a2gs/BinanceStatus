@@ -1,5 +1,5 @@
 # BinanceStatus
-Get status (balance, orders, etc), place orders (spot/margin) from a Binance account.<br>
+Get status (balance, orders, symbols, history, etc), place orders (spot and margin accounts. Types: market, limit, stop/OCO) to Binance account through command line.<br><br>
 Dependence:<br>
 1. Python >= 3.5<br>
 2. Binance Python API >= 0.2.0 from https://pypi.org/project/python-binance/ (Can be installed with pip comamand: </i>pip install python-binance</i>)<br>
