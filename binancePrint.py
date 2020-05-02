@@ -22,15 +22,15 @@ def printHelp(execName):
 	print(f'\t\t{execName} -s STOP [symbol] [qtd] [price] [stopPrice]\n')
 
 	print(f'{execName} -b\n\tPlace a SPOT buy order')
-	print(f'\t\t{execName} -b MARKET [symbol] [qtd]')
-	print(f'\t\t{execName} -b LIMIT [symbol] [qtd] [price]')
+	print(f'\t\t{execName} -b MARKET [symbol] [qtd] [--TEST]')
+	print(f'\t\t{execName} -b LIMIT [symbol] [qtd] [price] [--TEST]')
 	print(f'\t\t{execName} -b STOP [symbol] [qtd] [price] [stopPrice]\n')
 
 	print(f'{execName} -c \n\tCancel a SPOT order\n')
 
 	print(f'{execName} -sm\n\tPlace a MARGIN sell order')
-	print(f'\t\t{execName} -sm MARKET [symbol] [qtd]')
-	print(f'\t\t{execName} -sm LIMIT [symbol] [qtd] [price]')
+	print(f'\t\t{execName} -sm MARKET [symbol] [qtd] [--TEST]')
+	print(f'\t\t{execName} -sm LIMIT [symbol] [qtd] [price] [--TEST]')
 	print(f'\t\t{execName} -sm STOP [symbol] [qtd] [price] [stopPrice]\n')
 
 	print(f'{execName} -bm\n\tPlace a MARGIN buy order')

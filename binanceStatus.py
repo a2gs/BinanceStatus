@@ -9,6 +9,7 @@ import os, sys
 
 import binancePrint as BP
 import binanceUtil as BU
+import binanceOrder as BO
 
 from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceWithdrawException, BinanceRequestException
@@ -51,7 +52,8 @@ def accountInfos(client):
 		else:
 			[BP.printAccount(n) for n in acc['balances'] if float(n['free']) != 0.0 or float(n['locked']) != 0.0]
 
-	# Orders
+	# SPOT
+
 	try:
 		openOrders = client.get_open_orders()
 	except BinanceRequestException as e:
@@ -105,7 +107,6 @@ def accountInfos(client):
 		print('Borrowed assets:')
 		[BP.printMarginAssets(n, i) for i, n in enumerate(marginInfo['userAssets'], 1) if float(n['netAsset']) != 0.0]
 
-	# Margin Orders
 	try:
 		openMarginOrders = client.get_open_margin_orders()
 	except BinanceRequestException as e:
@@ -375,10 +376,16 @@ if __name__ == '__main__':
 		BU.setExportXLS(False)
 	
 	if "-Y" in sys.argv:
-		corfirmationYES = True
+		BU.setConfirmationYES(True)
 		sys.argv.remove("-Y")
 	else:
-		corfirmationYES = False
+		BU.setConfirmationYES(False)
+
+	if "--TEST" in sys.argv:
+		BO.setTestOrder(True)
+		sys.argv.remove("--TEST")
+	else:
+		BO.setTestOrder(False)
 
 	# Wallet/Account information
 	if sys.argv[1] == "-i" and len(sys.argv) == 2:
@@ -413,15 +420,15 @@ if __name__ == '__main__':
 
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
-			buyMarketOrder(client, sys.argv[3], sys.argv[4])
+			BO.buyMarketOrder(client, sys.argv[3], sys.argv[4])
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			buyLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5])
+			BO.buyLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5])
 
 		# OCO
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
-			buyStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+			BO.buyStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
 
 		else:
 			print("Parameters error for SPOT buy order")
@@ -431,15 +438,15 @@ if __name__ == '__main__':
 
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
-			sellMarketOrder(client, sys.argv[3], sys.argv[4])
+			BO.sellMarketOrder(client, sys.argv[3], sys.argv[4])
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			sellLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5])
+			BO.sellLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5])
 
 		# OCO
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
-			sellStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+			BO.sellStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
 
 		else:
 			print("Parameters error for SPOT sell order")
