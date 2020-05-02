@@ -12,5 +12,5 @@ Setup:<br>
 export BINANCE_SEKKEY='<b>AAABBBCCCDDDEEE</b>'</i><br>
 <br>
 Usage:<br>
-# <i>source ./walletId.sh<\i><br>
+# <i>source ./walletId.sh</i><br>
 # ./binanceStatus.py<br>
