@@ -5,7 +5,7 @@
 # andre.scota@gmail.com
 # MIT license
 
-import sys
+import sys, time
 from binance.client import Client
 
 # ---------------------------------------------------
@@ -30,6 +30,9 @@ def setExportXLS(x: bool):
 	exportToXls = x
 
 # ---------------------------------------------------
+
+def completeMilliTime(tm) -> str:
+	return(time.strftime(f"%d/%b/%Y %a %H:%M:%S.{tm % 1000}", time.gmtime(tm / 1000)))
 
 def errPrint(*args, **kwargs):
 	print(*args, file = sys.stderr, **kwargs)

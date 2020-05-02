@@ -5,7 +5,7 @@
 # andre.scota@gmail.com
 # MIT license
 
-import time
+import binanceUtil as BU
 
 def printHelp(execName):
 	print("------------------------------------------------------------------------")
@@ -50,6 +50,8 @@ def printHelp(execName):
 
 	print(f'{execName} -V [symbol]\n\tInformation (details) about a symbol\n')
 
+	print(f'{execName} -B\n\tBinance Informations\n')
+
 	print("------------------------------------------------------------------------")
 	print("4) Miscellaneous:")
 	print(f'{execName} [...] --xls >> output.xls\n\tOutput with TAB separator\n')
@@ -70,8 +72,8 @@ def printMarginOrderXLS(order):
 
 def printInfoSymbolValues(symbPrc, seq = 0, tot = 0):
 	print(f"{seq}/{tot}) Candle:")
-	print(f"Open time...................: [{time.ctime(symbPrc[0]/1000)}]")
-	print(f"Close time..................: [{time.ctime(symbPrc[6]/1000)}]")
+	print(f"Open time...................: [{BU.completeMilliTime(symbPrc[0])}]")
+	print(f"Close time..................: [{BU.completeMilliTime(symbPrc[6])}]")
 	print(f"High........................: [{symbPrc[2]}]")
 	print(f"Open........................: [{symbPrc[1]}]")
 	print(f"Close.......................: [{symbPrc[4]}]")
@@ -96,8 +98,8 @@ def printInfoSymbolValuesXLSHEADER():
 	      "Taker buy quote asset volume")
 
 def printInfoSymbolValuesXLS(symbPrc):
-	print(f"{time.ctime(symbPrc[0]/1000)}\t"
-	      f"{time.ctime(symbPrc[6]/1000)}\t"
+	print(f"{BU.completeMilliTime(symbPrc[0])}\t"
+	      f"{BU.completeMilliTime(symbPrc[6])}\t"
 	      f"{symbPrc[2]}\t"
 	      f"{symbPrc[1]}\t"
 	      f"{symbPrc[4]}\t"
@@ -127,8 +129,8 @@ def print24hPrcChangSts(priceSts, seq = 0, tot = 0):
 	print(f"\tLow Price.............: [{priceSts['lowPrice']}]")
 	print(f"\tVolume................: [{priceSts['volume']}]")
 	print(f"\tQuote Volume..........: [{priceSts['quoteVolume']}]")
-	print(f"\tOpen Time.............: [{time.ctime(priceSts['openTime']/1000)}]")
-	print(f"\tClose Time............: [{time.ctime(priceSts['closeTime']/1000)}]")
+	print(f"\tOpen Time.............: [{BU.completeMilliTime(priceSts['openTime'])}]")
+	print(f"\tClose Time............: [{BU.completeMilliTime(priceSts['closeTime'])}]")
 	print(f"\tFirst Id..............: [{priceSts['firstId']}]")
 	print(f"\tLast Id...............: [{priceSts['lastId']}]")
 	print(f"\tCount.................: [{priceSts['count']}]\n")
@@ -173,8 +175,8 @@ def print24hPrcChangStsXLS(priceSts):
 	      f"{priceSts['lowPrice']}\t"
 	      f"{priceSts['volume']}\t"
 	      f"{priceSts['quoteVolume']}\t"
-	      f"{time.ctime(priceSts['openTime']/1000)}\t"
-	      f"{time.ctime(priceSts['closeTime']/1000)}\t"
+	      f"{BU.completeMilliTime(priceSts['openTime'])}\t"
+	      f"{BU.completeMilliTime(priceSts['closeTime'])}\t"
 	      f"{priceSts['firstId']}\t"
 	      f"{priceSts['lastId']}\t"
 	      f"{priceSts['count']}")
@@ -195,6 +197,7 @@ def printDustTrade(order, seq = 0, tot = 0):
 		print(f"\t\tUId..................: [{logs['uid']}]\n")
 
 # ----------------------------------------------------------------------------
+
 def printDetailsAssets(ass, detAss, seq = 0, tot = 0):
 	print(f"{seq}/{tot}) Asset: [{ass}]");
 	print(f"\tMin. withdraw amount: [{detAss['minWithdrawAmount']}]");
@@ -230,8 +233,8 @@ def printTradeFeeXLS(tf):
 
 def printTradeAllHist(tradeAllHist, seq = 0, tot = 0):
 	print(f"{seq}/{tot}) Symbol: [{tradeAllHist['symbol']}]")
-	print(f"\tTime.................: [{time.ctime(tradeAllHist['time']/1000)}]")
-	print(f"\tUpdate time..........: [{time.ctime(tradeAllHist['updateTime']/1000)}]")
+	print(f"\tTime.................: [{BU.completeMilliTime(tradeAllHist['time'])}]")
+	print(f"\tUpdate time..........: [{BU.completeMilliTime(tradeAllHist['updateTime'])}]")
 	print(f"\tOrder Id.............: [{tradeAllHist['orderId']}]")
 #	print(f"\tOrder list Id........: [{tradeAllHist['orderListId']}]")
 	print(f"\tClient Order Id......: [{tradeAllHist['clientOrderId']}]")
@@ -265,8 +268,8 @@ def printTradeAllHistXLSHEADER():
 
 def printTradeAllHistXLS(tradeAllHist):
 	print(f"{tradeAllHist['symbol']}\t"
-	      f"{time.ctime(tradeAllHist['time']/1000)}\t"
-	      f"{time.ctime(tradeAllHist['updateTime']/1000)}\t"
+	      f"{BU.completeMilliTime(tradeAllHist['time'])}\t"
+	      f"{BU.completeMilliTime(tradeAllHist['updateTime'])}\t"
 	      f"{tradeAllHist['orderId']}\t"
 	      f"{tradeAllHist['clientOrderId']}\t"
 	      f"{tradeAllHist['price']}\t"
@@ -284,7 +287,7 @@ def printTradeAllHistXLS(tradeAllHist):
 
 def printTradeHistory(tradeHist, seq = 0, tot = 0):
 	print(f"{seq}/{tot}) Symbol: [{tradeHist['symbol']}]")
-	print(f"\tTime............: [{time.ctime(tradeHist['time']/1000)}]")
+	print(f"\tTime............: [{BU.completeMilliTime(tradeHist['time'])}]")
 	print(f"\tOrder Id........: [{tradeHist['orderId']}]")
 	print(f"\tId..............: [{tradeHist['id']}]")
 	print(f"\tPrice...........: [{tradeHist['price']}]")
@@ -312,7 +315,7 @@ def printTradeHistoryXLSHEADER():
 
 def printTradeHistoryXLS(tradeHist):
 	print(f"{tradeHist['symbol']}\t"
-	      f"{time.ctime(tradeHist['time']/1000)}\t"
+	      f"{BU.completeMilliTime(tradeHist['time'])}\t"
 	      f"{tradeHist['orderId']}\t"
 	      f"{tradeHist['id']}\t"
 	      f"{tradeHist['price']}\t"
@@ -392,6 +395,57 @@ def printAccountXLSHEADER():
 
 def printAccountXLS(accBalance):
 	print(f"{accBalance['asset']}\t{accBalance['free']}\t{accBalance['locked']}")
+
+# ----------------------------------------------------------------------------
+
+def printSystemStatus(sst):
+	print(f"Message: [{sst['msg']}]")
+	print(f"Status.: [{'normal' if sst['status'] == 0 else 'system maintenance'}]")
+
+def printServerTime(st):
+	print(f"Server Time: [{BU.completeMilliTime(st['serverTime'])}]")
+
+def printProducts(product):
+	'''
+	{'data': [
+	          {'symbol': 'BNBBTC', 'quoteAssetName': 'Bitcoin', 'tradedMoney': 1814.23206299, 'baseAssetUnit': '', 'baseAssetName': 'BNB', 'baseAsset': 'BNB', 'tickSize': '0.0000001', 'prevClose': 0.0020042, 'activeBuy': 0.0, 'high': '0.0020225', 'lastAggTradeId': -1, 'low': '0.0019469', 'matchingUnitType': 'STANDARD', 'close': '0.0019783', 'quoteAsset': 'BTC', 'productType': None, 'parentMarket': 'BTC', 'active': True, 'minTrade': 0.01, 'activeSell': 914334.85, 'withdrawFee': '0', 'market': 'BTC', 'volume': '914334.8500000', 'marketName': 'BTC', 'decimalPlaces': 8, 'parentMarketName': 'BTC', 'quoteAssetUnit': '฿', 'open': '0.0020042', 'status': 'TRADING', 'minQty': 1e-08},
+	          {'symbol': 'NULSBTC', 'quoteAssetName': 'Bitcoin', 'tradedMoney': 22.35117625, 'baseAssetUnit': '', 'baseAssetName': 'Nuls', 'baseAsset': 'NULS', 'tickSize': '0.00000001', 'prevClose': 2.552e-05, 'activeBuy': 0.0, 'high': '0.00002671', 'lastAggTradeId': -1, 'low': '0.00002468', 'matchingUnitType': 'STANDARD', 'close': '0.00002616', 'quoteAsset': 'BTC', 'productType': None, 'parentMarket': 'BTC', 'active': True, 'minTrade': 1.0, 'activeSell': 874238.0, 'withdrawFee': '0', 'market': 'BTC', 'volume': '874238.00000000', 'marketName': 'BTC', 'decimalPlaces': 8, 'parentMarketName': 'BTC', 'quoteAssetUnit': '฿', 'open': '0.00002552', 'status': 'TRADING', 'minQty': 1e-08},
+	          {'symbol': 'NEOBTC', 'quoteAssetName': 'Bitcoin', 'tradedMoney': 198.29881343, 'baseAssetUnit': '', 'baseAssetName': 'NEO', 'baseAsset': 'NEO', 'tickSize': '0.000001', 'prevClose': 0.001056, 'activeBuy': 0.0, 'high': '0.001059', 'lastAggTradeId': -1, 'low': '0.001015', 'matchingUnitType': 'STANDARD', 'close': '0.001025', 'quoteAsset': 'BTC', 'productType': None, 'parentMarket': 'BTC', 'active': True, 'minTrade': 0.01, 'activeSell': 191092.6, 'withdrawFee': '0', 'market': 'BTC', 'volume': '191092.600000', 'marketName': 'BTC', 'decimalPlaces': 8, 'parentMarketName': 'BTC', 'quoteAssetUnit': '฿', 'open': '0.001056', 'status': 'TRADING', 'minQty': 1e-08},
+	          {'symbol': 'NULSETH', 'quoteAssetName': 'Ethereum', 'tradedMoney': 52.18513774, 'baseAssetUnit': '', 'baseAssetName': 'Nuls', 'baseAsset': 'NULS', 'tickSize': '0.00000001', 'prevClose': 0.00106059, 'activeBuy': 0.0, 'high': '0.00110407', 'lastAggTradeId': -1, 'low': '0.00103266', 'matchingUnitType': 'STANDARD', 'close': '0.00109029', 'quoteAsset': 'ETH', 'productType': None, 'parentMarket': 'ALTS', 'active': True, 'minTrade': 1.0, 'activeSell': 49307.0, 'withdrawFee': '0', 'market': 'ETH', 'volume': '49307.00000000', 'marketName': 'ETH', 'decimalPlaces': 8, 'parentMarketName': 'ALTS', 'quoteAssetUnit': 'Ξ', 'open': '0.00106059', 'status': 'TRADING', 'minQty': 1e-08},
+
+'symbol'
+'quoteAssetName'
+'tradedMoney'
+'baseAssetUnit'
+'baseAssetName'
+'baseAsset'
+'tickSize'
+'prevClose'
+'activeBuy'
+'high'
+'lastAggTradeId'
+'low'
+'matchingUnitType'
+'close'
+'quoteAsset'
+'productType'
+'parentMarket'
+'active'
+'minTrade'
+'activeSell'
+'withdrawFee'
+'market'
+'volume'
+'marketName'
+'decimalPlaces'
+'parentMarketName'
+'quoteAssetUnit'
+'open'
+'status'
+'minQty'
+	'''
+
+	pass
 
 # ----------------------------------------------------------------------------
 

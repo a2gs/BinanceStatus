@@ -16,6 +16,40 @@ from binance.exceptions import BinanceAPIException, BinanceWithdrawException, Bi
 
 # ---------------------------------------------------
 
+def binanceInfo(client):
+	try:
+		sst = client.get_system_status()
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_system_status() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+
+	print("Server Status:")
+	BP.printSystemStatus(sst)
+
+	try:
+		st = client.get_server_time()
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_server_time() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_server_time() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+
+	print("\nTime:")
+	BP.printServerTime(st)
+
+	try:
+		p = client.get_products()
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_products() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_products() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+
+	print("\nProducts:")
+	BP.printProducts(p)
+
 def accountInfos(client):
 	try:
 		acc = client.get_account()
@@ -387,8 +421,12 @@ if __name__ == '__main__':
 	else:
 		BO.setTestOrder(False)
 
+	# Binance Info
+	if sys.argv[1] == "-B" and len(sys.argv) == 2:
+		binanceInfo(client)
+
 	# Wallet/Account information
-	if sys.argv[1] == "-i" and len(sys.argv) == 2:
+	elif sys.argv[1] == "-i" and len(sys.argv) == 2:
 		accountInfos(client)
 
 	# Account history (trades, dusts, etc)
@@ -451,6 +489,10 @@ if __name__ == '__main__':
 		else:
 			print("Parameters error for SPOT sell order")
 
+	elif sys.argv[1] == "-c":
+		#cancel_order()
+		print("============== UNDERCONSTRUCTION ==========================")
+
 	# MARGIN Buy order
 	elif sys.argv[1] == "-bm" and len(sys.argv) > 2:
 
@@ -492,6 +534,10 @@ if __name__ == '__main__':
 
 		else:
 			print("Parameters error for MARGIN sell order")
+
+	elif sys.argv[1] == "-cm":
+		#cancel_margin_order()
+		print("============== UNDERCONSTRUCTION ==========================")
 
 	else:
 		print("Parameters error.")
