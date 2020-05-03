@@ -50,7 +50,7 @@ def printHelp(execName):
 
 	print(f'{execName} -V [symbol]\n\tInformation (details) about a symbol\n')
 
-	print(f'{execName} -B\n\tBinance Informations\n')
+	print(f'{execName} -B\n\tBinance Informations (server time, server status, products)\n')
 
 	print("------------------------------------------------------------------------")
 	print("4) Miscellaneous:")
@@ -398,54 +398,60 @@ def printAccountXLS(accBalance):
 
 # ----------------------------------------------------------------------------
 
+def printSystemStatusXLS(sst):
+	print(f"{sst['msg']}\t{'normal' if sst['status'] == 0 else 'system maintenance'}")
+
 def printSystemStatus(sst):
 	print(f"Message: [{sst['msg']}]")
 	print(f"Status.: [{'normal' if sst['status'] == 0 else 'system maintenance'}]")
 
+# ----------------------------------------------------------------------------
+
+def printServerTimeXLS(st):
+	print(f"{BU.completeMilliTime(st['serverTime'])}")
+
 def printServerTime(st):
 	print(f"Server Time: [{BU.completeMilliTime(st['serverTime'])}]")
 
-def printProducts(product):
-	'''
-	{'data': [
-	          {'symbol': 'BNBBTC', 'quoteAssetName': 'Bitcoin', 'tradedMoney': 1814.23206299, 'baseAssetUnit': '', 'baseAssetName': 'BNB', 'baseAsset': 'BNB', 'tickSize': '0.0000001', 'prevClose': 0.0020042, 'activeBuy': 0.0, 'high': '0.0020225', 'lastAggTradeId': -1, 'low': '0.0019469', 'matchingUnitType': 'STANDARD', 'close': '0.0019783', 'quoteAsset': 'BTC', 'productType': None, 'parentMarket': 'BTC', 'active': True, 'minTrade': 0.01, 'activeSell': 914334.85, 'withdrawFee': '0', 'market': 'BTC', 'volume': '914334.8500000', 'marketName': 'BTC', 'decimalPlaces': 8, 'parentMarketName': 'BTC', 'quoteAssetUnit': '฿', 'open': '0.0020042', 'status': 'TRADING', 'minQty': 1e-08},
-	          {'symbol': 'NULSBTC', 'quoteAssetName': 'Bitcoin', 'tradedMoney': 22.35117625, 'baseAssetUnit': '', 'baseAssetName': 'Nuls', 'baseAsset': 'NULS', 'tickSize': '0.00000001', 'prevClose': 2.552e-05, 'activeBuy': 0.0, 'high': '0.00002671', 'lastAggTradeId': -1, 'low': '0.00002468', 'matchingUnitType': 'STANDARD', 'close': '0.00002616', 'quoteAsset': 'BTC', 'productType': None, 'parentMarket': 'BTC', 'active': True, 'minTrade': 1.0, 'activeSell': 874238.0, 'withdrawFee': '0', 'market': 'BTC', 'volume': '874238.00000000', 'marketName': 'BTC', 'decimalPlaces': 8, 'parentMarketName': 'BTC', 'quoteAssetUnit': '฿', 'open': '0.00002552', 'status': 'TRADING', 'minQty': 1e-08},
-	          {'symbol': 'NEOBTC', 'quoteAssetName': 'Bitcoin', 'tradedMoney': 198.29881343, 'baseAssetUnit': '', 'baseAssetName': 'NEO', 'baseAsset': 'NEO', 'tickSize': '0.000001', 'prevClose': 0.001056, 'activeBuy': 0.0, 'high': '0.001059', 'lastAggTradeId': -1, 'low': '0.001015', 'matchingUnitType': 'STANDARD', 'close': '0.001025', 'quoteAsset': 'BTC', 'productType': None, 'parentMarket': 'BTC', 'active': True, 'minTrade': 0.01, 'activeSell': 191092.6, 'withdrawFee': '0', 'market': 'BTC', 'volume': '191092.600000', 'marketName': 'BTC', 'decimalPlaces': 8, 'parentMarketName': 'BTC', 'quoteAssetUnit': '฿', 'open': '0.001056', 'status': 'TRADING', 'minQty': 1e-08},
-	          {'symbol': 'NULSETH', 'quoteAssetName': 'Ethereum', 'tradedMoney': 52.18513774, 'baseAssetUnit': '', 'baseAssetName': 'Nuls', 'baseAsset': 'NULS', 'tickSize': '0.00000001', 'prevClose': 0.00106059, 'activeBuy': 0.0, 'high': '0.00110407', 'lastAggTradeId': -1, 'low': '0.00103266', 'matchingUnitType': 'STANDARD', 'close': '0.00109029', 'quoteAsset': 'ETH', 'productType': None, 'parentMarket': 'ALTS', 'active': True, 'minTrade': 1.0, 'activeSell': 49307.0, 'withdrawFee': '0', 'market': 'ETH', 'volume': '49307.00000000', 'marketName': 'ETH', 'decimalPlaces': 8, 'parentMarketName': 'ALTS', 'quoteAssetUnit': 'Ξ', 'open': '0.00106059', 'status': 'TRADING', 'minQty': 1e-08},
+# ----------------------------------------------------------------------------
 
-'symbol'
-'quoteAssetName'
-'tradedMoney'
-'baseAssetUnit'
-'baseAssetName'
-'baseAsset'
-'tickSize'
-'prevClose'
-'activeBuy'
-'high'
-'lastAggTradeId'
-'low'
-'matchingUnitType'
-'close'
-'quoteAsset'
-'productType'
-'parentMarket'
-'active'
-'minTrade'
-'activeSell'
-'withdrawFee'
-'market'
-'volume'
-'marketName'
-'decimalPlaces'
-'parentMarketName'
-'quoteAssetUnit'
-'open'
-'status'
-'minQty'
-	'''
+def printProductsXLSHEADER():
+	print("Symbol\tQuote Asset Name\tTraded Money\tBase Asset Unit\tBase Asset Name\tBase Asset\tTick Size\tPrev Close\tActive Buy\tHigh\tLow\tMatching Unit Type\tClose\tQuote Asset\tProduct Type\tOpen\tStatus\tActive\tMin Trade\tMin Qty\tActive Sell\tLast Aggregate Trade Id\tWithdraw Fee\tMarket\tVolume\tMarket Name\tDecimal Places\tParent Market\tParent Market Name\tQuote Asset Unit") 
 
-	pass
+def printProductsXLS(product):
+	print(f"{product['symbol']}\t{product['quoteAssetName']}\t{product['tradedMoney']}\t{product['baseAssetUnit']}\t{product['baseAssetName']}\t{product['baseAsset']}\t{product['tickSize']}\t{product['prevClose']}\t{product['activeBuy']}\t{product['high']}\t{product['low']}\t{product['matchingUnitType']}\t{product['close']}\t{product['quoteAsset']}\t{product['productType']}\t{product['open']}\t{product['status']}\t{product['active']}\t{product['minTrade']}\t{product['minQty']}\t{product['activeSell']}\t{product['lastAggTradeId']}\t{product['withdrawFee']}\t{product['market']}\t{product['volume']}\t{product['marketName']}\t{product['decimalPlaces']}\t{product['parentMarket']}\t{product['parentMarketName']}\t{product['quoteAssetUnit']}")
+
+def printProducts(product, seq, tot):
+	print(f"{seq}/{tot}) Symbol: [{product['symbol']}]")
+	print(f"\tQuote Asset Name.......: [{product['quoteAssetName']}]")
+	print(f"\tTraded Money...........: [{product['tradedMoney']}]")
+	print(f"\tBase Asset Unit........: [{product['baseAssetUnit']}]")
+	print(f"\tBase Asset Name........: [{product['baseAssetName']}]")
+	print(f"\tBase Asset.............: [{product['baseAsset']}]")
+	print(f"\tTick Size..............: [{product['tickSize']}]")
+	print(f"\tPrev Close.............: [{product['prevClose']}]")
+	print(f"\tActive Buy.............: [{product['activeBuy']}]")
+	print(f"\tHigh...................: [{product['high']}]")
+	print(f"\tLow....................: [{product['low']}]")
+	print(f"\tMatching Unit Type.....: [{product['matchingUnitType']}]")
+	print(f"\tClose..................: [{product['close']}]")
+	print(f"\tQuote Asset............: [{product['quoteAsset']}]")
+	print(f"\tProduct Type...........: [{product['productType']}]")
+	print(f"\tOpen...................: [{product['open']}]")
+	print(f"\tStatus.................: [{product['status']}]")
+	print(f"\tActive.................: [{product['active']}]")
+	print(f"\tMin Trade..............: [{product['minTrade']}]")
+	print(f"\tMin Qty................: [{product['minQty']}]")
+	print(f"\tActive Sell............: [{product['activeSell']}]")
+	print(f"\tLast Aggregate Trade Id: [{product['lastAggTradeId']}]")
+	print(f"\tWithdraw Fee...........: [{product['withdrawFee']}]")
+	print(f"\tMarket.................: [{product['market']}]")
+	print(f"\tVolume.................: [{product['volume']}]")
+	print(f"\tMarket Name............: [{product['marketName']}]")
+	print(f"\tDecimal Places.........: [{product['decimalPlaces']}]")
+	print(f"\tParent Market..........: [{product['parentMarket']}]")
+	print(f"\tParent Market Name.....: [{product['parentMarketName']}]")
+	print(f"\tQuote Asset Unit.......: [{product['quoteAssetUnit']}]")
 
 # ----------------------------------------------------------------------------
 

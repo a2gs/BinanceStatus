@@ -23,9 +23,6 @@ def binanceInfo(client):
 		BU.errPrint(f"Erro at client.get_system_status() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return
 
-	print("Server Status:")
-	BP.printSystemStatus(sst)
-
 	try:
 		st = client.get_server_time()
 	except BinanceRequestException as e:
@@ -35,11 +32,8 @@ def binanceInfo(client):
 		BU.errPrint(f"Erro at client.get_server_time() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return
 
-	print("\nTime:")
-	BP.printServerTime(st)
-
 	try:
-		p = client.get_products()
+		prodct = client.get_products()
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_products() BinanceRequestException: [{e.status_code} - {e.message}]")
 		return
@@ -47,8 +41,27 @@ def binanceInfo(client):
 		BU.errPrint(f"Erro at client.get_products() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return
 
-	print("\nProducts:")
-	BP.printProducts(p)
+	if BU.getExportXLS() == True:
+		print("Server Status")
+		BP.printSystemStatusXLS(sst)
+
+		print("\nTime")
+		BP.printServerTimeXLS(st)
+
+		print("\nProducts")
+		BP.printProductsXLSHEADER()
+		[BP.printProductsXLS(n) for n in prodct['data']]
+
+	else:
+		print("Server Status:")
+		BP.printSystemStatus(sst)
+
+		print("\nTime:")
+		BP.printServerTime(st)
+
+		print("\nProducts:")
+		totProdct = len(prodct['data'])
+		[BP.printProducts(n, i, totProdct) for i, n in enumerate(prodct['data'], 1)]
 
 def accountInfos(client):
 	try:
