@@ -39,7 +39,7 @@ def errPrint(*args, **kwargs):
 
 def askConfirmation() -> bool:
 	if getConfirmationYES() == False:
-		conf = input("Confirm Order? [N / y]")
+		conf = input("Confirm Order? (N/y)")
 
 		if conf != 'Y' and conf != 'y':
 			print("CANCELED!")

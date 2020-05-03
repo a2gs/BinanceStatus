@@ -10,9 +10,13 @@ import binanceUtil as BU
 def printHelp(execName):
 	print("------------------------------------------------------------------------")
 	print("1) Account:")
-	print(f'{execName} -h [symbol]\n\tAccount history (trades, dusts, etc)\n')
-	print(f'{execName} -i\n\tWallet/Account information (open orders)\n')
-	print(f'{execName} -d\n\tAccount details (fees)\n')
+	print(f"{execName} -h [symbol]\n\tAccount history (trades, dusts, etc)\n")
+	print(f"{execName} -i\n\tWallet/Account information (open orders)\n")
+	print(f"{execName} -D\n\tAccount details (fees)\n")
+	print(f"{execName} -d [Asset]\n\tDeposit address (Asset = 'BTC')\n")
+	print(f"{execName} -dh [Asset]\n\tDeposit history (Asset can be null)\n")
+	print(f"{execName} -w [Asset] [Address] [Amount]\n\tSubmit a withdraw request\n")
+	print(f"{execName} -wh [Asset]\n\tWithdraw history (Asset can be null)\n")
 
 	print("------------------------------------------------------------------------")
 	print("2) Trade:")
@@ -56,6 +60,62 @@ def printHelp(execName):
 	print("4) Miscellaneous:")
 	print(f'{execName} [...] --xls >> output.xls\n\tOutput with TAB separator\n')
 	print(f'{execName} [...] -Y\n\tForce ALL CONFIRMATIONS = YES\n')
+
+# ----------------------------------------------------------------------------
+
+def printWithdrawResponseXLSHEADER():
+	print("Message\tSuccess\tId")
+
+def printWithdrawResponseXLS(withdrawReq):
+	print(f"{withdrawReq['msg']}\t{withdrawReq['success']}\t{withdrawReq['id']}")
+
+def printWithdrawResponse(withdrawReq):
+	print(f"Message: [{withdrawReq['msg']}]")
+	print(f"Success: [{withdrawReq['success']}]")
+	print(f"Id.....: [{withdrawReq['id']}]")
+
+# ----------------------------------------------------------------------------
+
+def printWithdrawHistoryXLSHEADER():
+	print("Amount\tAsset\tAddress\tApply Time\tStatus")
+
+def printWithdrawHistoryXLS(withdraw):
+	print(f"{withdraw['amount']}\t{withdraw['asset']}\t{withdraw['address']}\t{BU.completeMilliTime(withdraw['insertTime'])}\t{withdraw['status']}")
+
+def printWithdrawHistory(withdraw):
+	print(f"Asset: [{withdraw['asset']}]")
+	print(f"\tAmount.....: [{withdraw['amount']}]")
+	print(f"\tAddress....: [{withdraw['address']}]")
+	print(f"\tApply Time.: [{BU.completeMilliTime(withdraw['applyTime'])}]")
+	print(f"\tStatus.....: [{withdraw['status']}]")
+
+# ----------------------------------------------------------------------------
+
+def printDepositHistoryXLSHEADER():
+	print("Amount\tAsset\tInsert Time\tStatus")
+
+def printDepositHistoryXLS(deposits):
+	print(f"{deposits['amount']}\t{deposits['asset']}\t{BU.completeMilliTime(deposits['insertTime'])}\t{deposits['status']}")
+
+def printDepositHistory(deposits):
+	print(f"Asset: [{deposits['asset']}]")
+	print(f"\tAmount.....: [{deposits['amount']}]")
+	print(f"\tInsert Time: [{BU.completeMilliTime(deposits['insertTime'])}]")
+	print(f"\tStatus.....: [{deposits['status']}]")
+
+# ----------------------------------------------------------------------------
+
+def printDepositAddress(depAdd):
+	print(f"Asset......: [{depAdd['asset']}]")
+	print(f"Address....: [{depAdd['address']}]")
+	print(f"Success....: [{depAdd['success']}]")
+	print(f"Address Tag: [{depAdd['addressTag']}]")
+
+def printDepositAddressXLSHEADER():
+	print("Asset\tAddress\tSuccess\tAddress Tag")
+
+def printDepositAddressXLS(depAdd):
+	print(f"{depAdd['asset']}\t{depAdd['address']}\t{depAdd['success']}\t{depAdd['addressTag']}")
 
 # ----------------------------------------------------------------------------
 

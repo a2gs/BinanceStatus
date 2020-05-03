@@ -183,6 +183,112 @@ def accountInfos(client):
 
 # ---------------------------------------------------
 
+def withdrawRequest(client, ass = '', addr = '', amnt = 0):
+	print("Withdraw")
+
+	if BU.getExportXLS() == True:
+		print("Asset\tAddress\tAmount")
+		print(f"{ass}\t{addr}\t{amnt}")
+	else:
+		print(f"Asset..: [{ass}]")
+		print(f"Address: [{addr}]")
+		print(f"Amount.: [{amnt}]")
+
+	if BU.askConfirmation() == False:
+		return None
+
+	try:
+		withdrawReq = client.withdraw(asset = ass, address = addr, amount = amnt)
+
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at withdraw BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at withdraw BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceWithdrawException as e:
+		BU.errPrint(f"Erro at withdraw BinanceWithdrawException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint(f"Erro at withdraw")
+		return
+
+	if BU.getExportXLS() == True:
+		BP.printWithdrawResponseXLSHEADER()
+		BP.printWithdrawResponseXLS(withdrawReq)
+	else:
+		BP.printWithdrawResponse(withdrawReq)
+
+def withdrawHistory(client, ass = ''):
+	print("Withdraw History")
+
+	try:
+		withdraw = client.get_withdraw_history(asset = ass)
+
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_withdraw_history() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_withdraw_history() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_withdraw_history()")
+		return
+
+	if BU.getExportXLS() == True:
+		BP.printWithdrawHistoryXLSHEADER()
+		[BP.printWithdrawHistoryXLS(n) for n in withdraw['withdrawList']]
+	else:
+		[BP.printWithdrawHistory(n) for n in withdraw['withdrawList']]
+
+# ---------------------------------------------------
+
+def depositHistory(client, ass = ''):
+	print("Deposit History")
+
+	try:
+		deposits = client.get_deposit_history(asset = ass)
+
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_deposit_history() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_deposit_history() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_deposit_history()")
+		return
+
+	if BU.getExportXLS() == True:
+		BP.printDepositHistoryXLSHEADER()
+		[BP.printDepositHistoryXLS(n) for n in deposits['depositList']]
+	else:
+		[BP.printDepositHistory(n) for n in deposits['depositList']]
+
+def depositAddress(client, ass):
+	print("Deposit Address")
+
+	try:
+		depAdd = client.get_deposit_address(asset = ass)
+
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_deposit_address() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_deposit_address() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_deposit_address()")
+		return
+
+	if BU.getExportXLS() == True:
+		BP.printDepositAddressXLSHEADER()
+		BP.printDepositAddressXLS(depAdd)
+	else:
+		BP.printDepositAddress(depAdd)
+
+# ---------------------------------------------------
+
 def accountHistory(client, symb):
 	try:
 		tradeHist = client.get_my_trades(symbol=symb)
@@ -240,7 +346,10 @@ def accountDetails(client):
 		assDet = client.get_asset_details()
 		tradFee = client.get_trade_fee()
 	except BinanceWithdrawException as e:
-		BU.errPrint(f"Erro BinanceWithdrawException: [{e.status_code} - {e.message}]")
+		BU.errPrint(f"Erro get_asset_details and get_trade_fee BinanceWithdrawException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint(f"Erro get_asset_details and get_trade_fee")
 		return
 
 	if BU.getExportXLS() == True:
@@ -447,7 +556,7 @@ if __name__ == '__main__':
 		accountHistory(client, sys.argv[2])
 
 	# Account details (fees)
-	elif sys.argv[1] == "-d" and len(sys.argv) == 2:
+	elif sys.argv[1] == "-D" and len(sys.argv) == 2:
 		accountDetails(client)
 
 	# Rate limits and list of symbols
@@ -465,6 +574,28 @@ if __name__ == '__main__':
 	# 24 hour price change statistics
 	elif sys.argv[1] == "-p" and len(sys.argv) == 2:
 		h24PriceChangeStats(client)
+
+	# Deposit address
+	elif sys.argv[1] == "-d" and len(sys.argv) == 3:
+		depositAddress(client, sys.argv[2])
+
+	# Deposit history
+	elif sys.argv[1] == "-dh" and (len(sys.argv) == 3 or len(sys.argv) == 2):
+		if len(sys.argv) == 3:
+			depositHistory(client, sys.argv[2])
+		else:
+			depositHistory(client)
+
+	# Withdraw
+	elif sys.argv[1] == "-w" and len(sys.argv) == 5:
+		withdrawRequest(client, ass = sys.argv[2], addr = sys.argv[3], amnt = sys.argv[4])
+
+	# Withdraw history
+	elif sys.argv[1] == "-wh" and (len(sys.argv) == 3 or len(sys.argv) == 2):
+		if len(sys.argv) == 3:
+			withdrawHistory(client, sys.argv[2])
+		else:
+			withdrawHistory(client)
 
 	# SPOT Buy order
 	elif sys.argv[1] == "-b" and len(sys.argv) > 2:
