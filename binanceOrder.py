@@ -24,7 +24,101 @@ def getTestOrder() -> bool:
 
 # ---------------------------------------------------
 
-def binancePlaceSPOTOCOOrder(symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prcStopOrd = 0.0, prcStopLimitOrd = 0.0, sideOrd = 0):
+def cancel_a_spot_order(client, symbOrd = '', ordrid = 0) -> bool:
+	print(f"Cancel SPOT Order Id [{ordrid}] with Symbol [{symbOrd}]")
+
+	if BU.askConfirmation() == False:
+		return True
+
+	# TESTING
+	global LOCK
+	if LOCK == True:
+		print("PROGRAM LOCKED BY SECURITY!")
+		return False
+
+	try:
+		cancOrd = client.cancel_order(symbol = symbOrd, orderId = ordrid)
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.cancel_order() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return False
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.cancel_order() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return False
+	except:
+		BU.errPrint("Erro at client.cancel_order()")
+		return False
+
+	print("Cancellation return")
+	if BU.getExportXLS() == True:
+		print("Symbol\tOriginal Client Order Id\tOrder Id\tOrder List Id (OCO info)\tClient Order Id\tPrice\tOriginal Qtd\tExecuted Qty\tCummulative Quote Qty\tStatus\tTime In Force\tType\tSide")
+		print(f"{cancOrd['symbol']}\t{cancOrd['origClientOrderId']}\t{cancOrd['orderId']}\t{cancOrd['orderListId']}\t{cancOrd['clientOrderId']}\t{cancOrd['price']}\t{cancOrd['origQty']}\t{cancOrd['executedQty']}\t{cancOrd['cummulativeQuoteQty']}\t{cancOrd['status']}\t{cancOrd['timeInForce']}\t{cancOrd['timeInForce']}\t{cancOrd['type']}\t{cancOrd['side']}")
+
+	else:
+		print(f"Symbol..................: [{cancOrd['symbol']}]")
+		print(f"Original Client Order Id: [{cancOrd['origClientOrderId']}]")
+		print(f"Order Id................: [{cancOrd['orderId']}]")
+		print(f"Order List Id (OCO info): [{cancOrd['orderListId']}]")
+		print(f"Client Order Id.........: [{cancOrd['clientOrderId']}]")
+		print(f"Price...................: [{cancOrd['price']}]")
+		print(f"Original Qtd............: [{cancOrd['origQty']}]")
+		print(f"Executed Qty............: [{cancOrd['executedQty']}]")
+		print(f"Cummulative Quote Qty...: [{cancOrd['cummulativeQuoteQty']}]")
+		print(f"Status..................: [{cancOrd['status']}]")
+		print(f"Time In Force...........: [{cancOrd['timeInForce']}]")
+		print(f"Type....................: [{cancOrd['type']}]")
+		print(f"Side....................: [{cancOrd['side']}]")
+
+	return True	
+
+def cancel_a_margin_order(client, symbOrd = '', ordrid = 0) -> bool:
+	print(f"Cancel Margin Order Id [{ordrid}] with Symbol [{symbOrd}]")
+
+	if BU.askConfirmation() == False:
+		return True
+
+	# TESTING
+	global LOCK
+	if LOCK == True:
+		print("PROGRAM LOCKED BY SECURITY!")
+		return False
+
+	try:
+		cancOrd = client.cancel_margin_order(symbol = symbOrd, orderId = ordrid)
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.cancel_margin_order() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return False
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.cancel_margin_order() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return False
+	except:
+		BU.errPrint("Erro at client.cancel_margin_order()")
+		return False
+
+	print("Cancellation return")
+	if BU.getExportXLS() == True:
+		print("Symbol\tOriginal Client Order Id\tOrder Id\tClient Order Id\tTransact Time\tPrice\tOriginal Qtd\tExecuted Qty\tCummulative Quote Qty\tStatus\tTime In Force\tType\tSide")
+		print(f"{cancOrd['symbol']}\t{cancOrd['origClientOrderId']}\t{cancOrd['orderId']}\t{cancOrd['clientOrderId']}\t{BU.completeMilliTime(cancOrd['transactTime'])}\t{cancOrd['price']}\t{cancOrd['origQty']}\t{cancOrd['executedQty']}\t{cancOrd['cummulativeQuoteQty']}\t{cancOrd['status']}\t{cancOrd['timeInForce']}\t{cancOrd['timeInForce']}\t{cancOrd['type']}\t{cancOrd['side']}")
+
+	else:
+		print(f"Symbol..................: [{cancOrd['symbol']}]")
+		print(f"Original Client Order Id: [{cancOrd['origClientOrderId']}]")
+		print(f"OrderId.................: [{cancOrd['orderId']}]")
+		print(f"Client Order Id.........: [{cancOrd['clientOrderId']}]")
+		print(f"Transact Time...........: [{BU.completeMilliTime(cancOrd['transactTime'])}]")
+		print(f"Price...................: [{cancOrd['price']}]")
+		print(f"Original Qtd............: [{cancOrd['origQty']}]")
+		print(f"Executed Qty............: [{cancOrd['executedQty']}]")
+		print(f"Cummulative Quote Qty...: [{cancOrd['cummulativeQuoteQty']}]")
+		print(f"Status..................: [{cancOrd['status']}]")
+		print(f"Time In Force...........: [{cancOrd['timeInForce']}]")
+		print(f"Type....................: [{cancOrd['type']}]")
+		print(f"Side....................: [{cancOrd['side']}]")
+
+	return True	
+
+# ---------------------------------------------------
+
+def binancePlaceSPOTOCOOrder(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prcStopOrd = 0.0, prcStopLimitOrd = 0.0, sideOrd = 0):
 
 	if BU.askConfirmation() == False:
 		return None
@@ -60,7 +154,7 @@ def binancePlaceSPOTOCOOrder(symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prcStopOrd 
 	except BinanceOrderUnknownSymbolException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
 	except BinanceOrderInactiveSymbolException as e:
-		BU.errPrint(f"Erro create_oco_order BinanceRequestException: [{e.status_code} - {e.message}]")
+		BU.errPrint(f"Erro create_oco_order BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 	else:
 		return order
 	finally:
@@ -218,7 +312,8 @@ def sellStopOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0) -> boo
 		print(f"Stop Price: [{stopprice}]")
 
 	try:
-		order = binancePlaceSPOTOCOOrder(symbOrd         = symb,
+		order = binancePlaceSPOTOCOOrder(client,
+		                                 symbOrd         = symb,
 		                                 qtdOrd          = qtd,
 		                                 prcOrd          = prc,
 		                                 prcStopOrd      = stopprice,
@@ -246,7 +341,8 @@ def buyStopOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0) -> bool
 		print(f"Stop Price: [{stopprice}]")
 
 	try:
-		order = binancePlaceSPOTOCOOrder(symbOrd         = symb,
+		order = binancePlaceSPOTOCOOrder(client,
+		                                 symbOrd         = symb,
 		                                 qtdOrd          = qtd,
 		                                 prcOrd          = prc,
 		                                 prcStopOrd      = stopprice,

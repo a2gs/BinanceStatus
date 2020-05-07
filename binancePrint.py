@@ -8,11 +8,15 @@
 import binanceUtil as BU
 
 def printHelp(execName):
+	print("[asset] = BTC, BNB, ETH ... | [symbol] = BTCUSDT, BNBBTC, ...")
 	print("------------------------------------------------------------------------")
-	print("1) Account:")
+	print("1.1) Account")
+	print(f"{execName} -D\n\tAccount details (fees, assets, etc)\n")
 	print(f"{execName} -h [symbol]\n\tAccount history (trades, dusts, etc)\n")
-	print(f"{execName} -i\n\tWallet/Account information (open orders)\n")
-	print(f"{execName} -D\n\tAccount details (fees)\n")
+#print(f"{execName} -hm [symbol]\n\tAccount history (trades, dusts, etc)\n")
+	print(f"{execName} -i\n\tWallet/Account SPOT and MARGIN information (details, open orders, etc)\n")
+
+	print("1.2) Deposit/Withdraw")
 	print(f"{execName} -d [Asset]\n\tDeposit address (Asset = 'BTC')\n")
 	print(f"{execName} -dh [Asset]\n\tDeposit history (Asset can be null)\n")
 	print(f"{execName} -w [Asset] [Address] [Amount]\n\tSubmit a withdraw request\n")
@@ -20,6 +24,7 @@ def printHelp(execName):
 
 	print("------------------------------------------------------------------------")
 	print("2) Trade:")
+	print("2.1) SPOT")
 	print(f'{execName} -s\n\tPlace a SPOT sell order')
 	print(f'\t\t{execName} -s MARKET [symbol] [qtd]')
 	print(f'\t\t{execName} -s LIMIT [symbol] [qtd] [price]')
@@ -30,8 +35,9 @@ def printHelp(execName):
 	print(f'\t\t{execName} -b LIMIT [symbol] [qtd] [price] [--TEST]')
 	print(f'\t\t{execName} -b STOP [symbol] [qtd] [price] [stopPrice]\n')
 
-	print(f'{execName} -c \n\tCancel a SPOT order\n')
+	print(f'{execName} -c [symbol] [order_id]\n\tCancel a SPOT order\n')
 
+	print("2.2) MARGIN")
 	print(f'{execName} -sm\n\tPlace a MARGIN sell order')
 	print(f'\t\t{execName} -sm MARKET [symbol] [qtd] [--TEST]')
 	print(f'\t\t{execName} -sm LIMIT [symbol] [qtd] [price] [--TEST]')
@@ -42,10 +48,12 @@ def printHelp(execName):
 	print(f'\t\t{execName} -bm LIMIT [symbol] [qtd] [price]')
 	print(f'\t\t{execName} -bm STOP [symbol] [qtd] [price] [stopPrice]\n')
 
-	print(f'{execName} -cm \n\tCancel a MARGIN order\n')
+	print(f'{execName} -cm [symbol] [order_id]\n\tCancel a MARGIN order\n')
+
+	print(f'{execName} -ma [asset]\n\tQuery max transfer-out amount\n')
 
 	print("------------------------------------------------------------------------")
-	print("3) Market:")
+	print("3) Binance market:")
 	print(f'{execName} -p \n\t24 hour price change statistics\n')
 
 	print(f'{execName} -l\n\tList of symbols and rate/limits\n')

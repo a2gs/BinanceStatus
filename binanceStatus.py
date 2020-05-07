@@ -31,6 +31,9 @@ def binanceInfo(client):
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_server_time() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return
+	except:
+		BU.errPrint("Erro at client.get_server_time()")
+		return
 
 	try:
 		prodct = client.get_products()
@@ -39,6 +42,9 @@ def binanceInfo(client):
 		return
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_products() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_products()")
 		return
 
 	if BU.getExportXLS() == True:
@@ -131,8 +137,16 @@ def accountInfos(client):
 
 	# MARGIN
 
-	marginInfo = client.get_margin_account()
-	if marginInfo['borrowEnabled'] == False:
+	try:
+		marginInfo = client.get_margin_account()
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_margin_account() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_margin_account() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_margin_account()")
 		return
 
 	print("\n* MARGIN *")
@@ -145,7 +159,8 @@ def accountInfos(client):
 		BP.printMarginAssetsXLSHEADER()
 		[BP.printMarginAssetsXLS(n) for n in marginInfo['userAssets'] if float(n['netAsset']) != 0.0]
 	else:
-		print(f"Margin level..........: [{marginInfo['marginLevel']}]")
+		print(f"Borrow Enabled........: [{marginInfo['borrowEnabled']}]")
+		print(f"Level.................: [{marginInfo['marginLevel']}]")
 		print(f"Total asset of BTC....: [{marginInfo['totalAssetOfBtc']}]")
 		print(f"Total liability of BTC: [{marginInfo['totalLiabilityOfBtc']}]")
 		print(f"Total Net asset of BTC: [{marginInfo['totalNetAssetOfBtc']}]")
@@ -633,9 +648,8 @@ if __name__ == '__main__':
 		else:
 			print("Parameters error for SPOT sell order")
 
-	elif sys.argv[1] == "-c":
-		#cancel_order()
-		print("============== UNDERCONSTRUCTION ==========================")
+	elif sys.argv[1] == "-c" and len(sys.argv) == 4:
+		BO.cancel_a_spot_order(client, sys.argv[2], sys.argv[3])
 
 	# MARGIN Buy order
 	elif sys.argv[1] == "-bm" and len(sys.argv) > 2:
@@ -679,9 +693,8 @@ if __name__ == '__main__':
 		else:
 			print("Parameters error for MARGIN sell order")
 
-	elif sys.argv[1] == "-cm":
-		#cancel_margin_order()
-		print("============== UNDERCONSTRUCTION ==========================")
+	elif sys.argv[1] == "-cm" and len(sys.argv) == 4:
+		BO.cancel_a_margin_order(client, sys.argv[2], sys.argv[3])
 
 	else:
 		print("Parameters error.")
