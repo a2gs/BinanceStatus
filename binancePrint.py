@@ -26,8 +26,8 @@ def printHelp(execName):
 	print("2) Trade:")
 	print("2.1) SPOT")
 	print(f'{execName} -s\n\tPlace a SPOT sell order')
-	print(f'\t\t{execName} -s MARKET [symbol] [qtd]')
-	print(f'\t\t{execName} -s LIMIT [symbol] [qtd] [price]')
+	print(f'\t\t{execName} -s MARKET [symbol] [qtd] [--TEST]')
+	print(f'\t\t{execName} -s LIMIT [symbol] [qtd] [price] [--TEST]')
 	print(f'\t\t{execName} -s STOP [symbol] [qtd] [price] [stopPrice]\n')
 
 	print(f'{execName} -b\n\tPlace a SPOT buy order')
@@ -39,8 +39,8 @@ def printHelp(execName):
 
 	print("2.2) MARGIN")
 	print(f'{execName} -sm\n\tPlace a MARGIN sell order')
-	print(f'\t\t{execName} -sm MARKET [symbol] [qtd] [--TEST]')
-	print(f'\t\t{execName} -sm LIMIT [symbol] [qtd] [price] [--TEST]')
+	print(f'\t\t{execName} -sm MARKET [symbol] [qtd]')
+	print(f'\t\t{execName} -sm LIMIT [symbol] [qtd] [price]')
 	print(f'\t\t{execName} -sm STOP [symbol] [qtd] [price] [stopPrice]\n')
 
 	print(f'{execName} -bm\n\tPlace a MARGIN buy order')
@@ -626,7 +626,7 @@ def print_OL_Buy_PlacedOrder(order):
 def print_OM_Buy_PlacedOrder(order):
 	printPlacedOrder(order)
 
-def print_Margin_PlacedOrder(order):
+def print_Margin_Order(order):
 	printPlacedOrder(order)
 
 def printPlacedOrder(order):

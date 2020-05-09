@@ -359,18 +359,19 @@ def buyStopOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0) -> bool
 
 # ---------------------------------------------------
 
-def orderMargin(symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0):
+def orderMargin(symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0, prcStop = 0.0):
 	print("MARGIN Order")
 
 	if BU.getExportXLS() == True:
-		print("Symbol\tSide\tQuantity\tPrice\tType")
-		print(f"{symbOrd}\t{sideOrd}\t{qtdOrd}\t{priceOrd}\t{typeOrd}]")
+		print("Symbol\tSide\tQuantity\tPrice\tStop Price\tType")
+		print(f"{symbOrd}\t{sideOrd}\t{qtdOrd}\t{priceOrd}\t{prcStop}\t{typeOrd}]")
 	else:
-		print(f"Symbol..: [{symbOrd}]")
-		print(f"Side....: [{sideOrd}]")
-		print(f"Quantity: [{qtdOrd}]")
-		print(f"Price...: [{priceOrd}]")
-		print(f"Type....: [{typeOrd}]")
+		print(f"Symbol....: [{symbOrd}]")
+		print(f"Side......: [{sideOrd}]")
+		print(f"Quantity..: [{qtdOrd}]")
+		print(f"Price.....: [{priceOrd}]")
+		print(f"Stop Price: [{prcStop}]")
+		print(f"Type......: [{typeOrd}]")
 
 	if BU.askConfirmation() == False:
 		return None
@@ -382,12 +383,14 @@ def orderMargin(symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0
 		return None
 
 	try:
-		order = client.create_margin_order(symbol      = symbOrd,
-		                                   side        = BU.binanceSide(sideOrd),
-		                                   type        = BU.binanceOrderType(typeOrd),
-		                                   timeInForce = TIME_IN_FORCE_GTC,
-		                                   quantity    = qtdOrd,
-		                                   price       = prcOrd)
+		order = client.create_margin_order(symbol           = symbOrd,
+		                                   side             = BU.binanceSide(sideOrd),
+		                                   type             = BU.binanceOrderType(typeOrd),
+		                                   timeInForce      = TIME_IN_FORCE_GTC,
+		                                   quantity         = qtdOrd,
+		                                   price            = prcOrd,
+		                                   stopPrice        = prcStop,
+		                                   newOrderRespType = Client.ORDER_RESP_TYPE_FULL)
 
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro create_margin_order BinanceRequestException: [{e.status_code} - {e.message}]")

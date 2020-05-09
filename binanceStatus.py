@@ -656,18 +656,21 @@ if __name__ == '__main__':
 
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
-			#orderMargin()
-			pass
+			orderMargin(symbOrd = sys.argv[3], sideOrd = "BUY",
+			            typeOrd = "MARKET",    qtdOrd  = sys.argv[4],
+			            prcOrd  = 0.0,         prcStop = 0.0)
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			#orderMargin()
-			pass
+			orderMargin(symbOrd = sys.argv[3], sideOrd = "BUY",
+			            typeOrd = "LIMIT",     qtdOrd  = sys.argv[4],
+			            prcOrd  = sys.argv[5], prcStop = 0.0)
 
 		# OCO
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
-			#orderMargin()
-			pass
+			orderMargin(symbOrd = sys.argv[3],   sideOrd = "BUY",
+			            typeOrd = "TAKE_PROFIT", qtdOrd  = sys.argv[4],
+			            prcOrd  = sys.argv[5],   prcStop = sys.argv[6])
 
 		else:
 			print("Parameters error for MARGIN buy order")
@@ -677,18 +680,21 @@ if __name__ == '__main__':
 
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
-			#orderMargin()
-			pass
+			orderMargin(symbOrd = sys.argv[3], sideOrd = "SELL",
+			            typeOrd = "MARKET",    qtdOrd  = sys.argv[4],
+			            prcOrd  = 0.0,         prcStop = 0.0)
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			#orderMargin()
-			pass
+			orderMargin(symbOrd = sys.argv[3], sideOrd = "SELL",
+			            typeOrd = "LIMIT",     qtdOrd  = sys.argv[4],
+			            prcOrd  = sys.argv[5], prcStop = 0.0)
 
 		# OCO
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
-			#orderMargin()
-			pass
+			orderMargin(symbOrd = sys.argv[3], sideOrd = "SELL",
+			            typeOrd = "STOP_LOSS", qtdOrd  = sys.argv[4],
+			            prcOrd  = sys.argv[5], prcStop = sys.argv[6])
 
 		else:
 			print("Parameters error for MARGIN sell order")
