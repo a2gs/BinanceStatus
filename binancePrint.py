@@ -15,6 +15,7 @@ def printHelp(execName):
 	print(f"{execName} -h [symbol]\n\tAccount history (trades, dusts, etc)\n")
 #print(f"{execName} -hm [symbol]\n\tAccount history (trades, dusts, etc)\n")
 	print(f"{execName} -i\n\tWallet/Account SPOT and MARGIN information (details, open orders, etc)\n")
+	print(f"{execName} -ba [asset]\n\tAccount balance by asset\n")
 
 	print("1.2) Deposit/Withdraw")
 	print(f"{execName} -d [Asset]\n\tDeposit address (Asset = 'BTC')\n")
@@ -51,6 +52,9 @@ def printHelp(execName):
 	print(f'{execName} -cm [symbol] [order_id]\n\tCancel a MARGIN order\n')
 
 	print(f'{execName} -ma [asset]\n\tQuery max transfer-out amount\n')
+
+	print(f'{execName} -mi [asset] [amount]\n\tExecute transfer between spot account and margin account')
+	print(f'{execName} -mo [asset] [amount]\n\tExecute transfer between margin account and spot account\n')
 
 	print("------------------------------------------------------------------------")
 	print("3) Binance market:")

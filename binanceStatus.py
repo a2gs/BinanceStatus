@@ -480,6 +480,31 @@ def transfMarginToSpot(client, ass = '', ap = '0.0'):
 
 # ---------------------------------------------------
 
+def balanceAccAsset(client, ass = ''):
+	print(f"Account balance for asset [{ass}]")
+
+	try:
+		ba = client.get_asset_balance(asset = ass)
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_asset_balance() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_asset_balance() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_asset_balance()")
+		return
+
+	if BU.getExportXLS() == True:
+		print("Asset\tFree\tLocked")
+		print(f"{ba['asset']}\t{ba['free']}\t{ba['locked']}")
+	else:
+		print(f"Asset.: [{ba['asset']}]")
+		print(f"Free..: [{ba['free']}]")
+		print(f"Locked: [{ba['locked']}]")
+
+# ---------------------------------------------------
+
 def infoDetailsSymbol(client, symb):
 	try:
 		si = client.get_symbol_info(symb)
@@ -597,6 +622,10 @@ if __name__ == '__main__':
 	# Binance Info
 	if sys.argv[1] == "-B" and len(sys.argv) == 2:
 		binanceInfo(client)
+
+	# Asset balance
+	elif sys.argv[1] == "-ba" and len(sys.argv) == 3:
+		balanceAccAsset(client, sys.argv[2])
 
 	# Wallet/Account information
 	elif sys.argv[1] == "-i" and len(sys.argv) == 2:
