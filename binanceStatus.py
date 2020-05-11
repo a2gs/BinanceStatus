@@ -444,6 +444,42 @@ def listSymbolsRateLimits(client):
 
 # ---------------------------------------------------
 
+def transfSpotToMargin(client, ass = '', ap = '0.0'):
+	print(f"Tranfering [{ap}] of [{ass}] from Spot to Margin account")
+
+	try:
+		transfer = client.transfer_spot_to_margin(asset = ass, amount = ap)	
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.transfer_spot_to_margin() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.transfer_spot_to_margin() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.transfer_spot_to_margin()")
+		return
+
+	print("Return Ok. Spot to Margin transaction Id: [{transfer['tranId']}] ")
+
+def transfMarginToSpot(client, ass = '', ap = '0.0'):
+	print(f"Tranfering [{ap}] of [{ass}] from Margin to Spot account")
+
+	try:
+		transfer = client.transfer_margin_to_spot(asset = ass, amount = ap)	
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.transfer_margin_to_spot() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.transfer_margin_to_spot() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.transfer_margin_to_spot()")
+		return
+
+	print("Return Ok. Margin to Spot transaction Id: [{transfer['tranId']}] ")
+
+# ---------------------------------------------------
+
 def infoDetailsSymbol(client, symb):
 	try:
 		si = client.get_symbol_info(symb)
@@ -611,6 +647,14 @@ if __name__ == '__main__':
 			withdrawHistory(client, sys.argv[2])
 		else:
 			withdrawHistory(client)
+
+	# Transfer between spot account to margin account
+	elif sys.argv[1] == "-mi" and len(sys.argv) == 4:
+		transfSpotToMargin(client, ass = sys.argv[2], ap = sys.argv[3])
+
+	# Transfer between margin account to spot account
+	elif sys.argv[1] == "-mo" and len(sys.argv) == 4:
+		transfMarginToSpot(client, ass = sys.argv[2], ap = sys.argv[3])
 
 	# SPOT Buy order
 	elif sys.argv[1] == "-b" and len(sys.argv) > 2:
