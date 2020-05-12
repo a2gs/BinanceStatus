@@ -8,12 +8,11 @@
 import binanceUtil as BU
 
 def printHelp(execName):
-	print("[asset] = BTC, BNB, ETH ... | [symbol] = BTCUSDT, BNBBTC, ...")
+	print("[asset] = BTC, USDT, BNB, ETH ... | [symbol] = BTCUSDT, BNBBTC, ...")
 	print("------------------------------------------------------------------------")
 	print("1.1) Account")
 	print(f"{execName} -D\n\tAccount details (fees, assets, etc)\n")
 	print(f"{execName} -h [symbol]\n\tAccount history (trades, dusts, etc)\n")
-#print(f"{execName} -hm [symbol]\n\tAccount history (trades, dusts, etc)\n")
 	print(f"{execName} -i\n\tWallet/Account SPOT and MARGIN information (details, open orders, etc)\n")
 	print(f"{execName} -ba [asset]\n\tAccount balance by asset\n")
 
@@ -58,7 +57,8 @@ def printHelp(execName):
 
 	print("------------------------------------------------------------------------")
 	print("3) Binance market:")
-	print(f'{execName} -p \n\t24 hour price change statistics\n')
+	print(f'{execName} -p\n\t24 hour price change statistics\n')
+	print(f'{execName} -pa [symbol]\n\tCurrent average price for a symbol\n')
 
 	print(f'{execName} -l\n\tList of symbols and rate/limits\n')
 

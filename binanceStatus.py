@@ -527,6 +527,28 @@ def infoDetailsSymbol(client, symb):
 		BP.printListSymbols(si)
 
 # ---------------------------------------------------
+def averagePrice(client, symb = ''):
+	print("Current average price for a symbol")
+
+	try:
+		pa = client.get_avg_price(symbol = symb)
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_avg_price() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_avg_price() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_avg_price()")
+		return
+
+	if BU.getExportXLS() == True:
+		print("Symbol\tPrice\tMins")
+		print(f"{symb}\t{pa['price']}\t{pa['mins']}")
+	else:
+		print(f"Symbol...: [{symb}]")
+		print(f"Price....: [{pa['price']}]")
+		print(f"Mins.....: [{pa['mins']}]")
 
 def h24PriceChangeStats(client):
 
@@ -654,6 +676,10 @@ if __name__ == '__main__':
 	# 24 hour price change statistics
 	elif sys.argv[1] == "-p" and len(sys.argv) == 2:
 		h24PriceChangeStats(client)
+
+	# Current average price for a symbol
+	elif sys.argv[1] == "-pa" and len(sys.argv) == 3:
+		averagePrice(client, sys.argv[2])
 
 	# Deposit address
 	elif sys.argv[1] == "-d" and len(sys.argv) == 3:
