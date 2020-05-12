@@ -184,7 +184,6 @@ def accountInfos(client):
 	totOpenMarginOrder = len(openMarginOrders)
 
 	if totOpenMarginOrder != 0:
-		print("");
 		if   totOpenMarginOrder == 1: print("Open margin order:")
 		elif totOpenMarginOrder <  1: print(f"Open margin orders ({totOpenOrder}):")
 

@@ -12,7 +12,8 @@ from binance.client import Client
 from binance.exceptions import BinanceAPIException, BinanceWithdrawException, BinanceRequestException
 
 testOrder = False
-LOCK = True
+#LOCK = True
+LOCK = False
 
 def setTestOrder(o: bool):
 	global testOrder
@@ -95,16 +96,16 @@ def cancel_a_margin_order(client, symbOrd = '', ordrid = 0) -> bool:
 		return False
 
 	print("Cancellation return")
+
 	if BU.getExportXLS() == True:
-		print("Symbol\tOriginal Client Order Id\tOrder Id\tClient Order Id\tTransact Time\tPrice\tOriginal Qtd\tExecuted Qty\tCummulative Quote Qty\tStatus\tTime In Force\tType\tSide")
-		print(f"{cancOrd['symbol']}\t{cancOrd['origClientOrderId']}\t{cancOrd['orderId']}\t{cancOrd['clientOrderId']}\t{BU.completeMilliTime(cancOrd['transactTime'])}\t{cancOrd['price']}\t{cancOrd['origQty']}\t{cancOrd['executedQty']}\t{cancOrd['cummulativeQuoteQty']}\t{cancOrd['status']}\t{cancOrd['timeInForce']}\t{cancOrd['timeInForce']}\t{cancOrd['type']}\t{cancOrd['side']}")
+		print("Symbol\tOriginal Client Order Id\tOrder Id\tClient Order Id\tPrice\tOriginal Qtd\tExecuted Qty\tCummulative Quote Qty\tStatus\tTime In Force\tType\tSide")
+		print(f"{cancOrd['symbol']}\t{cancOrd['origClientOrderId']}\t{cancOrd['orderId']}\t{cancOrd['clientOrderId']}\t{cancOrd['price']}\t{cancOrd['origQty']}\t{cancOrd['executedQty']}\t{cancOrd['cummulativeQuoteQty']}\t{cancOrd['status']}\t{cancOrd['timeInForce']}\t{cancOrd['timeInForce']}\t{cancOrd['type']}\t{cancOrd['side']}")
 
 	else:
 		print(f"Symbol..................: [{cancOrd['symbol']}]")
 		print(f"Original Client Order Id: [{cancOrd['origClientOrderId']}]")
 		print(f"OrderId.................: [{cancOrd['orderId']}]")
 		print(f"Client Order Id.........: [{cancOrd['clientOrderId']}]")
-		print(f"Transact Time...........: [{BU.completeMilliTime(cancOrd['transactTime'])}]")
 		print(f"Price...................: [{cancOrd['price']}]")
 		print(f"Original Qtd............: [{cancOrd['origQty']}]")
 		print(f"Executed Qty............: [{cancOrd['executedQty']}]")
