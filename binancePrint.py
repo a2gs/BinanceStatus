@@ -11,17 +11,18 @@ def printHelp(execName):
 	print("[asset] = BTC, USDT, BNB, ETH ... | [symbol] = BTCUSDT, BNBBTC, ...")
 	print("------------------------------------------------------------------------")
 	print("1.1) Account")
-	print(f"{execName} -D\n\tAccount details (fees, assets, etc)\n")
-	print(f"{execName} -h [symbol]\n\tAccount history (trades, dusts, etc)\n")
-	print(f"{execName} -ht [symbol]\n\tLast 500 older trades\n")
-	print(f"{execName} -i\n\tWallet/Account SPOT and MARGIN information (details, open orders, etc)\n")
-	print(f"{execName} -ba [asset]\n\tAccount balance by asset\n")
+	print(f"{execName} -D\n\tAccount details (fees, assets, etc)")
+	print(f"{execName} -h [symbol]\n\tAccount history (trades, dusts, etc)")
+	print(f"{execName} -ht [symbol]\n\tLast 500 older trades")
+	print(f"{execName} -i\n\tWallet/Account SPOT and MARGIN information (details, open orders, etc)")
+	print(f"{execName} -ba [asset]\n\tAccount balance by asset")
+	print(f"{execName} -sa\n\tSub-accounts and its informations (email, balance, assets, status, etc)\n")
 
 	print("1.2) Deposit/Withdraw")
-	print(f"{execName} -d [Asset]\n\tDeposit address (Asset = 'BTC')\n")
-	print(f"{execName} -dh [Asset]\n\tDeposit history (Asset can be null)\n")
-	print(f"{execName} -w [Asset] [Address] [Amount]\n\tSubmit a withdraw request\n")
-	print(f"{execName} -wh [Asset]\n\tWithdraw history (Asset can be null)\n")
+	print(f"{execName} -d [Asset]\n\tDeposit address (Asset = 'BTC')")
+	print(f"{execName} -dh [Asset]\n\tDeposit history (Asset can be null)")
+	print(f"{execName} -w [Asset] [Address] [Amount]\n\tSubmit a withdraw request")
+	print(f"{execName} -wh [Asset]\n\tWithdraw history (Asset can be null)")
 
 	print("------------------------------------------------------------------------")
 	print("2) Trade:")
@@ -56,22 +57,24 @@ def printHelp(execName):
 	print(f'{execName} -mi [asset] [amount]\n\tExecute transfer between spot account and margin account')
 	print(f'{execName} -mo [asset] [amount]\n\tExecute transfer between margin account and spot account\n')
 
+	print(f'{execName} -O [asset] [order id]\n\tCheck an order\'s status\n')
+
 	print("------------------------------------------------------------------------")
 	print("3) Binance market:")
-	print(f'{execName} -p\n\t24 hour price change statistics\n')
-	print(f'{execName} -pa [symbol]\n\tCurrent average price for a symbol\n')
+	print(f'{execName} -p\n\t24 hour price change statistics')
+	print(f'{execName} -pa [symbol]\n\tCurrent average price for a symbol')
 
-	print(f'{execName} -l\n\tList of symbols and rate/limits\n')
+	print(f'{execName} -l\n\tList of symbols and rate/limits')
 
 	print(f'{execName} -v [symbol] [interval] [qtd candles]\n\tInformation (prices) about a symbol.\n\t[interval] is one of \'1m\', \'3m\', \'5m\', \'15m\', \'30m\', \'2h\', \'4h\', \'6h\', \'8h\', \'12h\', \'1h\', \'1d\', \'3d\', \'1w\', \'1M\'\n')
 
-	print(f'{execName} -V [symbol]\n\tInformation (details) about a symbol\n')
+	print(f'{execName} -V [symbol]\n\tInformation (details) about a symbol')
 
 	print(f'{execName} -B\n\tBinance Informations (server time, server status, products)\n')
 
 	print("------------------------------------------------------------------------")
 	print("4) Miscellaneous:")
-	print(f'{execName} [...] --xls >> output.xls\n\tOutput with TAB separator\n')
+	print(f'{execName} [...] --xls >> output.xls\n\tOutput with TAB separator')
 	print(f'{execName} [...] -Y\n\tForce ALL CONFIRMATIONS = YES\n')
 
 # ----------------------------------------------------------------------------

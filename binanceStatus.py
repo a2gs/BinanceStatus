@@ -304,6 +304,48 @@ def depositAddress(client, ass):
 
 # ---------------------------------------------------
 
+def orderStatus(client, symb, ordrId):
+	print(f"Check an order's id [{ordrId}] and symbol [{symb}] status")
+
+	try:
+		ogs = client.get_order(symbol = symb, orderId = ordrId)
+
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_order() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_order() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_order()")
+		return
+
+	if BU.getExportXLS() == True:
+		print("Symbol\tOrder Id\tOrder List Id\tClient Order Id\tPrice\tOrig Qty\tExecuted Qty\tCummulative Quote Qty\tStatus\tTime In Force\tType\tSide\tStop Price\tIceberg Qty\tTime\tUpdate Time\tIs Working\tOrig Quote Order Qty")
+		print(f"{ogs['symbol']}\t{ogs['orderId']}\t{ogs['orderListId']}\t{ogs['clientOrderId']}\t{ogs['price']}\t{ogs['origQty']}\t{ogs['executedQty']}\t{ogs['cummulativeQuoteQty']}\t{ogs['status']}\t{ogs['timeInForce']}\t{ogs['type']}\t{ogs['side']}\t{ogs['stopPrice']}\t{ogs['icebergQty']}\t{BU.completeMilliTime(ogs['time'])}\t{BU.completeMilliTime(ogs['updateTime'])}\t{ogs['isWorking']}\t{ogs['origQuoteOrderQty']}")
+
+	else:
+		print(f"Symbol...............: [{ogs['symbol']}]")
+		print(f"Order Id.............: [{ogs['orderId']}]")
+		print(f"Order List Id........: [{ogs['orderListId']}]")
+		print(f"Client Order Id......: [{ogs['clientOrderId']}]")
+		print(f"Price................: [{ogs['price']}]")
+		print(f"Orig Qty.............: [{ogs['origQty']}]")
+		print(f"Executed Qty.........: [{ogs['executedQty']}]")
+		print(f"Cummulative Quote Qty: [{ogs['cummulativeQuoteQty']}]")
+		print(f"Status...............: [{ogs['status']}]")
+		print(f"Time In Force........: [{ogs['timeInForce']}]")
+		print(f"Type.................: [{ogs['type']}]")
+		print(f"Side.................: [{ogs['side']}]")
+		print(f"Stop Price...........: [{ogs['stopPrice']}]")
+		print(f"Iceberg Qty..........: [{ogs['icebergQty']}]")
+		print(f"Time.................: [{BU.completeMilliTime(ogs['time'])}]")
+		print(f"Update Time..........: [{BU.completeMilliTime(ogs['updateTime'])}]")
+		print(f"Is Working...........: [{ogs['isWorking']}]")
+		print(f"Orig Quote Order Qty.: [{ogs['origQuoteOrderQty']}]")
+
+# ---------------------------------------------------
+
 def olderTrades(client, ass = ''):
 	print("500 older trades for [{ass}]")
 
@@ -326,6 +368,15 @@ def olderTrades(client, ass = ''):
 	else:
 		thTot = len(th)
 		[BP.printHistoricalTrades(n, i, thTot) for i, n in enumerate(th, 1)]
+
+# ---------------------------------------------------
+
+def subAccountsInfos(client):
+	pass
+#TODO
+#		  get_sub_account_list()
+#		  get_sub_account_transfer_history(email=)
+#		  get_sub_account_assets(email=)
 
 # ---------------------------------------------------
 
@@ -359,7 +410,7 @@ def accountHistory(client, symb):
 		BP.printTradeAllHistXLSHEADER()
 		[BP.printTradeAllHistXLS(n) for n in tradeAllHist]
 	else:
-		print(f"Trade history {symb}:")
+		print(f"Trade history [{symb}]:")
 		[BP.printTradeAllHist(n, i, tradeAllHistTot) for i, n in enumerate(tradeAllHist, 1)]
 
 	try:
@@ -682,6 +733,10 @@ if __name__ == '__main__':
 	elif sys.argv[1] == "-h" and len(sys.argv) == 3:
 		accountHistory(client, sys.argv[2])
 
+	# Sub-accounts
+	elif sys.argv[1] == "-sa" and len(sys.argv) == 2:
+		subAccountsInfos(client)
+
 	# 500 older trades
 	elif sys.argv[1] == "-ht" and len(sys.argv) == 3:
 		olderTrades(client, sys.argv[2])
@@ -713,6 +768,10 @@ if __name__ == '__main__':
 	# Deposit address for a symbol
 	elif sys.argv[1] == "-d" and len(sys.argv) == 3:
 		depositAddress(client, sys.argv[2])
+
+	# Check an order's status
+	elif sys.argv[1] == "-O" and len(sys.argv) == 4:
+		orderStatus(client, sys.argv[2], sys.argv[3])
 
 	# Deposit history
 	elif sys.argv[1] == "-dh" and (len(sys.argv) == 3 or len(sys.argv) == 2):
