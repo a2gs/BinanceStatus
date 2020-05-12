@@ -481,19 +481,19 @@ def printSystemStatus(sst):
 # ----------------------------------------------------------------------------
 
 def printHistoricalTradesXLSHEADER():
-	print("Id\tPrice\tQtyt\tQuote Qty\tTime\tIs Buyer Maker\tis Best Match")
+	print("Id\tPrice\tQtyt\tQuote Qty\tTime\tIs Buyer Maker\tIs Best Match")
 
 def printHistoricalTradesXLS(trade):
 	print(f"{trade['id']}\t{trade['price']}\t{trade['qty']}\t{trade['quoteQty']}\t{BU.completeMilliTime(trade['time'])}\t{trade['isBuyerMaker']}\t{trade['isBestMatch']}")
 
-def printHistoricalTrades(trade):
-	print(f"Id............: [{trade['id']}]")
+def printHistoricalTrades(trade, seq = 0, tot = 0):
+	print(f"{seq}/{tot}) Id: [{trade['id']}]")
 	print(f"Price.........: [{trade['price']}]")
 	print(f"Qtd...........: [{trade['qty']}]")
 	print(f"Quote Qtd.....: [{trade['quoteQty']}]")
 	print(f"Time..........: [{BU.completeMilliTime(trade['time'])}]")
 	print(f"Is Buyer Maker: [{trade['isBuyerMaker']}]")
-	print(f"Is Best Match.: [{trade['isBestMatch']}]")
+	print(f"Is Best Match.: [{trade['isBestMatch']}]\n")
 
 # ----------------------------------------------------------------------------
 

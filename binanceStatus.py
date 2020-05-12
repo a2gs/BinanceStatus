@@ -305,10 +305,10 @@ def depositAddress(client, ass):
 # ---------------------------------------------------
 
 def olderTrades(client, ass = ''):
-	print(f"500 older trades")
+	print("500 older trades for [{ass}]")
 
 	try:
-		depAdd = client.get_historical_trades(asset = ass)
+		th = client.get_historical_trades(symbol = ass, limit = 500)
 
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_historical_trades() BinanceAPIException: [{e.status_code} - {e.message}]")
@@ -322,9 +322,10 @@ def olderTrades(client, ass = ''):
 
 	if BU.getExportXLS() == True:
 		BP.printHistoricalTradesXLSHEADER()
-		BP.printHistoricalTradesXLS(depAdd)
+		[BP.printHistoricalTradesXLS(n) for n in th]
 	else:
-		BP.printHistoricalTrades(depAdd)
+		thTot = len(th)
+		[BP.printHistoricalTrades(n, i, thTot) for i, n in enumerate(th, 1)]
 
 # ---------------------------------------------------
 
