@@ -13,6 +13,7 @@ def printHelp(execName):
 	print("1.1) Account")
 	print(f"{execName} -D\n\tAccount details (fees, assets, etc)\n")
 	print(f"{execName} -h [symbol]\n\tAccount history (trades, dusts, etc)\n")
+	print(f"{execName} -ht [symbol]\n\tLast 500 older trades\n")
 	print(f"{execName} -i\n\tWallet/Account SPOT and MARGIN information (details, open orders, etc)\n")
 	print(f"{execName} -ba [asset]\n\tAccount balance by asset\n")
 
@@ -476,6 +477,23 @@ def printSystemStatusXLS(sst):
 def printSystemStatus(sst):
 	print(f"Message: [{sst['msg']}]")
 	print(f"Status.: [{'normal' if sst['status'] == 0 else 'system maintenance'}]")
+
+# ----------------------------------------------------------------------------
+
+def printHistoricalTradesXLSHEADER():
+	print("Id\tPrice\tQtyt\tQuote Qty\tTime\tIs Buyer Maker\tis Best Match")
+
+def printHistoricalTradesXLS(trade):
+	print(f"{trade['id']}\t{trade['price']}\t{trade['qty']}\t{trade['quoteQty']}\t{BU.completeMilliTime(trade['time'])}\t{trade['isBuyerMaker']}\t{trade['isBestMatch']}")
+
+def printHistoricalTrades(trade):
+	print(f"Id............: [{trade['id']}]")
+	print(f"Price.........: [{trade['price']}]")
+	print(f"Qtd...........: [{trade['qty']}]")
+	print(f"Quote Qtd.....: [{trade['quoteQty']}]")
+	print(f"Time..........: [{BU.completeMilliTime(trade['time'])}]")
+	print(f"Is Buyer Maker: [{trade['isBuyerMaker']}]")
+	print(f"Is Best Match.: [{trade['isBestMatch']}]")
 
 # ----------------------------------------------------------------------------
 

@@ -259,7 +259,7 @@ def withdrawHistory(client, ass = ''):
 # ---------------------------------------------------
 
 def depositHistory(client, ass = ''):
-	print("Deposit History")
+	print(f"Deposit History for [{ass}]")
 
 	try:
 		deposits = client.get_deposit_history(asset = ass)
@@ -281,7 +281,7 @@ def depositHistory(client, ass = ''):
 		[BP.printDepositHistory(n) for n in deposits['depositList']]
 
 def depositAddress(client, ass):
-	print("Deposit Address")
+	print(f"Deposit Address for [{ass}]")
 
 	try:
 		depAdd = client.get_deposit_address(asset = ass)
@@ -301,6 +301,30 @@ def depositAddress(client, ass):
 		BP.printDepositAddressXLS(depAdd)
 	else:
 		BP.printDepositAddress(depAdd)
+
+# ---------------------------------------------------
+
+def olderTrades(client, ass = ''):
+	print(f"500 older trades")
+
+	try:
+		depAdd = client.get_historical_trades(asset = ass)
+
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_historical_trades() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_historical_trades() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_historical_trades()")
+		return
+
+	if BU.getExportXLS() == True:
+		BP.printHistoricalTradesXLSHEADER()
+		BP.printHistoricalTradesXLS(depAdd)
+	else:
+		BP.printHistoricalTrades(depAdd)
 
 # ---------------------------------------------------
 
@@ -657,6 +681,10 @@ if __name__ == '__main__':
 	elif sys.argv[1] == "-h" and len(sys.argv) == 3:
 		accountHistory(client, sys.argv[2])
 
+	# 500 older trades
+	elif sys.argv[1] == "-ht" and len(sys.argv) == 3:
+		olderTrades(client, sys.argv[2])
+
 	# Account details (fees)
 	elif sys.argv[1] == "-D" and len(sys.argv) == 2:
 		accountDetails(client)
@@ -681,7 +709,7 @@ if __name__ == '__main__':
 	elif sys.argv[1] == "-pa" and len(sys.argv) == 3:
 		averagePrice(client, sys.argv[2])
 
-	# Deposit address
+	# Deposit address for a symbol
 	elif sys.argv[1] == "-d" and len(sys.argv) == 3:
 		depositAddress(client, sys.argv[2])
 
