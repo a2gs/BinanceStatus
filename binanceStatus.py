@@ -95,7 +95,10 @@ def accountInfos(client):
 		print(f"Can trade\t{acc['canTrade']}\nCan withdraw\t{acc['canWithdraw']}\nCan deposit\t{acc['canDeposit']}\nAccount type\t{acc['accountType']}")
 		print(f"Account status detail\t{accStatus['msg']}\nSuccess\t{accStatus['success']}\n")
 	else:
-		print(f"Can trade: [{acc['canTrade']}] Can withdraw: [{acc['canWithdraw']}] Can deposit: [{acc['canDeposit']}] Account type: [{acc['accountType']}]")
+		print(f"Can trade...? [{acc['canTrade']}]")
+		print(f"Can withdraw? [{acc['canWithdraw']}]")
+		print(f"Can deposit.? [{acc['canDeposit']}]")
+		print(f"Account type: [{acc['accountType']}]")
 		print(f"(Account status detail: [{accStatus['msg']}] Success: [{accStatus['success']}]\n")
 
 	if len(acc['balances']) != 0:
@@ -150,6 +153,7 @@ def accountInfos(client):
 		return
 
 	print("\n* MARGIN *")
+	cleanedMarginAssets = [n for n in marginInfo['userAssets'] if float(n['netAsset']) != 0.0]
 
 	if BU.getExportXLS() == True:
 		print("Margin level\tTotal asset of BTC\tTotal liability of BTC\tTotal Net asset of BTC\tTrade enabled")
@@ -157,17 +161,18 @@ def accountInfos(client):
 
 		print('Borrowed assets:')
 		BP.printMarginAssetsXLSHEADER()
-		[BP.printMarginAssetsXLS(n) for n in marginInfo['userAssets'] if float(n['netAsset']) != 0.0]
+		[BP.printMarginAssetsXLS(n) for n in cleanedMarginAssets]
 	else:
-		print(f"Borrow Enabled........: [{marginInfo['borrowEnabled']}]")
+		print(f"Borrow Enabled........? [{marginInfo['borrowEnabled']}]")
+		print(f"Trade enabled.........? [{marginInfo['tradeEnabled']}]")
 		print(f"Level.................: [{marginInfo['marginLevel']}]")
 		print(f"Total asset of BTC....: [{marginInfo['totalAssetOfBtc']}]")
 		print(f"Total liability of BTC: [{marginInfo['totalLiabilityOfBtc']}]")
-		print(f"Total Net asset of BTC: [{marginInfo['totalNetAssetOfBtc']}]")
-		print(f"Trade enabled.........? [{marginInfo['tradeEnabled']}]\n")
+		print(f"Total Net asset of BTC: [{marginInfo['totalNetAssetOfBtc']}]\n")
 
 		print('Borrowed assets:')
-		[BP.printMarginAssets(n, i) for i, n in enumerate(marginInfo['userAssets'], 1) if float(n['netAsset']) != 0.0]
+#	[BP.printMarginAssets(n, i) for i, n in enumerate(marginInfo['userAssets'], 1) if float(n['netAsset']) != 0.0]
+		[BP.printMarginAssets(n, i) for i, n in enumerate(cleanedMarginAssets, 1)]
 
 	try:
 		openMarginOrders = client.get_open_margin_orders()
@@ -698,9 +703,9 @@ if __name__ == '__main__':
 		sys.exit(0)
 
 	# Miscellaneous
-	if "--xls" in sys.argv:
+	if "-xls" in sys.argv:
 		BU.setExportXLS(True)
-		sys.argv.remove("--xls")
+		sys.argv.remove("-xls")
 	else:
 		BU.setExportXLS(False)
 	
@@ -710,9 +715,9 @@ if __name__ == '__main__':
 	else:
 		BU.setConfirmationYES(False)
 
-	if "--TEST" in sys.argv:
+	if "-TEST" in sys.argv:
 		BO.setTestOrder(True)
-		sys.argv.remove("--TEST")
+		sys.argv.remove("-TEST")
 	else:
 		BO.setTestOrder(False)
 

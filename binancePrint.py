@@ -8,74 +8,76 @@
 import binanceUtil as BU
 
 def printHelp(execName):
-	print("[asset] = BTC, USDT, BNB, ETH ... | [symbol] = BTCUSDT, BNBBTC, ...")
+	print("")
+	print("ASSET] = BTC, USDT, BNB, ETH ... | [SYMBOL] = BTCUSDT, BNBBTC, ... (you can see them all with \'-l\' option)")
 	print("------------------------------------------------------------------------")
 	print("1.1) Account")
-	print(f"{execName} -D\n\tAccount details (fees, assets, etc)")
-	print(f"{execName} -h [symbol]\n\tAccount history (trades, dusts, etc)")
-	print(f"{execName} -ht [symbol]\n\tLast 500 older trades")
-	print(f"{execName} -i\n\tWallet/Account SPOT and MARGIN information (details, open orders, etc)")
-	print(f"{execName} -ba [asset]\n\tAccount balance by asset")
-	print(f"{execName} -sa\n\tSub-accounts and its informations (email, balance, assets, status, etc)\n")
-
+	print("-D\n\tAccount details (fees, assets, etc).")
+	print("-h [SYMBOL]\n\tAccount history (trades, dusts, etc).")
+	print("-ht [SYMBOL]\n\tLast 500 older trades.")
+	print("-i\n\tWallet/Account SPOT and MARGIN information (details, open orders, etc).")
+	print("-ba [ASSET]\n\tAccount balance by asset.")
+	print("-sa\n\tSub-accounts and its informations (email, balance, assets, status, etc).")
+	print("")
 	print("1.2) Deposit/Withdraw")
-	print(f"{execName} -d [Asset]\n\tDeposit address (Asset = 'BTC')")
-	print(f"{execName} -dh [Asset]\n\tDeposit history (Asset can be null)")
-	print(f"{execName} -w [Asset] [Address] [Amount]\n\tSubmit a withdraw request")
-	print(f"{execName} -wh [Asset]\n\tWithdraw history (Asset can be null)")
-
+	print("-d [ASSET]\n\tDeposit address.")
+	print("-dh [ASSET]\n\tDeposit history (Asset can be null).")
+	print("-w [ASSET] [ADDRESS] [AMOUNT]\n\tSubmit a withdraw request.")
+	print("-wh [ASSET]\n\tWithdraw history (Asset can be null).")
+	print("")
 	print("------------------------------------------------------------------------")
 	print("2) Trade:")
 	print("2.1) SPOT")
-	print(f'{execName} -s\n\tPlace a SPOT sell order')
-	print(f'\t\t{execName} -s MARKET [symbol] [qtd] [--TEST]')
-	print(f'\t\t{execName} -s LIMIT [symbol] [qtd] [price] [--TEST]')
-	print(f'\t\t{execName} -s STOP [symbol] [qtd] [price] [stopPrice]\n')
-
-	print(f'{execName} -b\n\tPlace a SPOT buy order')
-	print(f'\t\t{execName} -b MARKET [symbol] [qtd] [--TEST]')
-	print(f'\t\t{execName} -b LIMIT [symbol] [qtd] [price] [--TEST]')
-	print(f'\t\t{execName} -b STOP [symbol] [qtd] [price] [stopPrice]\n')
-
-	print(f'{execName} -c [symbol] [order_id]\n\tCancel a SPOT order\n')
-
+	print("-s\n\tPlace a SPOT sell order.")
+	print("\t\t-s MARKET [SYMBOL] [QTD] [-TEST]")
+	print("\t\t-s LIMIT [SYMBOL] [QTD] [PRICE] [-TEST]")
+	print("\t\t-s STOP [SYMBOL] [QTD] [PRICE] [STOP PRICE]")
+	print("")
+	print("-b\n\tPlace a SPOT buy order.")
+	print("\t\t-b MARKET [SYMBOL] [QTD] [-TEST]")
+	print("\t\t-b LIMIT [SYMBOL] [QTD] [PRICE] [-TEST]")
+	print("\t\t-b STOP [SYMBOL] [QTD] [PRICE] [STOP PRICE]")
+	print("")
+	print("-c [SYMBOL] [ORDER ID]\n\tCancel a SPOT order.")
+	print("")
 	print("2.2) MARGIN")
-	print(f'{execName} -sm\n\tPlace a MARGIN sell order')
-	print(f'\t\t{execName} -sm MARKET [symbol] [qtd]')
-	print(f'\t\t{execName} -sm LIMIT [symbol] [qtd] [price]')
-	print(f'\t\t{execName} -sm STOP [symbol] [qtd] [price] [stopPrice]\n')
-
-	print(f'{execName} -bm\n\tPlace a MARGIN buy order')
-	print(f'\t\t{execName} -bm MARKET [symbol] [qtd]')
-	print(f'\t\t{execName} -bm LIMIT [symbol] [qtd] [price]')
-	print(f'\t\t{execName} -bm STOP [symbol] [qtd] [price] [stopPrice]\n')
-
-	print(f'{execName} -cm [symbol] [order_id]\n\tCancel a MARGIN order\n')
-
-	print(f'{execName} -ma [asset]\n\tQuery max transfer-out amount\n')
-
-	print(f'{execName} -mi [asset] [amount]\n\tExecute transfer between spot account and margin account')
-	print(f'{execName} -mo [asset] [amount]\n\tExecute transfer between margin account and spot account\n')
-
-	print(f'{execName} -O [asset] [order id]\n\tCheck an order\'s status\n')
-
+	print("-sm\n\tPlace a MARGIN sell order.")
+	print("\t\t-sm MARKET [SYMBOL] [QTD]")
+	print("\t\t-sm LIMIT [SYMBOL] [QTD] [PRICE]")
+	print("\t\t-sm STOP [SYMBOL] [QTD] [PRICE] [STOP PRICE]")
+	print("")
+	print("-bm\n\tPlace a MARGIN buy order.")
+	print("\t\t-bm MARKET [SYMBOL] [QTD]")
+	print("\t\t-bm LIMIT [SYMBOL] [QTD] [PRICE]")
+	print("\t\t-bm STOP [SYMBOL] [QTD] [PRICE] [STOP PRICE]")
+	print("")
+	print("-cm [SYMBOL] [ORDER ID]\n\tCancel a MARGIN order.")
+	print("")
+	print("-ma [ASSET]\n\tQuery max transfer-out amount.")
+	print("")
+	print("-mi [ASSET] [AMOUNT]\n\tExecute transfer between spot account and margin account.")
+	print("-mo [ASSET] [AMOUNT]\n\tExecute transfer between margin account and spot account.")
+	print("")
+	print("-O [ASSET] [ORDER ID]\n\tCheck an order\'s status.")
+	print("")
 	print("------------------------------------------------------------------------")
 	print("3) Binance market:")
-	print(f'{execName} -p\n\t24 hour price change statistics')
-	print(f'{execName} -pa [symbol]\n\tCurrent average price for a symbol')
-
-	print(f'{execName} -l\n\tList of symbols and rate/limits')
-
-	print(f'{execName} -v [symbol] [interval] [qtd candles]\n\tInformation (prices) about a symbol.\n\t[interval] is one of \'1m\', \'3m\', \'5m\', \'15m\', \'30m\', \'2h\', \'4h\', \'6h\', \'8h\', \'12h\', \'1h\', \'1d\', \'3d\', \'1w\', \'1M\'\n')
-
-	print(f'{execName} -V [symbol]\n\tInformation (details) about a symbol')
-
-	print(f'{execName} -B\n\tBinance Informations (server time, server status, products)\n')
-
+	print("-p\n\t24 hour price change statistics.")
+	print("-pa [SYMBOL]\n\tCurrent average price for a symbol.")
+	print("")
+	print("-l\n\tList of symbols and rate/limits.")
+	print("")
+	print("-v [SYMBOL] [INTERVAL] [QTD CANDLES]\n\tInformation (prices) about a symbol.\n\t[interval] is one of \'1m\', \'3m\', \'5m\', \'15m\', \'30m\', \'2h\', \'4h\', \'6h\', \'8h\', \'12h\', \'1h\', \'1d\', \'3d\', \'1w\', \'1M\'.")
+	print("")
+	print("-V [SYMBOL]\n\tInformation (details) about a symbol.")
+	print("")
+	print("-B\n\tBinance Informations (server time, server status, symbols).")
+	print("")
 	print("------------------------------------------------------------------------")
 	print("4) Miscellaneous:")
-	print(f'{execName} [...] --xls >> output.xls\n\tOutput with TAB separator')
-	print(f'{execName} [...] -Y\n\tForce ALL CONFIRMATIONS = YES\n')
+	print("[...] -xls > output.xls\n\tOutput with TAB separator.")
+	print("[...] -Y\n\tForce ALL CONFIRMATIONS = YES")
+	print("")
 
 # ----------------------------------------------------------------------------
 
@@ -277,12 +279,12 @@ def printDustTrade(order, seq = 0, tot = 0):
 def printDetailsAssets(ass, detAss, seq = 0, tot = 0):
 	print(f"{seq}/{tot}) Asset: [{ass}]");
 	print(f"\tMin. withdraw amount: [{detAss['minWithdrawAmount']}]");
-	print(f"\tDeposit status......: [{detAss['depositStatus']}]");
+	print(f"\tDeposit status......? [{detAss['depositStatus']}]");
 	dt = detAss.get('depositTip', '')
 	if dt != '':
 		print(f"\tDeposit tip.........: [{dt}]");
 	print(f"\tWithdraw fee........: [{detAss['withdrawFee']}]");
-	print(f"\tWithdraw status.....: [{detAss['withdrawStatus']}]\n");
+	print(f"\tWithdraw status.....? [{detAss['withdrawStatus']}]\n");
 
 def printDetailsAssetsXLSHEADER():
 	print("Asset\tMin. withdraw amount\tDeposit status\tDeposit tip\tWithdraw fee\tWithdraw status")
@@ -323,7 +325,7 @@ def printTradeAllHist(tradeAllHist, seq = 0, tot = 0):
 	print(f"\tSide.................: [{tradeAllHist['side']}]")
 	print(f"\tType.................: [{tradeAllHist['type']}]")
 	print(f"\tStop Price...........: [{tradeAllHist['stopPrice']}]")
-	print(f"\tIs working...........: [{tradeAllHist['isWorking']}]\n")
+	print(f"\tIs working...........? [{tradeAllHist['isWorking']}]\n")
 
 def printTradeAllHistXLSHEADER():
 	print(f"Symbol\t"
@@ -429,7 +431,7 @@ def printMarginAssetsXLS(asset):
 # ----------------------------------------------------------------------------
 
 def printOrder(order, seq = 0, tot = 0):
-	print(f"{seq}/{tot}) Order id [{order['orderId']}]:")
+	print(f"{seq}/{tot}) Order id: [{order['orderId']}]")
 	print(f"\tSymbol......: [{order['symbol']}]")
 	print(f"\tPrice.......: [{order['price']}]")
 	print(f"\tQtd.........: [{order['origQty']}]")
@@ -437,7 +439,7 @@ def printOrder(order, seq = 0, tot = 0):
 	print(f"\tSide........: [{order['side']}]")
 	print(f"\tType........: [{order['type']}]")
 	print(f"\tStop price..: [{order['stopPrice']}]")
-	print(f"\tIs working..: [{order['isWorking']}]\n")
+	print(f"\tIs working..? [{order['isWorking']}]\n")
 
 def printOrderXLSHEADER():
 	print("Order id\t"
@@ -495,8 +497,8 @@ def printHistoricalTrades(trade, seq = 0, tot = 0):
 	print(f"Qtd...........: [{trade['qty']}]")
 	print(f"Quote Qtd.....: [{trade['quoteQty']}]")
 	print(f"Time..........: [{BU.completeMilliTime(trade['time'])}]")
-	print(f"Is Buyer Maker: [{trade['isBuyerMaker']}]")
-	print(f"Is Best Match.: [{trade['isBestMatch']}]\n")
+	print(f"Is Buyer Maker? [{trade['isBuyerMaker']}]")
+	print(f"Is Best Match.? [{trade['isBestMatch']}]\n")
 
 # ----------------------------------------------------------------------------
 
@@ -532,7 +534,7 @@ def printProducts(product, seq, tot):
 	print(f"\tProduct Type...........: [{product['productType']}]")
 	print(f"\tOpen...................: [{product['open']}]")
 	print(f"\tStatus.................: [{product['status']}]")
-	print(f"\tActive.................: [{product['active']}]")
+	print(f"\tActive.................? [{product['active']}]")
 	print(f"\tMin Trade..............: [{product['minTrade']}]")
 	print(f"\tMin Qty................: [{product['minQty']}]")
 	print(f"\tActive Sell............: [{product['activeSell']}]")
@@ -564,11 +566,11 @@ def printListSymbols(symbs, seq = 0, tot = 0):
 	print(f"\tQuote Asset Precision.........: [{symbs['quoteAssetPrecision']}]");
 	print(f"\tBase Commission Precision.....: [{symbs['baseCommissionPrecision']}]");
 	print(f"\tQuote Commission Precision....: [{symbs['quoteCommissionPrecision']}]");
-	print(f"\tIceberg Allowed...............: [{symbs['icebergAllowed']}]");
-	print(f"\tOco Allowed...................: [{symbs['ocoAllowed']}]");
-	print(f"\tQuote Order Qty Market Allowed: [{symbs['quoteOrderQtyMarketAllowed']}]");
-	print(f"\tIs Spot Trading Allowed.......: [{symbs['isSpotTradingAllowed']}]");
-	print(f"\tIs Margin Trading Allowed.....: [{symbs['isMarginTradingAllowed']}]");
+	print(f"\tIceberg Allowed...............? [{symbs['icebergAllowed']}]");
+	print(f"\tOco Allowed...................? [{symbs['ocoAllowed']}]");
+	print(f"\tQuote Order Qty Market Allowed? [{symbs['quoteOrderQtyMarketAllowed']}]");
+	print(f"\tIs Spot Trading Allowed.......? [{symbs['isSpotTradingAllowed']}]");
+	print(f"\tIs Margin Trading Allowed.....? [{symbs['isMarginTradingAllowed']}]");
 	print(f"\tOrder Types...................: [{', '.join(symbs['orderTypes'])}]");
 	print(f"\tPermissions...................: [{', '.join(symbs['permissions'])}]");
 
@@ -607,7 +609,7 @@ def printListSymbols(symbs, seq = 0, tot = 0):
 		if sf != '': print(f"\t\t\tMin Notional.......: [{sf}]");
 
 		sf = n.get('applyToMarket', '')
-		if sf != '': print(f"\t\t\tApply To Market....: [{sf}]");
+		if sf != '': print(f"\t\t\tApply To Market....? [{sf}]");
 
 		sf = n.get('avgPriceMins', '')
 		if sf != '': print(f"\t\t\tAvg Price Mins.....: [{sf}]");
