@@ -171,7 +171,6 @@ def accountInfos(client):
 		print(f"Total Net asset of BTC: [{marginInfo['totalNetAssetOfBtc']}]\n")
 
 		print('Borrowed assets:')
-#	[BP.printMarginAssets(n, i) for i, n in enumerate(marginInfo['userAssets'], 1) if float(n['netAsset']) != 0.0]
 		[BP.printMarginAssets(n, i) for i, n in enumerate(cleanedMarginAssets, 1)]
 
 	try:
@@ -199,6 +198,64 @@ def accountInfos(client):
 			[BP.printMarginOrder(n, i, totOpenMarginOrder) for i, n in enumerate(openMarginOrders, 1)]
 	else:
 		print('No open margin orders')
+
+# ---------------------------------------------------
+
+def marginAsset(client, ass = ''):
+	print(f"Query margin asset [{ass}]")
+
+	try:
+		mo = client.get_margin_asset(asset = ass)
+
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_margin_asset() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_margin_asset() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_margin_asset()")
+		return
+
+	if BU.getExportXLS() == True:
+		print("Full Name\tName\tIs Borrowable\tIs Mortgageable\tUser Minimum Borrow\tUser Minimum Repay")
+		print(f"{mo['assetFullName']}\t{mo['assetName']}\t{mo['isBorrowable']}\t{mo['isMortgageable']}\t{mo['userMinBorrow']}\t{mo['userMinRepay']}")
+	else:
+		print(f"Name...............: [{mo['assetName']}]")
+		print(f"Full name..........: [{mo['assetFullName']}]")
+		print(f"Is borrowable......? [{mo['isBorrowable']}]")
+		print(f"Is mortageable.....? [{mo['isMortgageable']}]")
+		print(f"User minimum borrow: [{mo['userMinBorrow']}]")
+		print(f"User monimum repay.: [{mo['userMinRepay']}]")
+
+# ---------------------------------------------------
+
+
+def allMarginOrders(client, symb = '', ordid = '', lim = ''):
+	if ordid == '':
+		print(f"All margin accounts orders for symbol [{symb}] (limit: [{lim}]).")
+	else:
+		print(f"Margin accounts order [{ordid}] for symbol [{symb}] (limit: [{lim}]).")
+
+	try:
+		mo = client.get_all_margin_orders(symbol = symb, orderId = ordid, limit = lim)
+
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_all_margin_orders() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_all_margin_orders() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_all_margin_orders()")
+		return
+
+	motot = len(mo)
+	if BU.getExportXLS() == True:
+		BP.printTradeAllHistXLSHEADER()
+		[BP.printTradeAllHistXLS(n) for n in mo]
+	else:
+		[BP.printTradeAllHist(n, i, motot) for i, n in enumerate(mo, 1)]
 
 # ---------------------------------------------------
 
@@ -759,6 +816,16 @@ if __name__ == '__main__':
 	# Sub-accounts
 	elif sys.argv[1] == "-sa" and len(sys.argv) == 2:
 		subAccountsInfos(client)
+
+	# Query all margin accounts orders
+	elif sys.argv[1] == "-mh":
+		if   len(sys.argv) == 3: allMarginOrders(client, sys.argv[2])
+		elif len(sys.argv) == 4: allMarginOrders(client, sys.argv[2], sys.argv[3])
+		elif len(sys.argv) == 5: allMarginOrders(client, sys.argv[2], sys.argv[3], sys.argv[4])
+
+	# Query margin asset
+	elif sys.argv[1] == "-mm" and len(sys.argv) == 3:
+		marginAsset(client, sys.argv[2])
 
 	# 500 older trades
 	elif sys.argv[1] == "-ht" and len(sys.argv) == 3:
