@@ -201,8 +201,65 @@ def accountInfos(client):
 
 # ---------------------------------------------------
 
+def marginSymbPriceIndex(client, symb = ''):
+	try:
+		mp = client.get_margin_price_index(symbol = symb)
+
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_margin_price_index() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_margin_price_index() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_margin_price_index()")
+		return
+
+	if BU.getExportXLS() == True:
+		print("Symbol\tPrice\tTime")
+		print(f"{mp['symbol']}\t{mp['price']}\t{BU.completeMilliTime(mp['calcTime'])}")
+
+	else:
+		print(f"Margin symbol price index [{symb}]\n")
+
+		print(f"Price: [{mp['price']}]")
+		print(f"Time.: [{BU.completeMilliTime(mp['calcTime'])}]")
+
+# ---------------------------------------------------
+
+def marginSymbInfo(client, symb = ''):
+
+	try:
+		mi = client.get_margin_symbol(symbol = symb)
+
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_margin_symbol() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_margin_symbol() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_margin_symbol()")
+		return
+
+	if BU.getExportXLS() == True:
+		print("Symbol\tQuote\tBase\tId\tIs Buy Allowed\tIs Margin Trade\tIs Sell Allowed")
+		print(f"{mi['symbol']}\t{mi['quote']}\t{mi['base']}\t{mi['id']}\t{mi['isBuyAllowed']}\t{mi['isMarginTrade']}\t{mi['isSellAllowed']}")
+
+	else:
+		print(f"Margin symbol info [{symb}]\n")
+
+		print(f"Symbol.........: [{mi['symbol']}]")
+		print(f"Quote..........: [{mi['quote']}]")
+		print(f"Base...........: [{mi['base']}]")
+		print(f"Id.............: [{mi['id']}]")
+		print(f"Is Buy Allowed.: [{mi['isBuyAllowed']}]")
+		print(f"Is Margin Trade: [{mi['isMarginTrade']}]")
+		print(f"Is Sell Allowed: [{mi['isSellAllowed']}]")
+
+# ---------------------------------------------------
+
 def marginAsset(client, ass = ''):
-	print(f"Query margin asset [{ass}]")
 
 	try:
 		mo = client.get_margin_asset(asset = ass)
@@ -221,6 +278,8 @@ def marginAsset(client, ass = ''):
 		print("Full Name\tName\tIs Borrowable\tIs Mortgageable\tUser Minimum Borrow\tUser Minimum Repay")
 		print(f"{mo['assetFullName']}\t{mo['assetName']}\t{mo['isBorrowable']}\t{mo['isMortgageable']}\t{mo['userMinBorrow']}\t{mo['userMinRepay']}")
 	else:
+		print(f"Query margin asset [{ass}]")
+
 		print(f"Name...............: [{mo['assetName']}]")
 		print(f"Full name..........: [{mo['assetFullName']}]")
 		print(f"Is borrowable......? [{mo['isBorrowable']}]")
@@ -230,12 +289,37 @@ def marginAsset(client, ass = ''):
 
 # ---------------------------------------------------
 
+def marginTrades(client, symb = '', fromordid = '', lim = '1000'):
 
-def allMarginOrders(client, symb = '', ordid = '', lim = ''):
-	if ordid == '':
-		print(f"All margin accounts orders for symbol [{symb}] (limit: [{lim}]).")
+	try:
+		mt = client.get_margin_trades(symbol = symb, fromId = fromordid, limit = lim)
+
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_margin_trades() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_margin_trades() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_margin_trades()")
+		return
+
+	mttot = len(mt)
+
+	if BU.getExportXLS() == True:
+		BP.printMarginTradesXLSHEADER()
+		[BP.printMarginTradesXLS(n) for n in mt]
 	else:
-		print(f"Margin accounts order [{ordid}] for symbol [{symb}] (limit: [{lim}]).")
+		if fromordid == '':
+			print(f"Margin accounts trades [{symb}] (limit: [{lim}]).")
+		else:
+			print(f"Margin accounts trades from order id [{fromordid}] for symbol [{symb}] (limit: [{lim}]).")
+
+		[BP.printMarginTrades(n, i, mttot) for i, n in enumerate(mt, 1)]
+
+# ---------------------------------------------------
+
+def allMarginOrders(client, symb = '', ordid = '', lim = '1000'):
 
 	try:
 		mo = client.get_all_margin_orders(symbol = symb, orderId = ordid, limit = lim)
@@ -251,10 +335,16 @@ def allMarginOrders(client, symb = '', ordid = '', lim = ''):
 		return
 
 	motot = len(mo)
+
 	if BU.getExportXLS() == True:
 		BP.printTradeAllHistXLSHEADER()
 		[BP.printTradeAllHistXLS(n) for n in mo]
 	else:
+		if ordid == '':
+			print(f"All margin accounts orders for symbol [{symb}] (limit: [{lim}]).")
+		else:
+			print(f"Margin accounts order [{ordid}] for symbol [{symb}] (limit: [{lim}]).")
+
 		[BP.printTradeAllHist(n, i, motot) for i, n in enumerate(mo, 1)]
 
 # ---------------------------------------------------
@@ -822,6 +912,14 @@ if __name__ == '__main__':
 		if   len(sys.argv) == 3: allMarginOrders(client, sys.argv[2])
 		elif len(sys.argv) == 4: allMarginOrders(client, sys.argv[2], sys.argv[3])
 		elif len(sys.argv) == 5: allMarginOrders(client, sys.argv[2], sys.argv[3], sys.argv[4])
+		else: print("-mh parameters error")
+
+	# Query margin accounts trades
+	elif sys.argv[1] == "-mt":
+		if   len(sys.argv) == 3: marginTrades(client, sys.argv[2])
+		elif len(sys.argv) == 4: marginTrades(client, sys.argv[2], sys.argv[3])
+		elif len(sys.argv) == 5: marginTrades(client, sys.argv[2], sys.argv[3], sys.argv[4])
+		else: print("-mt parameters error")
 
 	# Query margin asset
 	elif sys.argv[1] == "-mm" and len(sys.argv) == 3:
@@ -858,6 +956,14 @@ if __name__ == '__main__':
 	# Deposit address for a symbol
 	elif sys.argv[1] == "-d" and len(sys.argv) == 3:
 		depositAddress(client, sys.argv[2])
+
+	# Margin symbol info
+	elif sys.argv[1] == "-ml" and len(sys.argv) == 3:
+		marginSymbInfo(client, sys.argv[2])
+
+	# Margin symbol price index
+	elif sys.argv[1] == "-mp" and len(sys.argv) == 3:
+		marginSymbPriceIndex(client, sys.argv[2])
 
 	# Check an order's status
 	elif sys.argv[1] == "-O" and len(sys.argv) == 4:

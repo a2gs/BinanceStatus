@@ -19,8 +19,11 @@ def printHelp(execName):
 	print("-ba [ASSET]\n\tAccount balance by asset. Query max borrow and transfer-out margin amount for an asset.")
 	print("-sa\n\tSub-accounts and its informations (email, balance, assets, status, etc).")
 	print("")
+	print("-ml [SYMBOL]\n\tMargin symbol info.")
+	print("-mp [SYMBOL]\n\tMargin price index.")
 	print("-mh [SYMBOL] [ORDER ID] [LIMIT]\n\tQuery all margin accounts orders (order id and limit can be null).")
 	print("-mm [ASSET]\n\tQuery margin asset.")
+	print("-mt [SYMBOL] [FROM ID] [LIMIT]\n\tQuery margin accounts trades (from id and limit can be null).")
 	print("")
 	print("1.2) Deposit/Withdraw")
 	print("-d [ASSET]\n\tDeposit address.")
@@ -331,21 +334,21 @@ def printTradeAllHist(tradeAllHist, seq = 0, tot = 0):
 	print(f"\tIs working...........? [{tradeAllHist['isWorking']}]\n")
 
 def printTradeAllHistXLSHEADER():
-	print(f"Symbol\t"
-	       "Time\t"
-	       "Update time\t"
-	       "Order Id\t"
-	       "Client Order Id\t"
-	       "Price\t"
-	       "Orig Qtd\t"
-	       "Executed Qtd\t"
-	       "Cummulative Quote Qtd\t"
-	       "Status\t"
-	       "Time in Force\t"
-	       "Side\t"
-	       "Type\t"
-	       "Stop Price\t"
-	       "Is working")
+	print("Symbol\t"
+	      "Time\t"
+	      "Update time\t"
+	      "Order Id\t"
+	      "Client Order Id\t"
+	      "Price\t"
+	      "Orig Qtd\t"
+	      "Executed Qtd\t"
+	      "Cummulative Quote Qtd\t"
+	      "Status\t"
+	      "Time in Force\t"
+	      "Side\t"
+	      "Type\t"
+	      "Stop Price\t"
+	      "Is working")
 
 def printTradeAllHistXLS(tradeAllHist):
 	print(f"{tradeAllHist['symbol']}\t"
@@ -363,6 +366,37 @@ def printTradeAllHistXLS(tradeAllHist):
 	      f"{tradeAllHist['type']}\t"
 	      f"{tradeAllHist['stopPrice']}\t"
 	      f"{tradeAllHist['isWorking']}")
+
+# ----------------------------------------------------------------------------
+
+def printMarginTrades(mt, seq = 0, tot = 0):
+	print(f"{seq}/{tot}) Symbol: [{mt['symbol']}]")
+	print(f"\tId..............: [{mt['id']}]")
+	print(f"\tOrder Id........: [{mt['orderId']}]")
+	print(f"\tPrice...........: [{mt['price']}]")
+	print(f"\tQtd.............: [{mt['qty']}]")
+	print(f"\tCommission......: [{mt['commission']}]")
+	print(f"\tAsset commission: [{mt['commissionAsset']}]")
+	print(f"\tIs Best Match...: [{mt['isBestMatch']}]")
+	print(f"\tIs Buyer........: [{mt['isBuyer']}]")
+	print(f"\tIs Maker........: [{mt['isMaker']}]")
+	print(f"\tTime............: [{BU.completeMilliTime(mt['time'])}]")
+
+def printMarginTradesXLSHEADER():
+	print("Symbol\tId\tOrder Id\tPrice\tQty\tTime\tCommission\tCommissionAsset\tIs Best Match\tIs Buyer\tIs Maker")
+
+def printMarginTradesXLS(mt):
+	print(f"{mt['symbol']}\t"
+	      f"{mt['id']}\t"
+	      f"{mt['orderId']}\t"
+	      f"{mt['price']}\t"
+	      f"{mt['qty']}\t"
+	      f"{mt['time']}\t"
+	      f"{mt['commission']}\t"
+	      f"{mt['commissionAsset']}\t"
+	      f"{mt['isBestMatch']}\t"
+	      f"{mt['isBuyer']}\t"
+	      f"{BU.completeMilliTime(mt['time'])}")
 
 # ----------------------------------------------------------------------------
 
