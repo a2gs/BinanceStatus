@@ -125,10 +125,10 @@ def accountInfos(client):
 	totOpenOrder = len(openOrders)
 
 	if totOpenOrder != 0:
-		if totOpenOrder == 1:
-			print("\n* SPOT *")
-		elif totOpenOrder < 1:
-			print(f"Open orders ({totOpenOrder}):")
+		print("\n* SPOT *")
+
+		if   totOpenOrder == 1: print("Open spot order:")
+		elif totOpenOrder <  1: print(f"Open spot orders ({totOpenOrder}):")
 
 		if BU.getExportXLS() == True:
 			BP.printOrderXLSHEADER()
@@ -139,6 +139,7 @@ def accountInfos(client):
 		print("No open orders")
 
 	# MARGIN
+	print("\n* MARGIN *")
 
 	try:
 		marginInfo = client.get_margin_account()
@@ -152,7 +153,6 @@ def accountInfos(client):
 		BU.errPrint("Erro at client.get_margin_account()")
 		return
 
-	print("\n* MARGIN *")
 	cleanedMarginAssets = [n for n in marginInfo['userAssets'] if float(n['netAsset']) != 0.0]
 
 	if BU.getExportXLS() == True:
@@ -190,7 +190,7 @@ def accountInfos(client):
 
 	if totOpenMarginOrder != 0:
 		if   totOpenMarginOrder == 1: print("Open margin order:")
-		elif totOpenMarginOrder <  1: print(f"Open margin orders ({totOpenOrder}):")
+		elif totOpenMarginOrder <  1: print(f"Open margin orders ({totOpenMarginOrder}):")
 
 		if BU.getExportXLS() == True:
 			BP.printMarginOrderXLSHEADER()
@@ -583,6 +583,25 @@ def balanceAccAsset(client, ass = ''):
 		print(f"Free..: [{ba['free']}]")
 		print(f"Locked: [{ba['locked']}]")
 
+	try:
+		bl = client.get_max_margin_loan(asset = ass)
+		bt = client.get_max_margin_transfer(asset = ass)
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_max_margin_loan()/get_max_margin_transfer() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_max_margin_loan()/get_max_margin_transfer() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_max_margin_loan()/get_max_margin_transfer()")
+		return
+
+	if BU.getExportXLS() == True:
+		print(f"Margin max borrow amount for {ass}\tMargin max transfer-out amount for {ass}")
+		print(f"{bl['amount']}\t{bt['amount']}")
+	else:
+		print(f"Margin max borrow amount for [{ass}]......: [{bl['amount']}]")
+		print(f"Margin max transfer-out amount for [{ass}]: [{bt['amount']}]")
 # ---------------------------------------------------
 
 def infoDetailsSymbol(client, symb):

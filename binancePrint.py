@@ -16,7 +16,7 @@ def printHelp(execName):
 	print("-h [SYMBOL]\n\tAccount history (trades, dusts, etc).")
 	print("-ht [SYMBOL]\n\tLast 500 older trades.")
 	print("-i\n\tWallet/Account SPOT and MARGIN information (details, open orders, etc).")
-	print("-ba [ASSET]\n\tAccount balance by asset.")
+	print("-ba [ASSET]\n\tAccount balance by asset. Query max borrow and transfer-out margin amount for an asset.")
 	print("-sa\n\tSub-accounts and its informations (email, balance, assets, status, etc).")
 	print("")
 	print("1.2) Deposit/Withdraw")
