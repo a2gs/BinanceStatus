@@ -11,7 +11,7 @@ def printHelp(execName):
 	print("")
 	print("ASSET] = BTC, USDT, BNB, ETH ... | [SYMBOL] = BTCUSDT, BNBBTC, ... (you can see them all with \'-l\' option)")
 	print("------------------------------------------------------------------------")
-	print("1.1) Account")
+	print("1.1) Account and Spot trades")
 	print("-D\n\tAccount details (fees, assets, etc).")
 	print("-h [SYMBOL]\n\tAccount history (trades, dusts, etc).")
 	print("-ht [SYMBOL]\n\tLast 500 older trades.")
@@ -19,13 +19,14 @@ def printHelp(execName):
 	print("-ba [ASSET]\n\tAccount balance by asset. Query max borrow and transfer-out margin amount for an asset.")
 	print("-sa\n\tSub-accounts and its informations (email, balance, assets, status, etc).")
 	print("")
+	print("1.2) Margin trades")
 	print("-ml [SYMBOL]\n\tMargin symbol info.")
 	print("-mp [SYMBOL]\n\tMargin price index.")
 	print("-mh [SYMBOL] [ORDER ID] [LIMIT]\n\tQuery all margin accounts orders (order id and limit can be null).")
 	print("-mm [ASSET]\n\tQuery margin asset.")
 	print("-mt [SYMBOL] [FROM ID] [LIMIT]\n\tQuery margin accounts trades (from id and limit can be null).")
 	print("")
-	print("1.2) Deposit/Withdraw")
+	print("1.3) Deposit/Withdraw")
 	print("-d [ASSET]\n\tDeposit address.")
 	print("-dh [ASSET]\n\tDeposit history (Asset can be null).")
 	print("-w [ASSET] [ADDRESS] [AMOUNT]\n\tSubmit a withdraw request.")
@@ -65,6 +66,10 @@ def printHelp(execName):
 	print("-mo [ASSET] [AMOUNT]\n\tExecute transfer between margin account and spot account.")
 	print("")
 	print("-O [ASSET] [ORDER ID]\n\tCheck an order\'s status.")
+	print("")
+	print("2.3) Book")
+	print("-bp [SYMBOL] [LIMIT]\n\tGet the Order Book for the market.")
+	print("-bt [SYMBOL]\n\tLatest ticker/price for a symbol.")
 	print("")
 	print("------------------------------------------------------------------------")
 	print("3) Binance market:")
@@ -193,6 +198,18 @@ def printInfoSymbolValuesXLS(symbPrc):
 	      f"{symbPrc[8]}\t"
 	      f"{symbPrc[9]}\t"
 	      f"{symbPrc[10]}")
+
+# ----------------------------------------------------------------------------
+
+def printOrderBook(line):
+	print(f"{line[0][1]}\t{line[0][0]}\t|\t{line[1][0]}\t{line[1][1]}")
+
+def printOrderBookXLSHEADER():
+	print("BIDS\t\t\tASKS")
+	print("Qtd\tPrice\t\tPrice\tQtd")
+
+def printOrderBookXLS(line):
+	print(f"{line[0][1]}\t{line[0][0]}\t\t{line[1][0]}\t{line[1][1]}")
 
 # ----------------------------------------------------------------------------
 

@@ -533,7 +533,7 @@ def subAccountsInfos(client):
 
 def accountHistory(client, symb):
 	try:
-		tradeHist = client.get_my_trades(symbol=symb)
+		tradeHist = client.get_my_trades(symbol=symb, recvWindow = BU.getRecvWindow())
 	except:
 		BU.errPrint(f"Erro at client.get_my_trades(symbol={symb})")
 		return
@@ -639,6 +639,7 @@ def infoSymbol(client, symb, interv, candlesTot):
 # ---------------------------------------------------
 
 def listSymbolsRateLimits(client):
+
 	try:
 		ei = client.get_exchange_info()
 	except BinanceAPIException as e:
@@ -707,8 +708,36 @@ def transfMarginToSpot(client, ass = '', ap = '0.0'):
 
 # ---------------------------------------------------
 
+def bookTicker(client, symb = ''):
+
+	try:
+		bt = client.get_orderbook_ticker(symbol = symb)
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_orderbook_ticker() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_orderbook_ticker() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_orderbook_ticker()")
+		return
+
+	if BU.getExportXLS() == True:
+		print("Symbol\tBid Price\tBid Qty\tAsk Price\tAsk Qty")
+		print(f"{bt['symbol']}\t{bt['bidPrice']}\t{bt['bidQty']}\t{bt['askPrice']}\t{bt['askQty']}")
+
+	else:
+		print(f"Latest ticker/price for [{symb}] symbol\n")
+
+		print(f"Symbol...: [{bt['symbol']}]")
+		print(f"Bid Price: [{bt['bidPrice']}]")
+		print(f"Bid Qtd..: [{bt['bidQty']}]")
+		print(f"Ask Price: [{bt['askPrice']}]")
+		print(f"Ask Qtd..: [{bt['askQty']}]")
+
+# ---------------------------------------------------
+
 def balanceAccAsset(client, ass = ''):
-	print(f"Account balance for asset [{ass}]")
 
 	try:
 		ba = client.get_asset_balance(asset = ass)
@@ -726,6 +755,7 @@ def balanceAccAsset(client, ass = ''):
 		print("Asset\tFree\tLocked")
 		print(f"{ba['asset']}\t{ba['free']}\t{ba['locked']}")
 	else:
+		print(f"Account balance for asset [{ass}]")
 		print(f"Asset.: [{ba['asset']}]")
 		print(f"Free..: [{ba['free']}]")
 		print(f"Locked: [{ba['locked']}]")
@@ -749,9 +779,39 @@ def balanceAccAsset(client, ass = ''):
 	else:
 		print(f"Margin max borrow amount for [{ass}]......: [{bl['amount']}]")
 		print(f"Margin max transfer-out amount for [{ass}]: [{bt['amount']}]")
+
+# ---------------------------------------------------
+
+def orderBook(client, symb = '', lim = 1000):
+
+	try:
+		ob = client.get_order_book(symbol = symb, limit = lim)
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_order_book() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_order_book() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_order_book()")
+		return
+
+	if BU.getExportXLS() == True:
+		print(f"Update id\t{ob['lastUpdateId']}")
+		BP.printOrderBookXLSHEADER()
+		[BP.printOrderBookXLS(n) for n in zip(ob['bids'], ob['asks'])]
+
+	else:
+		print(f"Order Book: [{symb}]\n")
+		print(f"(Update id: [{ob['lastUpdateId']}])")
+		print("\tBids\t\t\t|\t\tAsks")
+		print("Qtd\t\tPrice\t\t|\tPrice\t\tQtd")
+		[BP.printOrderBook(n) for n in zip(ob['bids'], ob['asks'])]
+
 # ---------------------------------------------------
 
 def infoDetailsSymbol(client, symb):
+
 	try:
 		si = client.get_symbol_info(symb)
 	except BinanceAPIException as e:
@@ -836,6 +896,8 @@ if __name__ == '__main__':
 	if binanceSEKKey == "NOTDEF_APIKEY":
 		print("Environment variable BINANCE_SEKKEY not defined!")
 		sys.exit(0)
+
+	BU.setRecvWindow(os.getenv("BINANCE_RECVWINDOW", 5000))
 
 	try:
 		client = Client(binanceAPIKey, binanceSEKKey, {"verify": True, "timeout": 20})
@@ -945,6 +1007,13 @@ if __name__ == '__main__':
 	elif sys.argv[1] == "-V" and len(sys.argv) == 3:
 		infoDetailsSymbol(client, sys.argv[2])
 
+	# Information (details) about a symbol
+	elif sys.argv[1] == "-bp":
+		if len(sys.argv) == 3:
+			orderBook(client, symb = sys.argv[2])
+		elif len(sys.argv) == 4:
+			orderBook(client, symb = sys.argv[2], lim = int(sys.argv[3]))
+
 	# 24 hour price change statistics
 	elif sys.argv[1] == "-p" and len(sys.argv) == 2:
 		h24PriceChangeStats(client)
@@ -964,6 +1033,10 @@ if __name__ == '__main__':
 	# Margin symbol price index
 	elif sys.argv[1] == "-mp" and len(sys.argv) == 3:
 		marginSymbPriceIndex(client, sys.argv[2])
+
+	# Latest tricker/price for a symbol
+	elif sys.argv[1] == "-bt" and len(sys.argv) == 3:
+		bookTicker(client, sys.argv[2])
 
 	# Check an order's status
 	elif sys.argv[1] == "-O" and len(sys.argv) == 4:
