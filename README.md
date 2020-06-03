@@ -10,8 +10,9 @@ Setup:<br>
 1. Create Binance API from their site.<br>
 2. Insert Binance API Key and Securiry Key into follow variables into <b>walletId.sh</b> file:<br>
 <i>export BINANCE_APIKEY='<b>AAABBBCCCDDDEEE</b>'<br>
-export BINANCE_SEKKEY='<b>AAABBBCCCDDDEEE</b>'</i><br>
+export BINANCE_SEKKEY='<b>AAABBBCCCDDDEEE</b>'<br>
+export BINANCE_RECVWINDOW=<b>6000</b></i><br>
 <br>
 Usage:<br>
 # <i>source ./walletId.sh</i><br>
-# <i>./binanceStatus.py</i><br>
+# <i>./binance.py</i><br>
