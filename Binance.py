@@ -17,6 +17,7 @@ from binance.exceptions import BinanceAPIException, BinanceWithdrawException, Bi
 # ---------------------------------------------------
 
 def binanceInfo(client):
+
 	try:
 		sst = client.get_system_status()
 	except BinanceAPIException as e:
@@ -69,7 +70,9 @@ def binanceInfo(client):
 		totProdct = len(prodct['data'])
 		[BP.printProducts(n, i, totProdct) for i, n in enumerate(prodct['data'], 1)]
 
-def accountInfos(client):
+def accountInformation(client):
+
+	print("Spot accoutn information:")
 	try:
 		acc = client.get_account()
 	except BinanceAPIException as e:
@@ -108,39 +111,7 @@ def accountInfos(client):
 		else:
 			[BP.printAccount(n) for n in acc['balances'] if float(n['free']) != 0.0 or float(n['locked']) != 0.0]
 
-	# SPOT
-
-	try:
-		openOrders = client.get_open_orders()
-	except BinanceRequestException as e:
-		BU.errPrint(f"Erro at client.get_open_orders() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
-	except BinanceAPIException as e:
-		BU.errPrint(f"Erro at client.get_open_orders() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
-	except:
-		BU.errPrint("Erro at client.get_open_orders()")
-		return
-
-	totOpenOrder = len(openOrders)
-
-	if totOpenOrder != 0:
-		print("\n* SPOT *")
-
-		if   totOpenOrder == 1: print("Open spot order:")
-		elif totOpenOrder <  1: print(f"Open spot orders ({totOpenOrder}):")
-
-		if BU.getExportXLS() == True:
-			BP.printOrderXLSHEADER()
-			[BP.printOrderXLS(n) for n in openOrders]
-		else:
-			[BP.printOrder(n, i, totOpenOrder) for i, n in enumerate(openOrders, 1)]
-	else:
-		print("No open orders")
-
-	# MARGIN
-	print("\n* MARGIN *")
-
+	print("\nMargin accoutn information:")
 	try:
 		marginInfo = client.get_margin_account()
 	except BinanceRequestException as e:
@@ -173,6 +144,42 @@ def accountInfos(client):
 		print('Borrowed assets:')
 		[BP.printMarginAssets(n, i) for i, n in enumerate(cleanedMarginAssets, 1)]
 
+def spotOpenOrders(client):
+
+	try:
+		openOrders = client.get_open_orders()
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_open_orders() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_open_orders() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return
+	except:
+		BU.errPrint("Erro at client.get_open_orders()")
+		return
+
+	totOpenOrder = len(openOrders)
+
+	if totOpenOrder != 0:
+
+		if BU.getExportXLS() == True:
+
+			BP.printOrderXLSHEADER()
+			[BP.printOrderXLS(n) for n in openOrders]
+
+		else:
+
+			if   totOpenOrder == 1: print("Open spot order:")
+			elif totOpenOrder <  1: print(f"Open spot orders ({totOpenOrder}):")
+
+			[BP.printOrder(n, i, totOpenOrder) for i, n in enumerate(openOrders, 1)]
+	else:
+		print("No spot open orders")
+
+# ---------------------------------------------------
+
+def marginOpenOrders(client):
+
 	try:
 		openMarginOrders = client.get_open_margin_orders()
 	except BinanceRequestException as e:
@@ -188,20 +195,25 @@ def accountInfos(client):
 	totOpenMarginOrder = len(openMarginOrders)
 
 	if totOpenMarginOrder != 0:
-		if   totOpenMarginOrder == 1: print("Open margin order:")
-		elif totOpenMarginOrder <  1: print(f"Open margin orders ({totOpenMarginOrder}):")
 
 		if BU.getExportXLS() == True:
+
 			BP.printMarginOrderXLSHEADER()
 			[BP.printMarginOrderXLS(n) for n in openMarginOrders]
+
 		else:
+
+			if   totOpenMarginOrder == 1: print("Margin open order:")
+			elif totOpenMarginOrder <  1: print(f"Margin open orders ({totOpenMarginOrder}):")
+
 			[BP.printMarginOrder(n, i, totOpenMarginOrder) for i, n in enumerate(openMarginOrders, 1)]
 	else:
-		print('No open margin orders')
+		print('No margin open orders')
 
 # ---------------------------------------------------
 
 def marginSymbPriceIndex(client, symb = ''):
+
 	try:
 		mp = client.get_margin_price_index(symbol = symb)
 
@@ -350,12 +362,13 @@ def allMarginOrders(client, symb = '', ordid = '', lim = '1000'):
 # ---------------------------------------------------
 
 def withdrawRequest(client, ass = '', addr = '', amnt = 0):
-	print("Withdraw")
 
 	if BU.getExportXLS() == True:
 		print("Asset\tAddress\tAmount")
 		print(f"{ass}\t{addr}\t{amnt}")
 	else:
+		print("Withdraw")
+
 		print(f"Asset..: [{ass}]")
 		print(f"Address: [{addr}]")
 		print(f"Amount.: [{amnt}]")
@@ -386,7 +399,6 @@ def withdrawRequest(client, ass = '', addr = '', amnt = 0):
 		BP.printWithdrawResponse(withdrawReq)
 
 def withdrawHistory(client, ass = ''):
-	print("Withdraw History")
 
 	try:
 		withdraw = client.get_withdraw_history(asset = ass)
@@ -402,15 +414,18 @@ def withdrawHistory(client, ass = ''):
 		return
 
 	if BU.getExportXLS() == True:
+
 		BP.printWithdrawHistoryXLSHEADER()
 		[BP.printWithdrawHistoryXLS(n) for n in withdraw['withdrawList']]
+
 	else:
+
+		print("Withdraw History")
 		[BP.printWithdrawHistory(n) for n in withdraw['withdrawList']]
 
 # ---------------------------------------------------
 
 def depositHistory(client, ass = ''):
-	print(f"Deposit History for [{ass}]")
 
 	try:
 		deposits = client.get_deposit_history(asset = ass)
@@ -426,13 +441,16 @@ def depositHistory(client, ass = ''):
 		return
 
 	if BU.getExportXLS() == True:
+
 		BP.printDepositHistoryXLSHEADER()
 		[BP.printDepositHistoryXLS(n) for n in deposits['depositList']]
+
 	else:
+
+		print(f"Deposit History for [{ass}]")
 		[BP.printDepositHistory(n) for n in deposits['depositList']]
 
 def depositAddress(client, ass):
-	print(f"Deposit Address for [{ass}]")
 
 	try:
 		depAdd = client.get_deposit_address(asset = ass)
@@ -448,15 +466,17 @@ def depositAddress(client, ass):
 		return
 
 	if BU.getExportXLS() == True:
+
 		BP.printDepositAddressXLSHEADER()
 		BP.printDepositAddressXLS(depAdd)
+
 	else:
+		print(f"Deposit Address for [{ass}]")
 		BP.printDepositAddress(depAdd)
 
 # ---------------------------------------------------
 
 def orderStatus(client, symb, ordrId):
-	print(f"Check an order's id [{ordrId}] and symbol [{symb}] status")
 
 	try:
 		ogs = client.get_order(symbol = symb, orderId = ordrId)
@@ -476,6 +496,8 @@ def orderStatus(client, symb, ordrId):
 		print(f"{ogs['symbol']}\t{ogs['orderId']}\t{ogs['orderListId']}\t{ogs['clientOrderId']}\t{ogs['price']}\t{ogs['origQty']}\t{ogs['executedQty']}\t{ogs['cummulativeQuoteQty']}\t{ogs['status']}\t{ogs['timeInForce']}\t{ogs['type']}\t{ogs['side']}\t{ogs['stopPrice']}\t{ogs['icebergQty']}\t{BU.completeMilliTime(ogs['time'])}\t{BU.completeMilliTime(ogs['updateTime'])}\t{ogs['isWorking']}\t{ogs['origQuoteOrderQty']}")
 
 	else:
+		print(f"Check an order's id [{ordrId}] and symbol [{symb}] status")
+
 		print(f"Symbol...............: [{ogs['symbol']}]")
 		print(f"Order Id.............: [{ogs['orderId']}]")
 		print(f"Order List Id........: [{ogs['orderListId']}]")
@@ -498,7 +520,6 @@ def orderStatus(client, symb, ordrId):
 # ---------------------------------------------------
 
 def olderTrades(client, ass = ''):
-	print("500 older trades for [{ass}]")
 
 	try:
 		th = client.get_historical_trades(symbol = ass, limit = 500)
@@ -517,6 +538,8 @@ def olderTrades(client, ass = ''):
 		BP.printHistoricalTradesXLSHEADER()
 		[BP.printHistoricalTradesXLS(n) for n in th]
 	else:
+		print("500 older trades for [{ass}]")
+
 		thTot = len(th)
 		[BP.printHistoricalTrades(n, i, thTot) for i, n in enumerate(th, 1)]
 
@@ -532,6 +555,7 @@ def subAccountsInfos(client):
 # ---------------------------------------------------
 
 def accountHistory(client, symb):
+
 	try:
 		tradeHist = client.get_my_trades(symbol=symb, recvWindow = BU.getRecvWindow())
 	except:
@@ -584,6 +608,7 @@ def accountHistory(client, symb):
 # ---------------------------------------------------
 
 def accountDetails(client):
+
 	try:
 		assDet = client.get_asset_details()
 		tradFee = client.get_trade_fee()
@@ -834,7 +859,6 @@ def infoDetailsSymbol(client, symb):
 
 # ---------------------------------------------------
 def averagePrice(client, symb = ''):
-	print("Current average price for a symbol")
 
 	try:
 		pa = client.get_avg_price(symbol = symb)
@@ -852,6 +876,8 @@ def averagePrice(client, symb = ''):
 		print("Symbol\tPrice\tMins")
 		print(f"{symb}\t{pa['price']}\t{pa['mins']}")
 	else:
+		print("Current average price for a symbol")
+
 		print(f"Symbol...: [{symb}]")
 		print(f"Price....: [{pa['price']}]")
 		print(f"Mins.....: [{pa['mins']}]")
@@ -959,7 +985,15 @@ if __name__ == '__main__':
 
 	# Wallet/Account information
 	elif sys.argv[1] == "-i" and len(sys.argv) == 2:
-		accountInfos(client)
+		accountInformation(client)
+
+	# Spot open orders
+	elif sys.argv[1] == "-os" and len(sys.argv) == 2:
+		spotOpenOrders(client)
+
+	# Margim open orders
+	elif sys.argv[1] == "-om" and len(sys.argv) == 2:
+		marginOpenOrders(client)
 
 	# Account history (trades, dusts, etc)
 	elif sys.argv[1] == "-h" and len(sys.argv) == 3:
