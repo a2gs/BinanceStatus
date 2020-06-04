@@ -15,4 +15,4 @@ export BINANCE_RECVWINDOW=<b>6000</b></i><br>
 <br>
 Usage:<br>
 # <i>source ./walletId.sh</i><br>
-# <i>./binance.py</i><br>
+# <i>./Binance.py</i><br>
