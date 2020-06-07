@@ -24,7 +24,9 @@ def printHelp(execName):
 	print("2) ACCOUNT INFORMATION")
 	print("-i\n\tSpot and Margin account information.\n")
 	print("-D\n\tAccount details (trade fees, assets details, etc).\n")
-	print("-sa\n\tSub-accounts and its informations (email, balance, assets, status, etc).")
+	print("-sal\n\tList sub-accounts.")
+	print("-sah [EMAIL]\n\tSub-accounts transfer history.")
+	print("-saa [EMAIL] [SYMBOL]\n\tSub-accounts assets (symbol is optional).")
 	print("")
 	print("2.1) SPOT")
 	print("-os [SYMBOL]\n\tSpot open orders.\n")
@@ -682,6 +684,46 @@ def printListSymbolsXLS(symb):
 	print("\tFilters\tType\tMin Price\tMax Price\tTick Size\tMultiplier Up\tMultiplier Down\tAvg Price Mins\tMin Qty\tMax Qty\tStep Size\tMin Notional\tApply To Market\tAvg Price Mins\tMax Num Algo Orders")
 	for n in symb['filters']:
 		print(f"\t\t{n['filterType']}\t{n.get('minPrice', '')}\t{n.get('maxPrice', '')}\t{n.get('tickSize', '')}\t{n.get('multiplierUp', '')}\t{n.get('multiplierDown', '')}\t{n.get('avgPriceMins', '')}\t{n.get('minQty', '')}\t{n.get('maxQty', '')}\t{n.get('stepSize', '')}\t{n.get('minNotional', '')}\t{n.get('applyToMarket', '')}\t{n.get('avgPriceMins', '')}\t{n.get('maxNumAlgoOrders', '')}")
+
+# ----------------------------------------------------------------------------
+
+def printsubAccountsListXLSHEADER():
+	print("Email\tStatus\tActivated\tMobile\tAuth\tCreate Time")
+
+def printsubAccountsListXLS(n):
+	print(f"{n['email']}\t{n['status']}\t{n['activated']}\t{n['mobile']}\t{n['gAuth']}\t{n['createTime']}")
+
+def printsubAccountsList(n, i, totSal):
+	print(f"{i}/{totSal}) Email: [{n['email']}]")
+	print(f"Status.....: [{n['status']}]")
+	print(f"Activated..: [{n['activated']}]")
+	print(f"Mobile.....: [{n['mobile']}]")
+	print(f"Auth.......: [{n['gAuth']}]")
+	print(f"Create Time: [{BU.completeMilliTime(n['createTime'])}]")
+
+def printsubAccountTransferHistoryXLSHEADER():
+	print("From\tTo\tAsset\tQty\tTime")
+
+def printsubAccountTransferHistoryXLS(n):
+	print(f"{n['from']}\t{n['to']}\t{n['asset']}\t{n['qty']}\t{BU.completeMilliTime(n['time'])}")
+
+def printsubAccountTransferHistory(n, i, totSath):
+	print(f"{i}/{totSath}) From: [{n['from']}]")
+	print(f"To...: [{n['to']}]")
+	print(f"Asset: [{n['asset']}]")
+	print(f"Qty..: [{n['qty']}]")
+	print(f"Time.: [{BU.completeMilliTime(n['time'])}]")
+
+def printsubAccountsAssetsXLSHEADER():
+	print("Asset\tFree\tLocked")
+
+def printsubAccountsAssetsXLS(n):
+	print(f"{n['asset']}\t{n['free']}\t{n['locked']}")
+
+def printsubAccountsAssets(n, i, totSaa):
+	print(f"{i}/{totSaa}) Asset: [{n['asset']}]")
+	print(f"Free..: [{n['free']}]")
+	print(f"Locked: [{n['locked']}]")
 
 # ----------------------------------------------------------------------------
 

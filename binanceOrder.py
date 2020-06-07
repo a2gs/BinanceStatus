@@ -229,8 +229,10 @@ def sellMarketOrder(client, symb = '', qtd = 0) -> bool:
 	except:
 		return False
 
-	if order is not None:
-		BP.print_OM_Sell_PlacedOrder(order)
+	if order is None:
+		return False
+
+	BP.print_OM_Sell_PlacedOrder(order)
 
 	return True
 
@@ -249,8 +251,10 @@ def buyMarketOrder(client, symb = '', qtd = 0) -> bool:
 	except:
 		return False
 
-	if order is not None:
-		BP.print_OM_Buy_PlacedOrder(order)
+	if order is None:
+		return False
+
+	BP.print_OM_Buy_PlacedOrder(order)
 
 	return True
 
@@ -272,8 +276,10 @@ def sellLimitOrder(client, symb = '', qtd = 0, prc = 0.0) -> bool:
 	except:
 		return False
 
-	if order is not None:
-		BP.print_LO_Sell_PlacedOrder(order)
+	if order is None:
+		return False
+
+	BP.print_LO_Sell_PlacedOrder(order)
 
 	return True
 
@@ -293,8 +299,10 @@ def buyLimitOrder(client, symb = '', qtd = 0, prc = 0.0) -> bool:
 	except:
 		return False
 
-	if order is not None:
-		BP.print_OL_Buy_PlacedOrder(order)
+	if order is None:
+		return False
+
+	BP.print_OL_Buy_PlacedOrder(order)
 
 	return True
 
@@ -324,8 +332,10 @@ def sellStopOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0) -> boo
 	except:
 		return False
 
-	if order is not None:
-		BP.print_OCO_Sell_PlacedOrder(order)
+	if order is None:
+		return False
+
+	BP.print_OCO_Sell_PlacedOrder(order)
 
 	return True
 
@@ -353,14 +363,16 @@ def buyStopOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0) -> bool
 	except:
 		return False
 
-	if order is not None:
-		BP.print_OCO_Buy_PlacedOrder(order)
+	if order is None:
+		return False
+
+	BP.print_OCO_Buy_PlacedOrder(order)
 
 	return True
 
 # ---------------------------------------------------
 
-def orderMargin(symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0, prcStop = 0.0):
+def orderMargin(symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0, prcStop = 0.0) -> bool:
 	print("MARGIN Order")
 
 	if BU.getExportXLS() == True:
@@ -375,13 +387,13 @@ def orderMargin(symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0
 		print(f"Type......: [{typeOrd}]")
 
 	if BU.askConfirmation() == False:
-		return None
+		return False
 
 	# TESTING
 	global LOCK
 	if LOCK == True:
 		print("PROGRAM LOCKED BY SECURITY!")
-		return None
+		return False
 
 	try:
 		order = client.create_margin_order(symbol           = symbOrd,
@@ -411,3 +423,5 @@ def orderMargin(symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0
 		BU.errPrint(f"Erro create_margin_order BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 	else:
 		BP.print_Margin_Order(order)
+
+	return True

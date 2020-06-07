@@ -16,37 +16,37 @@ from binance.exceptions import BinanceAPIException, BinanceWithdrawException, Bi
 
 # ---------------------------------------------------
 
-def binanceInfo(client):
+def binanceInfo(client) -> bool:
 
 	try:
-		sst = client.get_system_status()
+		sst = client.get_system_status(recvWindow = BU.getRecvWindow())
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_system_status() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 
 	try:
-		st = client.get_server_time()
+		st = client.get_server_time(recvWindow = BU.getRecvWindow())
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_server_time() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_server_time() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_server_time()")
-		return
+		return False
 
 	try:
-		prodct = client.get_products()
+		prodct = client.get_products(recvWindow = BU.getRecvWindow())
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_products() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_products() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_products()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		print("Server Status")
@@ -70,29 +70,31 @@ def binanceInfo(client):
 		totProdct = len(prodct['data'])
 		[BP.printProducts(n, i, totProdct) for i, n in enumerate(prodct['data'], 1)]
 
-def accountInformation(client):
+	return True
+
+def accountInformation(client) -> bool:
 
 	print("Spot accoutn information:")
 	try:
-		acc = client.get_account()
+		acc = client.get_account(recvWindow = BU.getRecvWindow())
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_account() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_account() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_account()")
-		return
+		return False
 
 	try:
-		accStatus = client.get_account_status()
+		accStatus = client.get_account_status(recvWindow = BU.getRecvWindow())
 	except BinanceWithdrawException as e:
 		BU.errPrint(f"Erro at client.get_account_status() BinanceWithdrawException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_account_status()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		print(f"Can trade\t{acc['canTrade']}\nCan withdraw\t{acc['canWithdraw']}\nCan deposit\t{acc['canDeposit']}\nAccount type\t{acc['accountType']}")
@@ -113,16 +115,16 @@ def accountInformation(client):
 
 	print("\nMargin accoutn information:")
 	try:
-		marginInfo = client.get_margin_account()
+		marginInfo = client.get_margin_account(recvWindow = BU.getRecvWindow())
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_margin_account() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_margin_account() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_margin_account()")
-		return
+		return False
 
 	cleanedMarginAssets = [n for n in marginInfo['userAssets'] if float(n['netAsset']) != 0.0]
 
@@ -144,19 +146,21 @@ def accountInformation(client):
 		print('Borrowed assets:')
 		[BP.printMarginAssets(n, i) for i, n in enumerate(cleanedMarginAssets, 1)]
 
-def spotOpenOrders(client):
+	return True
+
+def spotOpenOrders(client) -> bool:
 
 	try:
-		openOrders = client.get_open_orders()
+		openOrders = client.get_open_orders(recvWindow = BU.getRecvWindow())
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_open_orders() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_open_orders() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_open_orders()")
-		return
+		return False
 
 	totOpenOrder = len(openOrders)
 
@@ -176,21 +180,23 @@ def spotOpenOrders(client):
 	else:
 		print("No spot open orders")
 
+	return True
+
 # ---------------------------------------------------
 
-def marginOpenOrders(client):
+def marginOpenOrders(client) -> bool:
 
 	try:
-		openMarginOrders = client.get_open_margin_orders()
+		openMarginOrders = client.get_open_margin_orders(recvWindow = BU.getRecvWindow())
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_open_margin_orders() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_open_margin_orders() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_open_margin_orders()")
-		return
+		return False
 
 	totOpenMarginOrder = len(openMarginOrders)
 
@@ -210,22 +216,24 @@ def marginOpenOrders(client):
 	else:
 		print('No margin open orders')
 
+	return True
+
 # ---------------------------------------------------
 
-def marginSymbPriceIndex(client, symb = ''):
+def marginSymbPriceIndex(client, symb = '') -> bool:
 
 	try:
-		mp = client.get_margin_price_index(symbol = symb)
+		mp = client.get_margin_price_index(symbol = symb, recvWindow = BU.getRecvWindow())
 
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_margin_price_index() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_margin_price_index() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_margin_price_index()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		print("Symbol\tPrice\tTime")
@@ -237,22 +245,24 @@ def marginSymbPriceIndex(client, symb = ''):
 		print(f"Price: [{mp['price']}]")
 		print(f"Time.: [{BU.completeMilliTime(mp['calcTime'])}]")
 
+	return True
+
 # ---------------------------------------------------
 
-def marginSymbInfo(client, symb = ''):
+def marginSymbInfo(client, symb = '') -> bool:
 
 	try:
-		mi = client.get_margin_symbol(symbol = symb)
+		mi = client.get_margin_symbol(symbol = symb, recvWindow = BU.getRecvWindow())
 
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_margin_symbol() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_margin_symbol() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_margin_symbol()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		print("Symbol\tQuote\tBase\tId\tIs Buy Allowed\tIs Margin Trade\tIs Sell Allowed")
@@ -269,22 +279,24 @@ def marginSymbInfo(client, symb = ''):
 		print(f"Is Margin Trade: [{mi['isMarginTrade']}]")
 		print(f"Is Sell Allowed: [{mi['isSellAllowed']}]")
 
+	return True
+
 # ---------------------------------------------------
 
-def marginAsset(client, ass = ''):
+def marginAsset(client, ass = '') -> bool:
 
 	try:
-		mo = client.get_margin_asset(asset = ass)
+		mo = client.get_margin_asset(asset = ass, recvWindow = BU.getRecvWindow())
 
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_margin_asset() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_margin_asset() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_margin_asset()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		print("Full Name\tName\tIs Borrowable\tIs Mortgageable\tUser Minimum Borrow\tUser Minimum Repay")
@@ -299,22 +311,24 @@ def marginAsset(client, ass = ''):
 		print(f"User minimum borrow: [{mo['userMinBorrow']}]")
 		print(f"User monimum repay.: [{mo['userMinRepay']}]")
 
+	return True
+
 # ---------------------------------------------------
 
-def marginTrades(client, symb = '', fromordid = '', lim = '1000'):
+def marginTrades(client, symb = '', fromordid = '', lim = '1000') -> bool:
 
 	try:
-		mt = client.get_margin_trades(symbol = symb, fromId = fromordid, limit = lim)
+		mt = client.get_margin_trades(symbol = symb, fromId = fromordid, limit = lim, recvWindow = BU.getRecvWindow())
 
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_margin_trades() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_margin_trades() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_margin_trades()")
-		return
+		return False
 
 	mttot = len(mt)
 
@@ -329,22 +343,24 @@ def marginTrades(client, symb = '', fromordid = '', lim = '1000'):
 
 		[BP.printMarginTrades(n, i, mttot) for i, n in enumerate(mt, 1)]
 
+	return True
+
 # ---------------------------------------------------
 
-def allMarginOrders(client, symb = '', ordid = '', lim = '1000'):
+def allMarginOrders(client, symb = '', ordid = '', lim = '1000') -> bool:
 
 	try:
-		mo = client.get_all_margin_orders(symbol = symb, orderId = ordid, limit = lim)
+		mo = client.get_all_margin_orders(symbol = symb, orderId = ordid, limit = lim, recvWindow = BU.getRecvWindow())
 
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_all_margin_orders() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_all_margin_orders() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_all_margin_orders()")
-		return
+		return False
 
 	motot = len(mo)
 
@@ -359,9 +375,11 @@ def allMarginOrders(client, symb = '', ordid = '', lim = '1000'):
 
 		[BP.printTradeAllHist(n, i, motot) for i, n in enumerate(mo, 1)]
 
+	return True
+
 # ---------------------------------------------------
 
-def withdrawRequest(client, ass = '', addr = '', amnt = 0):
+def withdrawRequest(client, ass = '', addr = '', amnt = 0) -> bool:
 
 	if BU.getExportXLS() == True:
 		print("Asset\tAddress\tAmount")
@@ -374,23 +392,23 @@ def withdrawRequest(client, ass = '', addr = '', amnt = 0):
 		print(f"Amount.: [{amnt}]")
 
 	if BU.askConfirmation() == False:
-		return None
+		return False
 
 	try:
 		withdrawReq = client.withdraw(asset = ass, address = addr, amount = amnt)
 
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at withdraw BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at withdraw BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceWithdrawException as e:
 		BU.errPrint(f"Erro at withdraw BinanceWithdrawException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint(f"Erro at withdraw")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		BP.printWithdrawResponseXLSHEADER()
@@ -398,20 +416,22 @@ def withdrawRequest(client, ass = '', addr = '', amnt = 0):
 	else:
 		BP.printWithdrawResponse(withdrawReq)
 
-def withdrawHistory(client, ass = ''):
+	return True
+
+def withdrawHistory(client, ass = '') -> bool:
 
 	try:
-		withdraw = client.get_withdraw_history(asset = ass)
+		withdraw = client.get_withdraw_history(asset = ass, recvWindow = BU.getRecvWindow())
 
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_withdraw_history() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_withdraw_history() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_withdraw_history()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 
@@ -423,22 +443,24 @@ def withdrawHistory(client, ass = ''):
 		print("Withdraw History")
 		[BP.printWithdrawHistory(n) for n in withdraw['withdrawList']]
 
+	return True
+
 # ---------------------------------------------------
 
-def depositHistory(client, ass = ''):
+def depositHistory(client, ass = '') -> bool:
 
 	try:
-		deposits = client.get_deposit_history(asset = ass)
+		deposits = client.get_deposit_history(asset = ass, recvWindow = BU.getRecvWindow())
 
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_deposit_history() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_deposit_history() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_deposit_history()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 
@@ -450,20 +472,22 @@ def depositHistory(client, ass = ''):
 		print(f"Deposit History for [{ass}]")
 		[BP.printDepositHistory(n) for n in deposits['depositList']]
 
-def depositAddress(client, ass):
+	return True
+
+def depositAddress(client, ass) -> bool:
 
 	try:
-		depAdd = client.get_deposit_address(asset = ass)
+		depAdd = client.get_deposit_address(asset = ass, recvWindow = BU.getRecvWindow())
 
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_deposit_address() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_deposit_address() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_deposit_address()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 
@@ -474,22 +498,24 @@ def depositAddress(client, ass):
 		print(f"Deposit Address for [{ass}]")
 		BP.printDepositAddress(depAdd)
 
+	return True
+
 # ---------------------------------------------------
 
-def orderStatus(client, symb, ordrId):
+def orderStatus(client, symb, ordrId) -> bool:
 
 	try:
-		ogs = client.get_order(symbol = symb, orderId = ordrId)
+		ogs = client.get_order(symbol = symb, orderId = ordrId, recvWindow = BU.getRecvWindow())
 
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_order() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_order() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_order()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		print("Symbol\tOrder Id\tOrder List Id\tClient Order Id\tPrice\tOrig Qty\tExecuted Qty\tCummulative Quote Qty\tStatus\tTime In Force\tType\tSide\tStop Price\tIceberg Qty\tTime\tUpdate Time\tIs Working\tOrig Quote Order Qty")
@@ -517,22 +543,24 @@ def orderStatus(client, symb, ordrId):
 		print(f"Is Working...........: [{ogs['isWorking']}]")
 		print(f"Orig Quote Order Qty.: [{ogs['origQuoteOrderQty']}]")
 
+	return True
+
 # ---------------------------------------------------
 
-def olderTrades(client, ass = ''):
+def olderTrades(client, ass = '') -> bool:
 
 	try:
-		th = client.get_historical_trades(symbol = ass, limit = 500)
+		th = client.get_historical_trades(symbol = ass, limit = 500, recvWindow = BU.getRecvWindow())
 
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_historical_trades() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_historical_trades() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_historical_trades()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		BP.printHistoricalTradesXLSHEADER()
@@ -543,24 +571,104 @@ def olderTrades(client, ass = ''):
 		thTot = len(th)
 		[BP.printHistoricalTrades(n, i, thTot) for i, n in enumerate(th, 1)]
 
-# ---------------------------------------------------
-
-def subAccountsInfos(client):
-	pass
-#TODO
-#		  get_sub_account_list()
-#		  get_sub_account_transfer_history(email=)
-#		  get_sub_account_assets(email=)
+	return True
 
 # ---------------------------------------------------
 
-def accountHistory(client, symb):
+def subAccountsList(client) -> bool:
+
+	try:
+		sal = client.get_sub_account_list(recvWindow = BU.getRecvWindow())
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_sub_account_list() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return False
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_sub_account_list() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return False
+	except:
+		BU.errPrint("Erro at client.get_sub_account_list()")
+		return False
+
+	totSal = len(sal['subAccounts'])
+
+	if sal['success'] == True and totSal > 0:
+
+		if BU.getExportXLS() == True:
+			BP.printsubAccountsListXLSHEADER()
+			[BP.printsubAccountsListXLS(n) for n in sal['subAccounts']]
+		else:
+			print("Sub account(s):")
+			[BP.printsubAccountsList(n, i, totSal) for i, n in enumerate(sal['subAccounts'], 1)]
+	else:
+		print("There are no sub accounts.")
+
+	return True
+
+def subAccountTransferHistory(client, em: str = "") -> bool:
+
+	try:
+		sath = client.get_sub_account_transfer_history(email = em, recvWindow = BU.getRecvWindow())
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_sub_account_transfer_history() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return False
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_sub_account_transfer_history() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return False
+	except:
+		BU.errPrint("Erro at client.get_sub_account_transfer_history()")
+		return False
+
+	if sath['success'] == True:
+
+		if BU.getExportXLS() == True:
+			BP.printsubAccountTransferHistoryXLSHEADER()
+			[BP.printsubAccountTransferHistoryXLS(n) for n in sath['transfers']]
+		else:
+			totSath = len(sath['transfers'])
+			print("Sub account(s) transfer history:")
+			[BP.printsubAccountTransferHistory(n, i, totSath) for i, n in enumerate(sath['transfers'], 1)]
+	else:
+		print(f"Sub accounts transfer history returned: [{sath['msg']}]")
+
+	return True
+
+def subAccountsAssets(client, em: str = "", symb: str = "") -> bool:
+
+	try:
+		saa = client.get_sub_account_assets(email = em, symbol = symb, recvWindow = BU.getRecvWindow())
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_sub_account_assets() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return False
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_sub_account_assets() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return False
+	except:
+		BU.errPrint("Erro at client.get_sub_account_assets()")
+		return False
+
+	if saa['success'] == True:
+
+		if BU.getExportXLS() == True:
+			BP.printsubAccountsAssetsXLSHEADER()
+			[BP.printsubAccountsAssetsXLS(n) for n in saa['balances']]
+		else:
+			print("Sub account(s):")
+			totSaa = len(saa['balances'])
+			[BP.printsubAccountsAssets(n, i, totSaa) for i, n in enumerate(saa['balances'], 1)]
+	else:
+		print(f"Sub accounts assets returned: [{saa['msg']}]")
+
+	return True
+
+# ---------------------------------------------------
+
+def accountHistory(client, symb) -> bool:
 
 	try:
 		tradeHist = client.get_my_trades(symbol=symb, recvWindow = BU.getRecvWindow())
 	except:
 		BU.errPrint(f"Erro at client.get_my_trades(symbol={symb})")
-		return
+		return False
 
 	tradeHistTot = len(tradeHist)
 
@@ -574,10 +682,10 @@ def accountHistory(client, symb):
 	print(f"All trade history {symb}:")
 
 	try:
-		tradeAllHist = client.get_all_orders(symbol=symb)
+		tradeAllHist = client.get_all_orders(symbol=symb, recvWindow = BU.getRecvWindow())
 	except:
 		BU.errPrint(f"Erro at client.get_all_orders(symbol={symb})")
-		return
+		return False
 
 	tradeAllHistTot = len(tradeAllHist)
 
@@ -589,13 +697,13 @@ def accountHistory(client, symb):
 		[BP.printTradeAllHist(n, i, tradeAllHistTot) for i, n in enumerate(tradeAllHist, 1)]
 
 	try:
-		allDust = client.get_dust_log()
+		allDust = client.get_dust_log(recvWindow = BU.getRecvWindow())
 	except BinanceWithdrawException as e:
 		BU.errPrint(f"Erro at client.get_dust_log() BinanceWithdrawException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_dust_log()")
-		return
+		return False
 
 	allDustTot = len(allDust['results']['rows'])
 
@@ -605,19 +713,21 @@ def accountHistory(client, symb):
 		print("Log of small amounts exchanged for BNB:")
 		[BP.printDustTrade(n, i, allDustTot) for i, n in enumerate(allDust['results']['rows'], 1)]
 
+	return True
+
 # ---------------------------------------------------
 
-def accountDetails(client):
+def accountDetails(client) -> bool:
 
 	try:
-		assDet = client.get_asset_details()
-		tradFee = client.get_trade_fee()
+		assDet = client.get_asset_details(recvWindow = BU.getRecvWindow())
+		tradFee = client.get_trade_fee(recvWindow = BU.getRecvWindow())
 	except BinanceWithdrawException as e:
 		BU.errPrint(f"Erro get_asset_details and get_trade_fee BinanceWithdrawException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint(f"Erro get_asset_details and get_trade_fee")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		print('Details on Assets')
@@ -637,21 +747,23 @@ def accountDetails(client):
 		adTot = len(tradFee['tradeFee'])
 		[BP.printTradeFee(n, i, adTot) for i, n in enumerate(tradFee['tradeFee'], 1)]
 
+	return True
+
 # ---------------------------------------------------
 
-def infoSymbol(client, symb, interv, candlesTot):
+def infoSymbol(client, symb, interv, candlesTot) -> bool:
 
 	try:
-		sumbPrc = client.get_klines(symbol = symb, interval = BU.binanceInterval(interv), limit = candlesTot)
+		sumbPrc = client.get_klines(symbol = symb, interval = BU.binanceInterval(interv), limit = candlesTot, recvWindow = BU.getRecvWindow())
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_klines() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_klines() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_klines()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		BP.printInfoSymbolValuesXLSHEADER()
@@ -661,21 +773,23 @@ def infoSymbol(client, symb, interv, candlesTot):
 		totsumbPrc = len(sumbPrc)
 		[BP.printInfoSymbolValues(n, i, totsumbPrc) for i, n in enumerate(sumbPrc, 1)]
 
+	return True
+
 # ---------------------------------------------------
 
-def listSymbolsRateLimits(client):
+def listSymbolsRateLimits(client) -> bool:
 
 	try:
-		ei = client.get_exchange_info()
+		ei = client.get_exchange_info(recvWindow = BU.getRecvWindow())
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_exchange_info() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_exchange_info() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_exchange_info()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		print("Rate Limits")
@@ -695,57 +809,63 @@ def listSymbolsRateLimits(client):
 		totei = len(ei['symbols'])
 		[BP.printListSymbols(n, i, totei) for i, n in enumerate(ei['symbols'], 1)]
 
+	return True
+
 # ---------------------------------------------------
 
-def transfSpotToMargin(client, ass = '', ap = '0.0'):
+def transfSpotToMargin(client, ass = '', ap = '0.0') -> bool:
 	print(f"Tranfering [{ap}] of [{ass}] from Spot to Margin account")
 
 	try:
 		transfer = client.transfer_spot_to_margin(asset = ass, amount = ap)	
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.transfer_spot_to_margin() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.transfer_spot_to_margin() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.transfer_spot_to_margin()")
-		return
+		return False
 
 	print("Return Ok. Spot to Margin transaction Id: [{transfer['tranId']}] ")
 
-def transfMarginToSpot(client, ass = '', ap = '0.0'):
+	return True
+
+def transfMarginToSpot(client, ass = '', ap = '0.0') -> bool:
 	print(f"Tranfering [{ap}] of [{ass}] from Margin to Spot account")
 
 	try:
 		transfer = client.transfer_margin_to_spot(asset = ass, amount = ap)	
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.transfer_margin_to_spot() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.transfer_margin_to_spot() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.transfer_margin_to_spot()")
-		return
+		return False
 
 	print("Return Ok. Margin to Spot transaction Id: [{transfer['tranId']}] ")
 
+	return True
+
 # ---------------------------------------------------
 
-def bookTicker(client, symb = ''):
+def bookTicker(client, symb = '') -> bool:
 
 	try:
-		bt = client.get_orderbook_ticker(symbol = symb)
+		bt = client.get_orderbook_ticker(symbol = symb, recvWindow = BU.getRecvWindow())
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_orderbook_ticker() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_orderbook_ticker() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_orderbook_ticker()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		print("Symbol\tBid Price\tBid Qty\tAsk Price\tAsk Qty")
@@ -760,21 +880,23 @@ def bookTicker(client, symb = ''):
 		print(f"Ask Price: [{bt['askPrice']}]")
 		print(f"Ask Qtd..: [{bt['askQty']}]")
 
+	return True
+
 # ---------------------------------------------------
 
-def balanceAccAsset(client, ass = ''):
+def balanceAccAsset(client, ass = '') -> bool:
 
 	try:
-		ba = client.get_asset_balance(asset = ass)
+		ba = client.get_asset_balance(asset = ass, recvWindow = BU.getRecvWindow())
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_asset_balance() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_asset_balance() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_asset_balance()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		print("Asset\tFree\tLocked")
@@ -786,17 +908,17 @@ def balanceAccAsset(client, ass = ''):
 		print(f"Locked: [{ba['locked']}]")
 
 	try:
-		bl = client.get_max_margin_loan(asset = ass)
-		bt = client.get_max_margin_transfer(asset = ass)
+		bl = client.get_max_margin_loan(asset = ass, recvWindow = BU.getRecvWindow())
+		bt = client.get_max_margin_transfer(asset = ass, recvWindow = BU.getRecvWindow())
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_max_margin_loan()/get_max_margin_transfer() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_max_margin_loan()/get_max_margin_transfer() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_max_margin_loan()/get_max_margin_transfer()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		print(f"Margin max borrow amount for {ass}\tMargin max transfer-out amount for {ass}")
@@ -805,21 +927,23 @@ def balanceAccAsset(client, ass = ''):
 		print(f"Margin max borrow amount for [{ass}]......: [{bl['amount']}]")
 		print(f"Margin max transfer-out amount for [{ass}]: [{bt['amount']}]")
 
+	return True
+
 # ---------------------------------------------------
 
-def orderBook(client, symb = '', lim = 1000):
+def orderBook(client, symb = '', lim = 1000) -> bool:
 
 	try:
-		ob = client.get_order_book(symbol = symb, limit = lim)
+		ob = client.get_order_book(symbol = symb, limit = lim, recvWindow = BU.getRecvWindow())
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_order_book() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_order_book() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_order_book()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		print(f"Update id\t{ob['lastUpdateId']}")
@@ -833,21 +957,23 @@ def orderBook(client, symb = '', lim = 1000):
 		print("Qtd\t\tPrice\t\t|\tPrice\t\tQtd")
 		[BP.printOrderBook(n) for n in zip(ob['bids'], ob['asks'])]
 
+	return True
+
 # ---------------------------------------------------
 
-def infoDetailsSymbol(client, symb):
+def infoDetailsSymbol(client, symb) -> bool:
 
 	try:
-		si = client.get_symbol_info(symb)
+		si = client.get_symbol_info(symb, recvWindow = BU.getRecvWindow())
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_symbol_info() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_symbol_info() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_symbol_info()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		BP.printListSymbolsXLSHEADER()
@@ -857,20 +983,23 @@ def infoDetailsSymbol(client, symb):
 		print("Symbol: [{symb}]")
 		BP.printListSymbols(si)
 
+	return True
+
 # ---------------------------------------------------
-def averagePrice(client, symb = ''):
+
+def averagePrice(client, symb = '') -> bool:
 
 	try:
-		pa = client.get_avg_price(symbol = symb)
+		pa = client.get_avg_price(symbol = symb, recvWindow = BU.getRecvWindow())
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_avg_price() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_avg_price() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_avg_price()")
-		return
+		return False
 
 	if BU.getExportXLS() == True:
 		print("Symbol\tPrice\tMins")
@@ -882,19 +1011,21 @@ def averagePrice(client, symb = ''):
 		print(f"Price....: [{pa['price']}]")
 		print(f"Mins.....: [{pa['mins']}]")
 
-def h24PriceChangeStats(client):
+	return True
+
+def h24PriceChangeStats(client) -> bool:
 
 	try:
-		ga = client.get_ticker()
+		ga = client.get_ticker(recvWindow = BU.getRecvWindow())
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_ticker() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_ticker() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return
+		return False
 	except:
 		BU.errPrint("Erro at client.get_ticker()")
-		return
+		return False
 
 	totGa = len(ga)
 
@@ -977,145 +1108,205 @@ if __name__ == '__main__':
 
 	# Binance Info
 	if sys.argv[1] == "-B" and len(sys.argv) == 2:
-		binanceInfo(client)
+		if binanceInfo(client) == True:
+			sys.exit(0)
 
 	# Asset balance
 	elif sys.argv[1] == "-ba" and len(sys.argv) == 3:
-		balanceAccAsset(client, sys.argv[2])
+		if balanceAccAsset(client, sys.argv[2]) == True:
+			sys.exit(0)
 
 	# Wallet/Account information
 	elif sys.argv[1] == "-i" and len(sys.argv) == 2:
-		accountInformation(client)
+		if accountInformation(client) == True:
+			sys.exit(0)
 
 	# Spot open orders
 	elif sys.argv[1] == "-os" and len(sys.argv) == 2:
-		spotOpenOrders(client)
+		if spotOpenOrders(client) == True:
+			sys.exit(0)
 
 	# Margim open orders
 	elif sys.argv[1] == "-om" and len(sys.argv) == 2:
-		marginOpenOrders(client)
+		if marginOpenOrders(client) == True:
+			sys.exit(0)
 
 	# Account history (trades, dusts, etc)
 	elif sys.argv[1] == "-h" and len(sys.argv) == 3:
-		accountHistory(client, sys.argv[2])
+		if accountHistory(client, sys.argv[2]) == True:
+			sys.exit(0)
 
-	# Sub-accounts
-	elif sys.argv[1] == "-sa" and len(sys.argv) == 2:
-		subAccountsInfos(client)
+	# List sub-accounts
+	elif sys.argv[1] == "-sal" and len(sys.argv) == 2:
+		if subAccountsList(client) == True:
+			sys.exit(0)
+
+	# Sub-accounts transfer history
+	elif sys.argv[1] == "-sah" and len(sys.argv) == 3:
+		if subAccountTransferHistory(client, em = sys.argv[2]) == True:
+			sys.exit(0)
+
+	# Sub-accounts assets
+	elif sys.argv[1] == "-saa":
+		if	len(sys.argv) == 3:
+			if subAccountsAssets(client, em = sys.argv[2]) == True:
+				sys.exit(0)
+		elif len(sys.argv) == 4:
+			if subAccountsAssets(client, em = sys.argv[2], symb = sys.argv[3]) == True:
+				sys.exit(0)
+		else: print("-saa parameters error")
 
 	# Query all margin accounts orders
 	elif sys.argv[1] == "-mh":
-		if   len(sys.argv) == 3: allMarginOrders(client, sys.argv[2])
-		elif len(sys.argv) == 4: allMarginOrders(client, sys.argv[2], sys.argv[3])
-		elif len(sys.argv) == 5: allMarginOrders(client, sys.argv[2], sys.argv[3], sys.argv[4])
+		if   len(sys.argv) == 3:
+			if allMarginOrders(client, sys.argv[2]) == True:
+				sys.exit(0)
+		elif len(sys.argv) == 4:
+			if allMarginOrders(client, sys.argv[2], sys.argv[3]) == True:
+				sys.exit(0)
+		elif len(sys.argv) == 5:
+			if allMarginOrders(client, sys.argv[2], sys.argv[3], sys.argv[4]) == True:
+				sys.exit(0)
 		else: print("-mh parameters error")
 
 	# Query margin accounts trades
 	elif sys.argv[1] == "-mt":
-		if   len(sys.argv) == 3: marginTrades(client, sys.argv[2])
-		elif len(sys.argv) == 4: marginTrades(client, sys.argv[2], sys.argv[3])
-		elif len(sys.argv) == 5: marginTrades(client, sys.argv[2], sys.argv[3], sys.argv[4])
+		if   len(sys.argv) == 3:
+			if marginTrades(client, sys.argv[2]) == True:
+				sys.exit(0)
+		elif len(sys.argv) == 4:
+			if marginTrades(client, sys.argv[2], sys.argv[3]) == True:
+				sys.exit(0)
+		elif len(sys.argv) == 5:
+			if marginTrades(client, sys.argv[2], sys.argv[3], sys.argv[4]) == True:
+				sys.exit(0)
 		else: print("-mt parameters error")
 
 	# Query margin asset
 	elif sys.argv[1] == "-mm" and len(sys.argv) == 3:
-		marginAsset(client, sys.argv[2])
+		if marginAsset(client, sys.argv[2]) == True:
+			sys.exit(0)
 
 	# 500 older trades
 	elif sys.argv[1] == "-ht" and len(sys.argv) == 3:
-		olderTrades(client, sys.argv[2])
+		if olderTrades(client, sys.argv[2]) == True:
+			sys.exit(0)
 
 	# Account details (fees)
 	elif sys.argv[1] == "-D" and len(sys.argv) == 2:
-		accountDetails(client)
+		if accountDetails(client) == True:
+			sys.exit(0)
 
 	# Rate limits and list of symbols
 	elif sys.argv[1] == "-l" and len(sys.argv) == 2:
-		listSymbolsRateLimits(client)
+		if listSymbolsRateLimits(client) == True:
+			sys.exit(0)
 
 	# Information (prices) about a symbol
 	elif sys.argv[1] == "-v" and len(sys.argv) == 5:
-		infoSymbol(client, sys.argv[2], sys.argv[3], int(sys.argv[4]))
+		if infoSymbol(client, sys.argv[2], sys.argv[3], int(sys.argv[4])) == True:
+			sys.exit(0)
 
 	# Information (details) about a symbol
 	elif sys.argv[1] == "-V" and len(sys.argv) == 3:
-		infoDetailsSymbol(client, sys.argv[2])
+		if infoDetailsSymbol(client, sys.argv[2]) == True:
+			sys.exit(0)
 
 	# Information (details) about a symbol
 	elif sys.argv[1] == "-bp":
 		if len(sys.argv) == 3:
-			orderBook(client, symb = sys.argv[2])
+			if orderBook(client, symb = sys.argv[2]) == True:
+				sys.exit(0)
 		elif len(sys.argv) == 4:
-			orderBook(client, symb = sys.argv[2], lim = int(sys.argv[3]))
+			if orderBook(client, symb = sys.argv[2], lim = int(sys.argv[3])) == True:
+				sys.exit(0)
+		else: print("-bp parameters error")
 
 	# 24 hour price change statistics
 	elif sys.argv[1] == "-p" and len(sys.argv) == 2:
-		h24PriceChangeStats(client)
+		if h24PriceChangeStats(client) == True:
+			sys.exit(0)
 
 	# Current average price for a symbol
 	elif sys.argv[1] == "-pa" and len(sys.argv) == 3:
-		averagePrice(client, sys.argv[2])
+		if averagePrice(client, sys.argv[2]) == True:
+			sys.exit(0)
 
 	# Deposit address for a symbol
 	elif sys.argv[1] == "-d" and len(sys.argv) == 3:
-		depositAddress(client, sys.argv[2])
+		if depositAddress(client, sys.argv[2]) == True:
+			sys.exit(0)
 
 	# Margin symbol info
 	elif sys.argv[1] == "-ml" and len(sys.argv) == 3:
-		marginSymbInfo(client, sys.argv[2])
+		if marginSymbInfo(client, sys.argv[2]) == True:
+			sys.exit(0)
 
 	# Margin symbol price index
 	elif sys.argv[1] == "-mp" and len(sys.argv) == 3:
-		marginSymbPriceIndex(client, sys.argv[2])
+		if marginSymbPriceIndex(client, sys.argv[2]) == True:
+			sys.exit(0)
 
 	# Latest tricker/price for a symbol
 	elif sys.argv[1] == "-bt" and len(sys.argv) == 3:
-		bookTicker(client, sys.argv[2])
+		if bookTicker(client, sys.argv[2]) == True:
+			sys.exit(0)
 
 	# Check an order's status
 	elif sys.argv[1] == "-O" and len(sys.argv) == 4:
-		orderStatus(client, sys.argv[2], sys.argv[3])
+		if orderStatus(client, sys.argv[2], sys.argv[3]) == True:
+			sys.exit(0)
 
 	# Deposit history
 	elif sys.argv[1] == "-dh" and (len(sys.argv) == 3 or len(sys.argv) == 2):
 		if len(sys.argv) == 3:
-			depositHistory(client, sys.argv[2])
+			if depositHistory(client, sys.argv[2]) == True:
+				sys.exit(0)
 		else:
-			depositHistory(client)
+			if depositHistory(client) == True:
+				sys.exit(0)
 
 	# Withdraw
 	elif sys.argv[1] == "-w" and len(sys.argv) == 5:
-		withdrawRequest(client, ass = sys.argv[2], addr = sys.argv[3], amnt = sys.argv[4])
+		if withdrawRequest(client, ass = sys.argv[2], addr = sys.argv[3], amnt = sys.argv[4]) == True:
+			sys.exit(0)
 
 	# Withdraw history
 	elif sys.argv[1] == "-wh" and (len(sys.argv) == 3 or len(sys.argv) == 2):
 		if len(sys.argv) == 3:
-			withdrawHistory(client, sys.argv[2])
+			if withdrawHistory(client, sys.argv[2]) == True:
+				sys.exit(0)
 		else:
-			withdrawHistory(client)
+			if withdrawHistory(client) == True:
+				sys.exit(0)
 
 	# Transfer between spot account to margin account
 	elif sys.argv[1] == "-mi" and len(sys.argv) == 4:
-		transfSpotToMargin(client, ass = sys.argv[2], ap = sys.argv[3])
+		if transfSpotToMargin(client, ass = sys.argv[2], ap = sys.argv[3]) == True:
+			sys.exit(0)
 
 	# Transfer between margin account to spot account
 	elif sys.argv[1] == "-mo" and len(sys.argv) == 4:
-		transfMarginToSpot(client, ass = sys.argv[2], ap = sys.argv[3])
+		if transfMarginToSpot(client, ass = sys.argv[2], ap = sys.argv[3]) == True:
+			sys.exit(0)
 
 	# SPOT Buy order
 	elif sys.argv[1] == "-b" and len(sys.argv) > 2:
 
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
-			BO.buyMarketOrder(client, sys.argv[3], sys.argv[4])
+			if BO.buyMarketOrder(client, sys.argv[3], sys.argv[4]) == True:
+				sys.exit(0)
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			BO.buyLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5])
+			if BO.buyLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5]) == True:
+				sys.exit(0)
 
 		# OCO
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
-			BO.buyStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+			if BO.buyStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == True:
+				sys.exit(0)
 
 		else:
 			print("Parameters error for SPOT buy order")
@@ -1125,42 +1316,49 @@ if __name__ == '__main__':
 
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
-			BO.sellMarketOrder(client, sys.argv[3], sys.argv[4])
+			if BO.sellMarketOrder(client, sys.argv[3], sys.argv[4]) == True:
+				sys.exit(0)
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			BO.sellLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5])
+			if BO.sellLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5]) == True:
+				sys.exit(0)
 
 		# OCO
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
-			BO.sellStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+			if BO.sellStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == True:
+				sys.exit(0)
 
 		else:
 			print("Parameters error for SPOT sell order")
 
 	elif sys.argv[1] == "-c" and len(sys.argv) == 4:
-		BO.cancel_a_spot_order(client, sys.argv[2], sys.argv[3])
+		if BO.cancel_a_spot_order(client, sys.argv[2], sys.argv[3]) == True:
+			sys.exit(0)
 
 	# MARGIN Buy order
 	elif sys.argv[1] == "-bm" and len(sys.argv) > 2:
 
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
-			orderMargin(symbOrd = sys.argv[3], sideOrd = "BUY",
-			            typeOrd = "MARKET",    qtdOrd  = sys.argv[4],
-			            prcOrd  = 0.0,         prcStop = 0.0)
+			if orderMargin(symbOrd = sys.argv[3], sideOrd = "BUY",
+			               typeOrd = "MARKET",    qtdOrd  = sys.argv[4],
+			               prcOrd  = 0.0,         prcStop = 0.0) == True:
+				sys.exit(0)
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			orderMargin(symbOrd = sys.argv[3], sideOrd = "BUY",
-			            typeOrd = "LIMIT",     qtdOrd  = sys.argv[4],
-			            prcOrd  = sys.argv[5], prcStop = 0.0)
+			if orderMargin(symbOrd = sys.argv[3], sideOrd = "BUY",
+			               typeOrd = "LIMIT",     qtdOrd  = sys.argv[4],
+			               prcOrd  = sys.argv[5], prcStop = 0.0) == True:
+				sys.exit(0)
 
 		# OCO
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
-			orderMargin(symbOrd = sys.argv[3],   sideOrd = "BUY",
-			            typeOrd = "TAKE_PROFIT", qtdOrd  = sys.argv[4],
-			            prcOrd  = sys.argv[5],   prcStop = sys.argv[6])
+			if orderMargin(symbOrd = sys.argv[3],   sideOrd = "BUY",
+			               typeOrd = "TAKE_PROFIT", qtdOrd  = sys.argv[4],
+			               prcOrd  = sys.argv[5],   prcStop = sys.argv[6]) == True:
+				sys.exit(0)
 
 		else:
 			print("Parameters error for MARGIN buy order")
@@ -1170,29 +1368,34 @@ if __name__ == '__main__':
 
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
-			orderMargin(symbOrd = sys.argv[3], sideOrd = "SELL",
-			            typeOrd = "MARKET",    qtdOrd  = sys.argv[4],
-			            prcOrd  = 0.0,         prcStop = 0.0)
+			if orderMargin(symbOrd = sys.argv[3], sideOrd = "SELL",
+			               typeOrd = "MARKET",    qtdOrd  = sys.argv[4],
+			               prcOrd  = 0.0,         prcStop = 0.0) == True:
+				sys.exit(0)
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			orderMargin(symbOrd = sys.argv[3], sideOrd = "SELL",
-			            typeOrd = "LIMIT",     qtdOrd  = sys.argv[4],
-			            prcOrd  = sys.argv[5], prcStop = 0.0)
+			if orderMargin(symbOrd = sys.argv[3], sideOrd = "SELL",
+			               typeOrd = "LIMIT",     qtdOrd  = sys.argv[4],
+			               prcOrd  = sys.argv[5], prcStop = 0.0) == True:
+				sys.exit(0)
 
 		# OCO
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
-			orderMargin(symbOrd = sys.argv[3], sideOrd = "SELL",
-			            typeOrd = "STOP_LOSS", qtdOrd  = sys.argv[4],
-			            prcOrd  = sys.argv[5], prcStop = sys.argv[6])
+			if orderMargin(symbOrd = sys.argv[3], sideOrd = "SELL",
+			               typeOrd = "STOP_LOSS", qtdOrd  = sys.argv[4],
+			               prcOrd  = sys.argv[5], prcStop = sys.argv[6]) == True:
+				sys.exit(0)
 
 		else:
 			print("Parameters error for MARGIN sell order")
 
 	elif sys.argv[1] == "-cm" and len(sys.argv) == 4:
-		BO.cancel_a_margin_order(client, sys.argv[2], sys.argv[3])
+		if BO.cancel_a_margin_order(client, sys.argv[2], sys.argv[3]) == True:
+			sys.exit(0)
 
 	else:
 		print("Parameters error.")
 		BP.printHelp(sys.argv[0])
-		sys.exit(0)
+
+	sys.exit(1)
