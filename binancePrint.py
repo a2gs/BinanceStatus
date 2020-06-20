@@ -749,24 +749,24 @@ def print_Margin_Order(order):
 	printPlacedOrder(order)
 
 def printPlacedOrder(order):
-	print(f"Symbol: [{order['symbol']}")
-	print(f"\tSide.................: [{order['side']}")
-	print(f"\tType.................: [{order['type']}")
-	print(f"\tTransaction Time.....: [{order['transactTime']}")
-	print(f"\tPrice................: [{order['price']}")
-	print(f"\tOrig Qtd.............: [{order['origQty']}")
-	print(f"\tExecuted Qtd.........: [{order['executedQty']}")
-	print(f"\tCummulative Quote Qtd: [{order['cummulativeQuoteQty']}")
-	print(f"\tStatus...............: [{order['status']}")
-	print(f"\tTime In Force........: [{order['timeInForce']}")
-	print(f"\tOrder Id.............: [{order['orderId']}")
-	print(f"\tClient Order Id......: [{order['clientOrderId']}")
+	print(f"Symbol: [{order['symbol']}]")
+	print(f"\tSide.................: [{order['side']}]")
+	print(f"\tType.................: [{order['type']}]")
+	print(f"\tTransaction Time.....: [{order['transactTime']}]")
+	print(f"\tPrice................: [{order['price']}]")
+	print(f"\tOrig Qtd.............: [{order['origQty']}]")
+	print(f"\tExecuted Qtd.........: [{order['executedQty']}]")
+	print(f"\tCummulative Quote Qtd: [{order['cummulativeQuoteQty']}]")
+	print(f"\tStatus...............: [{order['status']}]")
+	print(f"\tTime In Force........: [{order['timeInForce']}]")
+	print(f"\tOrder Id.............: [{order['orderId']}]")
+	print(f"\tClient Order Id......: [{order['clientOrderId']}]")
 
 	if 'fills' not in order:
 		return
 
 	for f in order['fills']:
-		print(f"\t\tPrice...........: [{f['price']}")
-		print(f"\t\tQty.............: [{f['qty']}")
-		print(f"\t\tCommission......: [{f['commission']}")
-		print(f"\t\tCommission Asset: [{f['commissionAsset']}")
+		print(f"\t\tPrice...........: [{f['price']}]")
+		print(f"\t\tQty.............: [{f['qty']}]")
+		print(f"\t\tCommission......: [{f['commission']}]")
+		print(f"\t\tCommission Asset: [{f['commissionAsset']}]")

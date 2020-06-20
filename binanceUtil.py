@@ -12,6 +12,15 @@ from binance.client import Client
 
 confirmationYES = False
 exportToXls = False
+recvWindow = int(0)
+
+def getRecvWindow() -> int:
+	global recvWindow
+	return recvWindow
+
+def setRecvWindow(rw: int):
+	global recvWindow
+	recvWindow = rw
 
 def getConfirmationYES() -> bool:
 	global confirmationYES
@@ -39,7 +48,7 @@ def errPrint(*args, **kwargs):
 
 def askConfirmation() -> bool:
 	if getConfirmationYES() == False:
-		conf = input("Confirm operation? (N/y)")
+		conf = input("Confirm operation? (N/y) \n")
 
 		if conf != 'Y' and conf != 'y':
 			print("CANCELED!")

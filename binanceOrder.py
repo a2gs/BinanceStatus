@@ -9,7 +9,7 @@ import binanceUtil as BU
 import binancePrint as BP
 
 from binance.client import Client
-from binance.exceptions import BinanceAPIException, BinanceWithdrawException, BinanceRequestException
+from binance.exceptions import BinanceAPIException, BinanceWithdrawException, BinanceRequestException, BinanceOrderException, BinanceOrderMinAmountException, BinanceOrderMinPriceException, BinanceOrderMinTotalException, BinanceOrderUnknownSymbolException, BinanceOrderInactiveSymbolException
 
 testOrder = False
 #LOCK = True
@@ -137,7 +137,7 @@ def binancePlaceSPOTOCOOrder(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prc
 		                                price                = prcOrd,
 		                                stopPrice            = prcStopOrd,
 												  stopLimitPrice       = prcStopLimitOrd,
-		                                stopLimitTimeInForce = TIME_IN_FORCE_GTC,
+		                                stopLimitTimeInForce = Client.TIME_IN_FORCE_GTC,
 		                                newOrderRespType     = Client.ORDER_RESP_TYPE_FULL)
 
 	except BinanceRequestException as e:
@@ -172,6 +172,7 @@ def binancePlaceSPOTOrder(symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, t
 		print("PROGRAM LOCKED BY SECURITY!")
 		return None
 
+	print("aaaaaaaaaaaaaaaaaaaaaa")
 	try:
 
 		if getTestOrder() == True:
@@ -183,6 +184,7 @@ def binancePlaceSPOTOrder(symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, t
 			                          quantity    = qtdOrd,
 			                          price       = prcOrd)
 		else:
+			print("cccccccccccccccccccccc")
 			order = create_order(symbol           = symbOrd,
 			                     quantity         = qtdOrd,
 			                     price            = prcOrd,
@@ -191,6 +193,8 @@ def binancePlaceSPOTOrder(symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, t
 			                     timeInForce      = Client.TIME_IN_FORCE_GTC,
 			                     newOrderRespType = Client.ORDER_RESP_TYPE_FULL)
 
+			print("bbbbbbbbbbbbbbbbbbbbba")
+			print(order)
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceRequestException: [{e.status_code} - {e.message}]")
 	except BinanceAPIException as e:
@@ -208,8 +212,10 @@ def binancePlaceSPOTOrder(symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, t
 	except BinanceOrderInactiveSymbolException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 	else:
+		print("ddddddddddddddddddddddd")
 		return order
 	finally:
+		print("eeeeeeeeeeeeeeeeeeeeeee: [{e.status_code} - {e.message}]")
 		raise
 
 # ---------------------------------------------------
@@ -372,17 +378,17 @@ def buyStopOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0) -> bool
 
 # ---------------------------------------------------
 
-def orderMargin(symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0, prcStop = 0.0) -> bool:
-	print("MARGIN Order")
+def orderMargin(client, symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0, prcStop = 0.0) -> bool:
+	print(f"MARGIN Order {typeOrd}")
 
 	if BU.getExportXLS() == True:
 		print("Symbol\tSide\tQuantity\tPrice\tStop Price\tType")
-		print(f"{symbOrd}\t{sideOrd}\t{qtdOrd}\t{priceOrd}\t{prcStop}\t{typeOrd}]")
+		print(f"{symbOrd}\t{sideOrd}\t{qtdOrd}\t{prcOrd}\t{prcStop}{typeOrd}\t]")
 	else:
 		print(f"Symbol....: [{symbOrd}]")
 		print(f"Side......: [{sideOrd}]")
 		print(f"Quantity..: [{qtdOrd}]")
-		print(f"Price.....: [{priceOrd}]")
+		print(f"Price.....: [{prcOrd}]")
 		print(f"Stop Price: [{prcStop}]")
 		print(f"Type......: [{typeOrd}]")
 
@@ -396,14 +402,23 @@ def orderMargin(symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0
 		return False
 
 	try:
-		order = client.create_margin_order(symbol           = symbOrd,
-		                                   side             = BU.binanceSide(sideOrd),
-		                                   type             = BU.binanceOrderType(typeOrd),
-		                                   timeInForce      = TIME_IN_FORCE_GTC,
-		                                   quantity         = qtdOrd,
-		                                   price            = prcOrd,
-		                                   stopPrice        = prcStop,
-		                                   newOrderRespType = Client.ORDER_RESP_TYPE_FULL)
+		if typeOrd == 'LIMIT':
+			order = client.create_margin_order(symbol           = symbOrd,
+		                                      side             = BU.binanceSide(sideOrd),
+		                                      type             = Client.ORDER_TYPE_LIMIT,
+		                                      timeInForce      = Client.TIME_IN_FORCE_GTC,
+		                                      quantity         = qtdOrd,
+		                                      price            = prcOrd,
+		                                      newOrderRespType = Client.ORDER_RESP_TYPE_FULL)
+		else:
+			order = client.create_margin_order(symbol           = symbOrd,
+		                                      side             = BU.binanceSide(sideOrd),
+		                                      type             = BU.binanceOrderType(typeOrd),
+		                                      timeInForce      = Client.TIME_IN_FORCE_GTC,
+		                                      quantity         = qtdOrd,
+		                                      price            = prcOrd,
+		                                      stopPrice        = prcStop,
+		                                      newOrderRespType = Client.ORDER_RESP_TYPE_FULL)
 
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro create_margin_order BinanceRequestException: [{e.status_code} - {e.message}]")
