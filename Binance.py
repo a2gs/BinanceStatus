@@ -19,13 +19,13 @@ from binance.exceptions import BinanceAPIException, BinanceWithdrawException, Bi
 def binanceInfo(client) -> bool:
 
 	try:
-		sst = client.get_system_status(recvWindow = BU.getRecvWindow())
+		sst = client.get_system_status()
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_system_status() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return False
 
 	try:
-		st = client.get_server_time(recvWindow = BU.getRecvWindow())
+		st = client.get_server_time()
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_server_time() BinanceRequestException: [{e.status_code} - {e.message}]")
 		return False
@@ -37,7 +37,7 @@ def binanceInfo(client) -> bool:
 		return False
 
 	try:
-		prodct = client.get_products(recvWindow = BU.getRecvWindow())
+		prodct = client.get_products()
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro at client.get_products() BinanceRequestException: [{e.status_code} - {e.message}]")
 		return False
@@ -1016,7 +1016,7 @@ def averagePrice(client, symb = '') -> bool:
 def h24PriceChangeStats(client) -> bool:
 
 	try:
-		ga = client.get_ticker(recvWindow = BU.getRecvWindow())
+		ga = client.get_ticker()
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_ticker() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return False
