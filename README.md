@@ -17,7 +17,7 @@ Usage:<br>
 # <i>source ./walletId.sh</i><br>
 # <i>./Binance.py</i><br>
 <br>
-<center>
+
 ![listingorders](https://i.imgur.com/C2ZH1qV.jpg)<br>
 Listing orders<br>
 <br>
@@ -26,4 +26,3 @@ Canceling order<br>
 <br>
 ![placinganorder](https://i.imgur.com/UWBeJIE.jpg)<br>
 Placing an order<br>
-</center>
