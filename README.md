@@ -17,12 +17,12 @@ Usage:<br>
 # <i>source ./walletId.sh</i><br>
 # <i>./Binance.py</i><br>
 <br>
-
-![listingorders](https://i.imgur.com/C2ZH1qV.jpg)<br>
+Screenshots:<br>
+![listingorders](https://i.imgur.com/C2ZH1qV.jpg)
 Listing orders<br>
 <br>
-![cancelingorder](https://i.imgur.com/rPlwlm6.jpg)<br>
+![cancelingorder](https://i.imgur.com/rPlwlm6.jpg)
 Canceling order<br>
 <br>
-![placinganorder](https://i.imgur.com/UWBeJIE.jpg)<br>
+![placinganorder](https://i.imgur.com/UWBeJIE.jpg)
 Placing an order<br>
