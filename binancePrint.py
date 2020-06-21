@@ -87,6 +87,7 @@ def printHelp(execName):
 	print("6) Miscellaneous")
 	print("[...] -xls > output.xls\n\tOutput with TAB separator.")
 	print("[...] -Y\n\tForce ALL CONFIRMATIONS = YES")
+	print("[...] -TS\n\tPrint Binance timestamp, does not convert to human datetime.")
 
 # ----------------------------------------------------------------------------
 

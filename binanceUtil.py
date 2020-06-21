@@ -14,6 +14,7 @@ from binance.client import Client
 confirmationYES = False
 exportToXls = False
 recvWindow = int(0)
+binanceTimestamp = False
 
 def nmExit(n: int = 0, m: str = ""):
 	print(m)
@@ -49,10 +50,19 @@ def setExportXLS(x: bool):
 	global exportToXls
 	exportToXls = x
 
+def setTimestamp(f: bool = False):
+	global binanceTimestamp
+	binanceTimestamp = f
+
 # ---------------------------------------------------
 
 def completeMilliTime(tm) -> str:
-	return(strftime(f"%d/%b/%Y %a %H:%M:%S.{tm % 1000}", gmtime(tm / 1000)))
+	global binanceTimestamp
+
+	if binanceTimestamp == True:
+		return(tm)
+	else:
+		return(strftime(f"%d/%b/%Y %a %H:%M:%S.{tm % 1000}", gmtime(tm / 1000)))
 
 def errPrint(*args, **kwargs):
 	print(*args, file = stderr, **kwargs)

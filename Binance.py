@@ -63,7 +63,7 @@ def binanceInfo(client) -> bool:
 		print("Server Status:")
 		BP.printSystemStatus(sst)
 
-		print("\nTime:")
+		print("")
 		BP.printServerTime(st)
 
 		print("\nProducts:")
@@ -1099,6 +1099,12 @@ if __name__ == '__main__':
 		sys.argv.remove("-Y")
 	else:
 		BU.setConfirmationYES(False)
+
+	if "-TS" in sys.argv:
+		BU.setTimestamp(True)
+		sys.argv.remove("-TS")
+	else:
+		BU.setTimestamp(False)
 
 	if "-TEST" in sys.argv:
 		BO.setTestOrder(True)
