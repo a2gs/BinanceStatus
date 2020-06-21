@@ -161,7 +161,7 @@ def binancePlaceSPOTOCOOrder(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prc
 	finally:
 		raise
 
-def binancePlaceSPOTOrder(symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, typeOrd = 0):
+def binancePlaceSPOTOrder(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, typeOrd = 0):
 
 	if BU.askConfirmation() == False:
 		return None
@@ -172,29 +172,25 @@ def binancePlaceSPOTOrder(symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, t
 		print("PROGRAM LOCKED BY SECURITY!")
 		return None
 
-	print("aaaaaaaaaaaaaaaaaaaaaa")
 	try:
 
 		if getTestOrder() == True:
 			print("TESTING ORDER")
-			order = create_test_order(symbol      = symbOrd,
-			                          side        = sideOrd,
-			                          type        = typeOrd,
-			                          timeInForce = Client.TIME_IN_FORCE_GTC,
-			                          quantity    = qtdOrd,
-			                          price       = prcOrd)
+			order = client.create_test_order(symbol      = symbOrd,
+			                                 side        = sideOrd,
+			                                 type        = typeOrd,
+			                                 timeInForce = Client.TIME_IN_FORCE_GTC,
+			                                 quantity    = qtdOrd,
+			                                 price       = prcOrd)
 		else:
-			print("cccccccccccccccccccccc")
-			order = create_order(symbol           = symbOrd,
-			                     quantity         = qtdOrd,
-			                     price            = prcOrd,
-			                     side             = sideOrd,
-			                     type             = typeOrd,
-			                     timeInForce      = Client.TIME_IN_FORCE_GTC,
-			                     newOrderRespType = Client.ORDER_RESP_TYPE_FULL)
+			order = client.create_order(symbol           = symbOrd,
+			                            quantity         = qtdOrd,
+			                            price            = prcOrd,
+			                            side             = sideOrd,
+			                            type             = typeOrd,
+			                            timeInForce      = Client.TIME_IN_FORCE_GTC,
+			                            newOrderRespType = Client.ORDER_RESP_TYPE_FULL)
 
-			print("bbbbbbbbbbbbbbbbbbbbba")
-			print(order)
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceRequestException: [{e.status_code} - {e.message}]")
 	except BinanceAPIException as e:
@@ -212,10 +208,8 @@ def binancePlaceSPOTOrder(symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, t
 	except BinanceOrderInactiveSymbolException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 	else:
-		print("ddddddddddddddddddddddd")
 		return order
 	finally:
-		print("eeeeeeeeeeeeeeeeeeeeeee: [{e.status_code} - {e.message}]")
 		raise
 
 # ---------------------------------------------------
@@ -231,7 +225,7 @@ def sellMarketOrder(client, symb = '', qtd = 0) -> bool:
 		print(f"Quantity: [{qtd}]")
 
 	try:
-		order = binancePlaceSPOTOrder(symb, qtd, 0.0, Client.SIDE_SELL, Client.ORDER_TYPE_MARKET)
+		order = binancePlaceSPOTOrder(client, symb, qtd, 0.0, Client.SIDE_SELL, Client.ORDER_TYPE_MARKET)
 	except:
 		return False
 
@@ -243,7 +237,7 @@ def sellMarketOrder(client, symb = '', qtd = 0) -> bool:
 	return True
 
 def buyMarketOrder(client, symb = '', qtd = 0) -> bool:
-	print("SPOT Buy order")
+	print("SPOT Buy Market order")
 
 	if BU.getExportXLS() == True:
 		print("Symbol\tQuantity")
@@ -253,7 +247,7 @@ def buyMarketOrder(client, symb = '', qtd = 0) -> bool:
 		print(f"Quantity: [{qtd}]")
 
 	try:
-		order = binancePlaceSPOTOrder(symb, qtd, 0.0, Client.SIDE_BUY, Client.ORDER_TYPE_MARKET)
+		order = binancePlaceSPOTOrder(client, symb, qtd, 0.0, Client.SIDE_BUY, Client.ORDER_TYPE_MARKET)
 	except:
 		return False
 
@@ -278,7 +272,7 @@ def sellLimitOrder(client, symb = '', qtd = 0, prc = 0.0) -> bool:
 		print(f"Price...: [{prc}]")
 
 	try:
-		order = binancePlaceSPOTOrder(symb, qtd, prc, Client.SIDE_SELL, Client.ORDER_TYPE_LIMIT)
+		order = binancePlaceSPOTOrder(client, symb, qtd, prc, Client.SIDE_SELL, Client.ORDER_TYPE_LIMIT)
 	except:
 		return False
 
@@ -301,7 +295,7 @@ def buyLimitOrder(client, symb = '', qtd = 0, prc = 0.0) -> bool:
 		print(f"Price...: [{prc}]")
 
 	try:
-		order = binancePlaceSPOTOrder(symb, qtd, prc, Client.SIDE_BUY, Client.ORDER_TYPE_LIMIT)
+		order = binancePlaceSPOTOrder(client, symb, qtd, prc, Client.SIDE_BUY, Client.ORDER_TYPE_LIMIT)
 	except:
 		return False
 
