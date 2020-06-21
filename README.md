@@ -16,3 +16,14 @@ export BINANCE_RECVWINDOW=<b>6000</b></i><br>
 Usage:<br>
 # <i>source ./walletId.sh</i><br>
 # <i>./Binance.py</i><br>
+<br>
+<center>
+[Imgur](https://i.imgur.com/C2ZH1qV.jpg)
+listing orders
+<br>
+[Imgur](https://i.imgur.com/rPlwlm6.jpg)
+canceling order
+<br>
+[Imgur](https://i.imgur.com/UWBeJIE.jpg)
+placing an order<br>
+</center>
