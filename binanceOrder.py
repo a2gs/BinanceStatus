@@ -5,7 +5,7 @@
 # andre.scota@gmail.com
 # MIT license
 
-import binanceUtil as BU
+import binanceUtil  as BU
 import binancePrint as BP
 
 from binance.client import Client
@@ -142,24 +142,33 @@ def binancePlaceSPOTOCOOrder(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prc
 
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceRequestException: [{e.status_code} - {e.message}]")
+		return None
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceAPIException: [{e.status_code} - {e.message}]")
+		return None
 	except BinanceOrderException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceOrderException: [{e.status_code} - {e.message}]")
+		return None
 	except BinanceOrderMinAmountException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		return None
 	except BinanceOrderMinPriceException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		return None
 	except BinanceOrderMinTotalException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		return None
 	except BinanceOrderUnknownSymbolException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		return None
 	except BinanceOrderInactiveSymbolException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
-	else:
-		return order
-	finally:
-		raise
+		return None
+	except:
+		BU.errPrint(f"Erro create_oco_order generic exception")
+		return None
+
+	return order
 
 def binancePlaceSPOTOrder(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, typeOrd = 0):
 
@@ -193,24 +202,33 @@ def binancePlaceSPOTOrder(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOr
 
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceRequestException: [{e.status_code} - {e.message}]")
+		return None
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceAPIException: [{e.status_code} - {e.message}]")
+		return None
 	except BinanceOrderException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderException: [{e.status_code} - {e.message}]")
+		return None
 	except BinanceOrderMinAmountException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		return None
 	except BinanceOrderMinPriceException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		return None
 	except BinanceOrderMinTotalException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		return None
 	except BinanceOrderUnknownSymbolException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		return None
 	except BinanceOrderInactiveSymbolException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
-	else:
-		return order
-	finally:
-		raise
+		return None
+	except:
+		BU.errPrint(f"Erro order_limit_buy generic exception")
+		return None
+
+	return order
 
 # ---------------------------------------------------
 
@@ -416,21 +434,31 @@ def orderMargin(client, symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcO
 
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro create_margin_order BinanceRequestException: [{e.status_code} - {e.message}]")
+		return False
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro create_margin_order BinanceAPIException: [{e.status_code} - {e.message}]")
+		return False
 	except BinanceOrderException as e:
 		BU.errPrint(f"Erro create_margin_order BinanceOrderException: [{e.status_code} - {e.message}]")
+		return False
 	except BinanceOrderMinAmountException as e:
 		BU.errPrint(f"Erro create_margin_order BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		return False
 	except BinanceOrderMinPriceException as e:
 		BU.errPrint(f"Erro create_margin_order BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		return False
 	except BinanceOrderMinTotalException as e:
 		BU.errPrint(f"Erro create_margin_order BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		return False
 	except BinanceOrderUnknownSymbolException as e:
 		BU.errPrint(f"Erro create_margin_order BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		return False
 	except BinanceOrderInactiveSymbolException as e:
 		BU.errPrint(f"Erro create_margin_order BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
-	else:
-		BP.print_Margin_Order(order)
+		return False
+	except:
+		BU.errPrint(f"Erro create_margin_order generic exception")
+		return False
 
+	BP.print_Margin_Order(order)
 	return True

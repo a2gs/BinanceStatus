@@ -8,7 +8,7 @@
 import os, sys
 
 import binancePrint as BP
-import binanceUtil as BU
+import binanceUtil  as BU
 import binanceOrder as BO
 
 from binance.client import Client
@@ -385,7 +385,7 @@ def withdrawRequest(client, ass = '', addr = '', amnt = 0) -> bool:
 		print("Asset\tAddress\tAmount")
 		print(f"{ass}\t{addr}\t{amnt}")
 	else:
-		print("Withdraw")
+		print("Withdraw Request")
 
 		print(f"Asset..: [{ass}]")
 		print(f"Address: [{addr}]")
@@ -1042,17 +1042,17 @@ if __name__ == '__main__':
 
 	if len(sys.argv) <= 1:
 		BP.printHelp(sys.argv[0])
-		sys.exit(0)
+		BU.nmExit()
 
 	binanceAPIKey = os.getenv("BINANCE_APIKEY", "NOTDEF_APIKEY")
 	if binanceAPIKey == "NOTDEF_APIKEY":
 		print("Environment variable BINANCE_APIKEY not defined!")
-		sys.exit(0)
+		BU.nmExitErro()
 
 	binanceSEKKey = os.getenv("BINANCE_SEKKEY", "NOTDEF_APIKEY")
 	if binanceSEKKey == "NOTDEF_APIKEY":
 		print("Environment variable BINANCE_SEKKEY not defined!")
-		sys.exit(0)
+		BU.nmExitErro()
 
 	BU.setRecvWindow(os.getenv("BINANCE_RECVWINDOW", 5000))
 
@@ -1061,31 +1061,31 @@ if __name__ == '__main__':
 
 	except BinanceAPIException as e:
 		print(f"Binance API exception: [{e.status_code} - {e.message}]")
-		sys.exit(0)
+		BU.nmExitErro()
 
 	except BinanceRequestException as e:
 		print(f"Binance request exception: [{e.status_code} - {e.message}]")
-		sys.exit(0)
+		BU.nmExitErro()
 
 	except BinanceWithdrawException as e:
 		print(f"Binance withdraw exception: [{e.status_code} - {e.message}]")
-		sys.exit(0)
+		BU.nmExitErro()
 
 	except:
 		print("Binance connection error")
-		sys.exit(0)
+		BU.nmExitErro()
 
 	# Exchange status
 	try:
 		if client.get_system_status()['status'] != 0:
 			BU.errPrint("Binance out of service")
-			sys.exit(0)
+			BU.nmExitErro()
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_system_status() BinanceAPIException: [{e.status_code} - {e.message}]")
-		sys.exit(0)
+		BU.nmExitErro()
 	except:
 		BU.errPrint("Erro at client.get_system_status()")
-		sys.exit(0)
+		BU.nmExitErro()
 
 	# Miscellaneous
 	if "-xls" in sys.argv:
@@ -1109,186 +1109,186 @@ if __name__ == '__main__':
 	# Binance Info
 	if sys.argv[1] == "-B" and len(sys.argv) == 2:
 		if binanceInfo(client) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Asset balance
 	elif sys.argv[1] == "-ba" and len(sys.argv) == 3:
 		if balanceAccAsset(client, sys.argv[2]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Wallet/Account information
 	elif sys.argv[1] == "-i" and len(sys.argv) == 2:
 		if accountInformation(client) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Spot open orders
 	elif sys.argv[1] == "-os" and len(sys.argv) == 2:
 		if spotOpenOrders(client) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Margim open orders
 	elif sys.argv[1] == "-om" and len(sys.argv) == 2:
 		if marginOpenOrders(client) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Account history (trades, dusts, etc)
 	elif sys.argv[1] == "-h" and len(sys.argv) == 3:
 		if accountHistory(client, sys.argv[2]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# List sub-accounts
 	elif sys.argv[1] == "-sal" and len(sys.argv) == 2:
 		if subAccountsList(client) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Sub-accounts transfer history
 	elif sys.argv[1] == "-sah" and len(sys.argv) == 3:
 		if subAccountTransferHistory(client, em = sys.argv[2]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Sub-accounts assets
 	elif sys.argv[1] == "-saa":
 		if	len(sys.argv) == 3:
 			if subAccountsAssets(client, em = sys.argv[2]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 		elif len(sys.argv) == 4:
 			if subAccountsAssets(client, em = sys.argv[2], symb = sys.argv[3]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 		else: print("-saa parameters error")
 
 	# Query all margin accounts orders
 	elif sys.argv[1] == "-mh":
 		if   len(sys.argv) == 3:
 			if allMarginOrders(client, sys.argv[2]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 		elif len(sys.argv) == 4:
 			if allMarginOrders(client, sys.argv[2], sys.argv[3]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 		elif len(sys.argv) == 5:
 			if allMarginOrders(client, sys.argv[2], sys.argv[3], sys.argv[4]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 		else: print("-mh parameters error")
 
 	# Query margin accounts trades
 	elif sys.argv[1] == "-mt":
 		if   len(sys.argv) == 3:
 			if marginTrades(client, sys.argv[2]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 		elif len(sys.argv) == 4:
 			if marginTrades(client, sys.argv[2], sys.argv[3]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 		elif len(sys.argv) == 5:
 			if marginTrades(client, sys.argv[2], sys.argv[3], sys.argv[4]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 		else: print("-mt parameters error")
 
 	# Query margin asset
 	elif sys.argv[1] == "-mm" and len(sys.argv) == 3:
 		if marginAsset(client, sys.argv[2]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# 500 older trades
 	elif sys.argv[1] == "-ht" and len(sys.argv) == 3:
 		if olderTrades(client, sys.argv[2]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Account details (fees)
 	elif sys.argv[1] == "-D" and len(sys.argv) == 2:
 		if accountDetails(client) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Rate limits and list of symbols
 	elif sys.argv[1] == "-l" and len(sys.argv) == 2:
 		if listSymbolsRateLimits(client) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Information (prices) about a symbol
 	elif sys.argv[1] == "-v" and len(sys.argv) == 5:
 		if infoSymbol(client, sys.argv[2], sys.argv[3], int(sys.argv[4])) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Information (details) about a symbol
 	elif sys.argv[1] == "-V" and len(sys.argv) == 3:
 		if infoDetailsSymbol(client, sys.argv[2]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Information (details) about a symbol
 	elif sys.argv[1] == "-bp":
 		if len(sys.argv) == 3:
 			if orderBook(client, symb = sys.argv[2]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 		elif len(sys.argv) == 4:
 			if orderBook(client, symb = sys.argv[2], lim = int(sys.argv[3])) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 		else: print("-bp parameters error")
 
 	# 24 hour price change statistics
 	elif sys.argv[1] == "-p" and len(sys.argv) == 2:
 		if h24PriceChangeStats(client) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Current average price for a symbol
 	elif sys.argv[1] == "-pa" and len(sys.argv) == 3:
 		if averagePrice(client, sys.argv[2]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Deposit address for a symbol
 	elif sys.argv[1] == "-d" and len(sys.argv) == 3:
 		if depositAddress(client, sys.argv[2]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Margin symbol info
 	elif sys.argv[1] == "-ml" and len(sys.argv) == 3:
 		if marginSymbInfo(client, sys.argv[2]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Margin symbol price index
 	elif sys.argv[1] == "-mp" and len(sys.argv) == 3:
 		if marginSymbPriceIndex(client, sys.argv[2]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Latest tricker/price for a symbol
 	elif sys.argv[1] == "-bt" and len(sys.argv) == 3:
 		if bookTicker(client, sys.argv[2]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Check an order's status
 	elif sys.argv[1] == "-O" and len(sys.argv) == 4:
 		if orderStatus(client, sys.argv[2], sys.argv[3]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Deposit history
 	elif sys.argv[1] == "-dh" and (len(sys.argv) == 3 or len(sys.argv) == 2):
 		if len(sys.argv) == 3:
 			if depositHistory(client, sys.argv[2]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 		else:
 			if depositHistory(client) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 
 	# Withdraw
 	elif sys.argv[1] == "-w" and len(sys.argv) == 5:
 		if withdrawRequest(client, ass = sys.argv[2], addr = sys.argv[3], amnt = sys.argv[4]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Withdraw history
 	elif sys.argv[1] == "-wh" and (len(sys.argv) == 3 or len(sys.argv) == 2):
 		if len(sys.argv) == 3:
 			if withdrawHistory(client, sys.argv[2]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 		else:
 			if withdrawHistory(client) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 
 	# Transfer between spot account to margin account
 	elif sys.argv[1] == "-mi" and len(sys.argv) == 4:
 		if transfSpotToMargin(client, ass = sys.argv[2], ap = sys.argv[3]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# Transfer between margin account to spot account
 	elif sys.argv[1] == "-mo" and len(sys.argv) == 4:
 		if transfMarginToSpot(client, ass = sys.argv[2], ap = sys.argv[3]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# SPOT Buy order
 	elif sys.argv[1] == "-b" and len(sys.argv) > 2:
@@ -1296,20 +1296,21 @@ if __name__ == '__main__':
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
 			if BO.buyMarketOrder(client, sys.argv[3], sys.argv[4]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
 			if BO.buyLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 
 		# OCO
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
 			if BO.buyStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 
 		else:
-			print("Parameters error for SPOT buy order")
+			print("Parameters error for SPOT buy order.")
+			BU.nmExitErro()
 
 	# SPOT Sell order
 	elif sys.argv[1] == "-s" and len(sys.argv) > 2:
@@ -1317,24 +1318,25 @@ if __name__ == '__main__':
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
 			if BO.sellMarketOrder(client, sys.argv[3], sys.argv[4]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
 			if BO.sellLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 
 		# OCO
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
 			if BO.sellStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 
 		else:
-			print("Parameters error for SPOT sell order")
+			print("Parameters error for SPOT sell order.")
+			BU.nmExitErro()
 
 	elif sys.argv[1] == "-c" and len(sys.argv) == 4:
 		if BO.cancel_a_spot_order(client, sys.argv[2], sys.argv[3]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	# MARGIN Buy order
 	elif sys.argv[1] == "-bm" and len(sys.argv) > 2:
@@ -1345,7 +1347,7 @@ if __name__ == '__main__':
 				               symbOrd = sys.argv[3], sideOrd = "BUY",
 			                  typeOrd = "MARKET",    qtdOrd  = sys.argv[4],
 			                  prcOrd  = 0.0,         prcStop = 0.0) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
@@ -1353,7 +1355,7 @@ if __name__ == '__main__':
 				               symbOrd = sys.argv[3], sideOrd = "BUY",
 			                  typeOrd = "LIMIT",     qtdOrd  = sys.argv[4],
 			                  prcOrd  = sys.argv[5], prcStop = 0.0) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 
 		# OCO
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
@@ -1361,10 +1363,11 @@ if __name__ == '__main__':
 				               symbOrd = sys.argv[3],   sideOrd = "BUY",
 			                  typeOrd = "TAKE_PROFIT", qtdOrd  = sys.argv[4],
 			                  prcOrd  = sys.argv[5],   prcStop = sys.argv[6]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 
 		else:
-			print("Parameters error for MARGIN buy order")
+			print("Parameters error for MARGIN buy order.")
+			BU.nmExitErro()
 
 	# MARGIN Sell order
 	elif sys.argv[1] == "-sm" and len(sys.argv) > 2:
@@ -1375,7 +1378,7 @@ if __name__ == '__main__':
 				               symbOrd = sys.argv[3], sideOrd = "SELL",
 			                  typeOrd = "MARKET",    qtdOrd  = sys.argv[4],
 			                  prcOrd  = 0.0,         prcStop = 0.0) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
@@ -1383,7 +1386,7 @@ if __name__ == '__main__':
 				               symbOrd = sys.argv[3], sideOrd = "SELL",
 			                  typeOrd = "LIMIT",     qtdOrd  = sys.argv[4],
 			                  prcOrd  = sys.argv[5], prcStop = 0.0) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 
 		# OCO
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
@@ -1391,17 +1394,18 @@ if __name__ == '__main__':
 				               symbOrd = sys.argv[3], sideOrd = "SELL",
 			                  typeOrd = "STOP_LOSS", qtdOrd  = sys.argv[4],
 			                  prcOrd  = sys.argv[5], prcStop = sys.argv[6]) == True:
-				sys.exit(0)
+				BU.nmExitOk()
 
 		else:
-			print("Parameters error for MARGIN sell order")
+			print("Parameters error for MARGIN sell order.")
+			BU.nmExitErro()
 
 	elif sys.argv[1] == "-cm" and len(sys.argv) == 4:
 		if BO.cancel_a_margin_order(client, sys.argv[2], sys.argv[3]) == True:
-			sys.exit(0)
+			BU.nmExitOk()
 
 	else:
 		print("Parameters error.")
 		BP.printHelp(sys.argv[0])
 
-	sys.exit(1)
+		BU.nmExitErro()

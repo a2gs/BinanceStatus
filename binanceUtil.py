@@ -5,7 +5,8 @@
 # andre.scota@gmail.com
 # MIT license
 
-import sys, time
+from time import strftime, gmtime
+from sys import exit
 from binance.client import Client
 
 # ---------------------------------------------------
@@ -13,6 +14,16 @@ from binance.client import Client
 confirmationYES = False
 exportToXls = False
 recvWindow = int(0)
+
+def nmExit(n: int = 0, m: str = ""):
+	print(m)
+	exit(n)
+
+def nmExitOk(n : int = 0, m : str = "Ok."):
+	nmExit(n, m)
+
+def nmExitErro(n : int = 1, m : str = "Erro."):
+	nmExit(n, m)
 
 def getRecvWindow() -> int:
 	global recvWindow
