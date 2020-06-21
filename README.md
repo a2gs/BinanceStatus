@@ -18,12 +18,12 @@ Usage:<br>
 # <i>./Binance.py</i><br>
 <br>
 <center>
-![listing orders](https://i.imgur.com/C2ZH1qV.jpg)
-Listing orders
+![listingorders](https://i.imgur.com/C2ZH1qV.jpg)<br>
+Listing orders<br>
 <br>
-![canceling order](https://i.imgur.com/rPlwlm6.jpg)
-Canceling order
+![cancelingorder](https://i.imgur.com/rPlwlm6.jpg)<br>
+Canceling order<br>
 <br>
-![placing an order](https://i.imgur.com/UWBeJIE.jpg)
+![placinganorder](https://i.imgur.com/UWBeJIE.jpg)<br>
 Placing an order<br>
 </center>
