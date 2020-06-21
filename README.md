@@ -20,10 +20,10 @@ Usage:<br>
 Screenshots:<br>
 
 ![listingorders](https://i.imgur.com/C2ZH1qV.jpg)<br>
-Listing orders<br>
+Listing stop and margin orders<br>
 <br>
 ![cancelingorder](https://i.imgur.com/rPlwlm6.jpg)<br>
-Canceling order<br>
+Canceling margin order<br>
 <br>
 ![placinganorder](https://i.imgur.com/UWBeJIE.jpg)<br>
-Placing an order<br>
+Placing a margin order<br>
