@@ -18,7 +18,7 @@ Usage:<br>
 # <i>./Binance.py</i><br>
 <br>
 Screenshots:<br>
-![listingorders](https://i.imgur.com/C2ZH1qV.jpg)
+![listingorders](https://i.imgur.com/C2ZH1qV.jpg)<br>
 Listing orders<br>
 <br>
 ![cancelingorder](https://i.imgur.com/rPlwlm6.jpg)
