@@ -990,7 +990,7 @@ def infoDetailsSymbol(client, symb) -> bool:
 def averagePrice(client, symb = '') -> bool:
 
 	try:
-		pa = client.get_avg_price(symbol = symb, recvWindow = BU.getRecvWindow())
+		pa = client.get_avg_price(symbol = symb)
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_avg_price() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return False
