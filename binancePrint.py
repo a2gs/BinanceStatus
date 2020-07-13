@@ -84,7 +84,7 @@ def printHelp(execName):
 	print("-bp [SYMBOL] [LIMIT]\n\tGet the Order Book for the market.\n")
 	print("-bt [SYMBOL]\n\tLatest ticker/price for a symbol.")
 	print("")
-	print("6) Miscellaneous")
+	print("6) MISCELLANEOUS")
 	print("[...] -xls > output.xls\n\tOutput with TAB separator.")
 	print("[...] -Y\n\tForce ALL CONFIRMATIONS = YES")
 	print("[...] -TS\n\tPrint Binance timestamp, does not convert to human datetime.")
