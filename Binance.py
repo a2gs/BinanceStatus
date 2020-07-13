@@ -36,18 +36,6 @@ def binanceInfo(client) -> bool:
 		BU.errPrint("Erro at client.get_server_time()")
 		return False
 
-	try:
-		prodct = client.get_products()
-	except BinanceRequestException as e:
-		BU.errPrint(f"Erro at client.get_products() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return False
-	except BinanceAPIException as e:
-		BU.errPrint(f"Erro at client.get_products() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return False
-	except:
-		BU.errPrint("Erro at client.get_products()")
-		return False
-
 	if BU.getExportXLS() == True:
 		print("Server Status")
 		BP.printSystemStatusXLS(sst)
@@ -55,20 +43,12 @@ def binanceInfo(client) -> bool:
 		print("\nTime")
 		BP.printServerTimeXLS(st)
 
-		print("\nProducts")
-		BP.printProductsXLSHEADER()
-		[BP.printProductsXLS(n) for n in prodct['data']]
-
 	else:
 		print("Server Status:")
 		BP.printSystemStatus(sst)
 
 		print("")
 		BP.printServerTime(st)
-
-		print("\nProducts:")
-		totProdct = len(prodct['data'])
-		[BP.printProducts(n, i, totProdct) for i, n in enumerate(prodct['data'], 1)]
 
 	return True
 
@@ -780,7 +760,7 @@ def infoSymbol(client, symb, interv, candlesTot) -> bool:
 def listSymbolsRateLimits(client) -> bool:
 
 	try:
-		ei = client.get_exchange_info(recvWindow = BU.getRecvWindow())
+		ei = client.get_exchange_info()
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_exchange_info() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return False

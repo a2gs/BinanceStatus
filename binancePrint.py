@@ -14,7 +14,7 @@ def printHelp(execName):
 	print("[SYMBOL] = BTCUSDT, BNBBTC, ... (you can see them all with \'-l\' option)")
 	print("")
 	print("1) BINANCE INFORMATION AND MARKET")
-	print("-B\n\tBinance Informations (server time, server status, symbols).\n")
+	print("-B\n\tBinance Informations (server time and server status).\n")
 	print("-p\n\t24 hour price change statistics.\n")
 	print("-pa [SYMBOL]\n\tCurrent average price for a symbol.\n")
 	print("-l\n\tList of symbols and rate/limits.\n")
