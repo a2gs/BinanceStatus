@@ -45,8 +45,8 @@ def cancel_a_spot_order(client, symbOrd = '', ordrid = 0) -> bool:
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.cancel_order() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return False
-	except:
-		BU.errPrint("Erro at client.cancel_order()")
+	except Exception as e:
+		BU.errPrint(f"Erro at client.cancel_order(): {e}")
 		return False
 
 	print("Cancellation return")
@@ -91,8 +91,8 @@ def cancel_a_margin_order(client, symbOrd = '', ordrid = 0) -> bool:
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.cancel_margin_order() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return False
-	except:
-		BU.errPrint("Erro at client.cancel_margin_order()")
+	except Exception as e:
+		BU.errPrint(f"Erro at client.cancel_margin_order(): {e}")
 		return False
 
 	print("Cancellation return")
@@ -164,8 +164,8 @@ def binancePlaceSPOTOCOOrder(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prc
 	except BinanceOrderInactiveSymbolException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 		return None
-	except:
-		BU.errPrint(f"Erro create_oco_order generic exception")
+	except Expcetion as e:
+		BU.errPrint(f"Erro create_oco_order generic exception: {e}")
 		return None
 
 	return order
@@ -224,8 +224,8 @@ def binancePlaceSPOTOrder(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOr
 	except BinanceOrderInactiveSymbolException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 		return None
-	except:
-		BU.errPrint(f"Erro order_limit_buy generic exception")
+	except Exception as e:
+		BU.errPrint(f"Erro order_limit_buy generic exception: {e}")
 		return None
 
 	return order
@@ -244,7 +244,8 @@ def sellMarketOrder(client, symb = '', qtd = 0) -> bool:
 
 	try:
 		order = binancePlaceSPOTOrder(client, symb, qtd, 0.0, Client.SIDE_SELL, Client.ORDER_TYPE_MARKET)
-	except:
+	except Exception as e:
+		BU.errPrint(f"Erro binancePlaceSPOTOrder SELL MARKET(): {e}")
 		return False
 
 	if order is None:
@@ -266,7 +267,8 @@ def buyMarketOrder(client, symb = '', qtd = 0) -> bool:
 
 	try:
 		order = binancePlaceSPOTOrder(client, symb, qtd, 0.0, Client.SIDE_BUY, Client.ORDER_TYPE_MARKET)
-	except:
+	except Exception as e:
+		BU.errPrint(f"Erro binancePlaceSPOTOrder BUY MARKET(): {e}")
 		return False
 
 	if order is None:
@@ -291,7 +293,8 @@ def sellLimitOrder(client, symb = '', qtd = 0, prc = 0.0) -> bool:
 
 	try:
 		order = binancePlaceSPOTOrder(client, symb, qtd, prc, Client.SIDE_SELL, Client.ORDER_TYPE_LIMIT)
-	except:
+	except Exception as e:
+		BU.errPrint(f"Erro binancePlaceSPOTOrder SELL LIMIT(): {e}")
 		return False
 
 	if order is None:
@@ -314,7 +317,8 @@ def buyLimitOrder(client, symb = '', qtd = 0, prc = 0.0) -> bool:
 
 	try:
 		order = binancePlaceSPOTOrder(client, symb, qtd, prc, Client.SIDE_BUY, Client.ORDER_TYPE_LIMIT)
-	except:
+	except Exception as e:
+		BU.errPrint(f"Erro binancePlaceSPOTOrder BUY LIMIT(): {e}")
 		return False
 
 	if order is None:
@@ -347,7 +351,8 @@ def sellStopOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0) -> boo
 		                                 prcStopLimitOrd = 0.0,
 		                                 sideOrd         = Client.SIDE_SELL)
 
-	except:
+	except Exception as e:
+		BU.errPrint(f"Erro binancePlaceSPOTOCOOrder SELL(): {e}")
 		return False
 
 	if order is None:
@@ -378,7 +383,8 @@ def buyStopOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0) -> bool
 		                                 prcStopLimitOrd = 0.0,
 		                                 sideOrd         = Client.SIDE_BUY)
 
-	except:
+	except Exception as e:
+		BU.errPrint(f"Erro binancePlaceSPOTOCOOrder BUY(): {e}")
 		return False
 
 	if order is None:
@@ -456,8 +462,8 @@ def orderMargin(client, symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcO
 	except BinanceOrderInactiveSymbolException as e:
 		BU.errPrint(f"Erro create_margin_order BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 		return False
-	except:
-		BU.errPrint(f"Erro create_margin_order generic exception")
+	except Exception as e:
+		BU.errPrint(f"Erro create_margin_order generic exception: {e}")
 		return False
 
 	BP.print_Margin_Order(order)
