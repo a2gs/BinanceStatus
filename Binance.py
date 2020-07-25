@@ -1289,7 +1289,7 @@ if __name__ == '__main__':
 			if BO.buyLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5]) == True:
 				BU.nmExitOk()
 
-		# OCO
+		# Stop Limit
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
 			if BO.buyStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == True:
 				BU.nmExitOk()
@@ -1311,7 +1311,7 @@ if __name__ == '__main__':
 			if BO.sellLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5]) == True:
 				BU.nmExitOk()
 
-		# OCO
+		# Stop Limit
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
 			if BO.sellStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == True:
 				BU.nmExitOk()
@@ -1343,12 +1343,12 @@ if __name__ == '__main__':
 			                  prcOrd  = sys.argv[5], prcStop = 0.0) == True:
 				BU.nmExitOk()
 
-		# OCO
+		# Stop limit
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
 			if BO.orderMargin(client,
-				               symbOrd = sys.argv[3],   sideOrd = "BUY",
-			                  typeOrd = "TAKE_PROFIT", qtdOrd  = sys.argv[4],
-			                  prcOrd  = sys.argv[5],   prcStop = sys.argv[6]) == True:
+				               symbOrd = sys.argv[3],         sideOrd = "BUY",
+			                  typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
+			                  prcOrd  = sys.argv[5],         prcStop = sys.argv[6]) == True:
 				BU.nmExitOk()
 
 		else:
@@ -1374,12 +1374,12 @@ if __name__ == '__main__':
 			                  prcOrd  = sys.argv[5], prcStop = 0.0) == True:
 				BU.nmExitOk()
 
-		# OCO
+		# Stop limit
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
 			if BO.orderMargin(client,
-				               symbOrd = sys.argv[3], sideOrd = "SELL",
-			                  typeOrd = "STOP_LOSS", qtdOrd  = sys.argv[4],
-			                  prcOrd  = sys.argv[5], prcStop = sys.argv[6]) == True:
+				               symbOrd = sys.argv[3],         sideOrd = "SELL",
+			                  typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
+			                  prcOrd  = sys.argv[5],         prcStop = sys.argv[6]) == True:
 				BU.nmExitOk()
 
 		else:
