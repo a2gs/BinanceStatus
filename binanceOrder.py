@@ -362,6 +362,12 @@ def sellStopOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0) -> boo
 
 	return True
 
+def buyOCOOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0, limit = 0.0) -> bool:
+	print("NOT IMPLEMENTED")
+
+def sellOCOOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0, limit = 0.0) -> bool:
+	print("NOT IMPLEMENTED")
+
 def buyStopOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0) -> bool:
 	print("SPOT Stop (OCO) Buy order")
 
@@ -396,7 +402,7 @@ def buyStopOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0) -> bool
 
 # ---------------------------------------------------
 
-def orderMargin(client, symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0, prcStop = 0.0) -> bool:
+def orderMargin(client, symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0, prcStop = 0.0, limit = 0.0) -> bool:
 	print(f"MARGIN Order {typeOrd}")
 
 	if BU.getExportXLS() == True:
