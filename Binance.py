@@ -945,7 +945,7 @@ def orderBook(client, symb = '', lim = 1000) -> bool:
 def infoDetailsSymbol(client, symb) -> bool:
 
 	try:
-		si = client.get_symbol_info(symb, recvWindow = BU.getRecvWindow())
+		si = client.get_symbol_info(symb)
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro at client.get_symbol_info() BinanceAPIException: [{e.status_code} - {e.message}]")
 		return False
@@ -954,6 +954,9 @@ def infoDetailsSymbol(client, symb) -> bool:
 		return False
 	except Exception as e:
 		BU.errPrint(f"Erro at client.get_symbol_info(): {e}")
+		return False
+
+	if si is None:
 		return False
 
 	if BU.getExportXLS() == True:

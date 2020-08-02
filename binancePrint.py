@@ -496,7 +496,7 @@ def printOrder(order, seq = 0, tot = 0):
 	print(f"\tSide........: [{order['side']}]")
 	print(f"\tType........: [{order['type']}]")
 	print(f"\tStop price..: [{order['stopPrice']}]")
-	print(f"\tIs working..? [{order['isWorking']}]\n")
+	print(f"\tIs working..? [{order['isWorking']}]")
 
 def printOrderXLSHEADER():
 	print("Order id\t"
