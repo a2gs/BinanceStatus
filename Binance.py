@@ -746,6 +746,9 @@ def infoSymbol(client, symb, interv, candlesTot) -> bool:
 		BU.errPrint(f"Erro at client.get_klines(): {e}")
 		return False
 
+	if sumbPrc is None:
+		return False
+
 	if BU.getExportXLS() == True:
 		BP.printInfoSymbolValuesXLSHEADER()
 		[BP.printInfoSymbolValuesXLS(n) for n in sumbPrc]
@@ -1322,7 +1325,7 @@ if __name__ == '__main__':
 
 		else:
 			print("Parameters error for SPOT buy order.")
-			BU.nmExitErro()
+			#BU.nmExitErro()
 
 	# SPOT Sell order
 	elif sys.argv[1] == "-s" and len(sys.argv) > 2:
@@ -1366,7 +1369,7 @@ if __name__ == '__main__':
 
 		else:
 			print("Parameters error for SPOT sell order.")
-			BU.nmExitErro()
+			#BU.nmExitErro()
 
 	elif sys.argv[1] == "-c" and len(sys.argv) == 4:
 		if BO.cancel_a_spot_order(client, sys.argv[2], sys.argv[3]) == True:
@@ -1410,7 +1413,7 @@ if __name__ == '__main__':
 
 		else:
 			print("Parameters error for MARGIN buy order.")
-			BU.nmExitErro()
+			#BU.nmExitErro()
 
 	# MARGIN Sell order
 	elif sys.argv[1] == "-sm" and len(sys.argv) > 2:
@@ -1450,7 +1453,7 @@ if __name__ == '__main__':
 
 		else:
 			print("Parameters error for MARGIN sell order.")
-			BU.nmExitErro()
+			#BU.nmExitErro()
 
 	elif sys.argv[1] == "-cm" and len(sys.argv) == 4:
 		if BO.cancel_a_margin_order(client, sys.argv[2], sys.argv[3]) == True:
@@ -1460,4 +1463,4 @@ if __name__ == '__main__':
 		print("Parameters error.")
 		BP.printHelp(sys.argv[0])
 
-		BU.nmExitErro()
+	BU.nmExitErro()

@@ -636,7 +636,7 @@ def printListSymbols(symbs, seq = 0, tot = 0):
 		print(f"\t\tType: [{n['filterType']}]");
 
 		sf = n.get('minPrice', '')
-		if sf != '': print(f"\t\t\tMin Price.........: [{sf}]");
+		if sf != '': print(f"\t\t\tMin Price..........: [{sf}]");
 
 		sf = n.get('maxPrice', '')
 		if sf != '': print(f"\t\t\tMax Price..........: [{sf}]");
