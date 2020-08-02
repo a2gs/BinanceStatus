@@ -77,7 +77,7 @@ def accountInformation(client) -> bool:
 		return False
 
 	if BU.getExportXLS() == True:
-		print(f"Can trade\t{acc['canTrade']}\nCan withdraw\t{acc['canWithdraw']}\nCan deposit\t{acc['canDeposit']}\nAccount type\t{acc['accountType']}")
+		print(f"Can trade\t{acc['canTrade']}\nCan withdraw\t{acc['canWithdraw']}\nCan deposit\t{acc['canDeposit']}\nAccount type\t{acc['accountType']}\nCommissions Maker\t{acc['makerCommission']}\nCommissions Taker\t{acc['takerCommission']}\nCommissions Buyer\t{acc['buyerCommission']}\nCommissions Seller\t{acc['sellerCommission']}\n")
 		print(f"Account status detail\t{accStatus['msg']}\nSuccess\t{accStatus['success']}\n")
 	else:
 		print(f"Can trade............? [{acc['canTrade']}]")
