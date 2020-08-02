@@ -119,16 +119,16 @@ def cancel_a_margin_order(client, symbOrd = '', ordrid = 0) -> bool:
 
 # ---------------------------------------------------
 
-def binancePlaceSPOTOCOOrder(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prcStopOrd = 0.0, prcStopLimitOrd = 0.0, sideOrd = 0):
+def orderSpotLimit(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prcStopOrd = 0.0, prcStopLimitOrd = 0.0, sideOrd = 0) -> bool:
 
 	if BU.askConfirmation() == False:
-		return None
+		return False
 
 	# TESTING
 	global LOCK
 	if LOCK == True:
 		print("PROGRAM LOCKED BY SECURITY!")
-		return None
+		return False
 
 	try:
 		order = client.create_oco_order(symbol               = symbOrd,
@@ -142,44 +142,46 @@ def binancePlaceSPOTOCOOrder(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prc
 
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceRequestException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceAPIException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except BinanceOrderException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceOrderException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except BinanceOrderMinAmountException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except BinanceOrderMinPriceException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except BinanceOrderMinTotalException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except BinanceOrderUnknownSymbolException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except BinanceOrderInactiveSymbolException as e:
 		BU.errPrint(f"Erro create_oco_order BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except Expcetion as e:
 		BU.errPrint(f"Erro create_oco_order generic exception: {e}")
-		return None
+		return False
 
-	return order
+	printPlacedOrder(order)
 
-def binancePlaceSPOTOrder(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, typeOrd = 0):
+	return True
+
+def orderSpot(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, typeOrd = 0) -> bool:
 
 	if BU.askConfirmation() == False:
-		return None
+		return False
 
 	# TESTING
 	global LOCK
 	if LOCK == True:
 		print("PROGRAM LOCKED BY SECURITY!")
-		return None
+		return False
 
 	try:
 
@@ -202,165 +204,37 @@ def binancePlaceSPOTOrder(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOr
 
 	except BinanceRequestException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceRequestException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except BinanceAPIException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceAPIException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except BinanceOrderException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except BinanceOrderMinAmountException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except BinanceOrderMinPriceException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except BinanceOrderMinTotalException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except BinanceOrderUnknownSymbolException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except BinanceOrderInactiveSymbolException as e:
 		BU.errPrint(f"Erro order_limit_buy BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
-		return None
+		return False
 	except Exception as e:
 		BU.errPrint(f"Erro order_limit_buy generic exception: {e}")
-		return None
-
-	return order
-
-# ---------------------------------------------------
-
-def sellMarketOrder(client, symb = '', qtd = 0) -> bool:
-	print("SPOT Sell Market order")
-
-	if BU.getExportXLS() == True:
-		print("Symbol\tQuantity")
-		print(f"{symb}\t{qtd}")
-	else:
-		print(f"Symbol..: [{symb}]")
-		print(f"Quantity: [{qtd}]")
-
-	try:
-		order = binancePlaceSPOTOrder(client, symb, qtd, 0.0, Client.SIDE_SELL, Client.ORDER_TYPE_MARKET)
-	except Exception as e:
-		BU.errPrint(f"Erro binancePlaceSPOTOrder SELL MARKET(): {e}")
 		return False
 
-	if order is None:
-		return False
-
-	BP.print_OM_Sell_PlacedOrder(order)
-
-	return True
-
-def buyMarketOrder(client, symb = '', qtd = 0) -> bool:
-	print("SPOT Buy Market order")
-
-	if BU.getExportXLS() == True:
-		print("Symbol\tQuantity")
-		print(f"{symb}\t{qtd}")
-	else:
-		print(f"Symbol..: [{symb}]")
-		print(f"Quantity: [{qtd}]")
-
-	try:
-		order = binancePlaceSPOTOrder(client, symb, qtd, 0.0, Client.SIDE_BUY, Client.ORDER_TYPE_MARKET)
-	except Exception as e:
-		BU.errPrint(f"Erro binancePlaceSPOTOrder BUY MARKET(): {e}")
-		return False
-
-	if order is None:
-		return False
-
-	BP.print_OM_Buy_PlacedOrder(order)
+	printPlacedOrder(order)
 
 	return True
 
 # ---------------------------------------------------
-
-def sellLimitOrder(client, symb = '', qtd = 0, prc = 0.0) -> bool:
-	print("SPOT Sell Limit order")
-
-	if BU.getExportXLS() == True:
-		print("Symbol\tQuantity\tPrice")
-		print(f"{symb}\t{qtd}\t{prc}")
-	else:
-		print(f"Symbol..: [{symb}]")
-		print(f"Quantity: [{qtd}]")
-		print(f"Price...: [{prc}]")
-
-	try:
-		order = binancePlaceSPOTOrder(client, symb, qtd, prc, Client.SIDE_SELL, Client.ORDER_TYPE_LIMIT)
-	except Exception as e:
-		BU.errPrint(f"Erro binancePlaceSPOTOrder SELL LIMIT(): {e}")
-		return False
-
-	if order is None:
-		return False
-
-	BP.print_LO_Sell_PlacedOrder(order)
-
-	return True
-
-def buyLimitOrder(client, symb = '', qtd = 0, prc = 0.0) -> bool:
-	print("SPOT Buy Limit Order")
-
-	if BU.getExportXLS() == True:
-		print("Symbol\tQuantity\tPrice")
-		print(f"{symb}\t{qtd}\t{prc}")
-	else:
-		print(f"Symbol..: [{symb}]")
-		print(f"Quantity: [{qtd}]")
-		print(f"Price...: [{prc}]")
-
-	try:
-		order = binancePlaceSPOTOrder(client, symb, qtd, prc, Client.SIDE_BUY, Client.ORDER_TYPE_LIMIT)
-	except Exception as e:
-		BU.errPrint(f"Erro binancePlaceSPOTOrder BUY LIMIT(): {e}")
-		return False
-
-	if order is None:
-		return False
-
-	BP.print_OL_Buy_PlacedOrder(order)
-
-	return True
-
-# ---------------------------------------------------
-
-def sellStopOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0) -> bool:
-	print("SPOT Stop (OCO) Sell order")
-
-	if BU.getExportXLS() == True:
-		print("Symbol\tQuantity\tPrice\tStop Price")
-		print(f"{symb}\t{qtd}\t{prc}\t{stopprice}]")
-	else:
-		print(f"Symbol....: [{symb}]")
-		print(f"Quantity..: [{qtd}]")
-		print(f"Price.....: [{prc}]")
-		print(f"Stop Price: [{stopprice}]")
-
-	try:
-		order = binancePlaceSPOTOCOOrder(client,
-		                                 symbOrd         = symb,
-		                                 qtdOrd          = qtd,
-		                                 prcOrd          = prc,
-		                                 prcStopOrd      = stopprice,
-		                                 prcStopLimitOrd = 0.0,
-		                                 sideOrd         = Client.SIDE_SELL)
-
-	except Exception as e:
-		BU.errPrint(f"Erro binancePlaceSPOTOCOOrder SELL(): {e}")
-		return False
-
-	if order is None:
-		return False
-
-	BP.print_OCO_Sell_PlacedOrder(order)
-
-	return True
 
 def buyOCOOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0, limit = 0.0) -> bool:
 	print("NOT IMPLEMENTED")
@@ -368,52 +242,21 @@ def buyOCOOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0, limit = 
 def sellOCOOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0, limit = 0.0) -> bool:
 	print("NOT IMPLEMENTED")
 
-def buyStopOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0) -> bool:
-	print("SPOT Stop (OCO) Buy order")
-
-	if BU.getExportXLS() == True:
-		print("Symbol\tQuantity\tPrice\tStop Price")
-		print(f"{symb}\t{qtd}\t{prc}\t{stopprice}")
-	else:
-		print(f"Symbol....: [{symb}]")
-		print(f"Quantity..: [{qtd}]")
-		print(f"Price.....: [{prc}]")
-		print(f"Stop Price: [{stopprice}]")
-
-	try:
-		order = binancePlaceSPOTOCOOrder(client,
-		                                 symbOrd         = symb,
-		                                 qtdOrd          = qtd,
-		                                 prcOrd          = prc,
-		                                 prcStopOrd      = stopprice,
-		                                 prcStopLimitOrd = 0.0,
-		                                 sideOrd         = Client.SIDE_BUY)
-
-	except Exception as e:
-		BU.errPrint(f"Erro binancePlaceSPOTOCOOrder BUY(): {e}")
-		return False
-
-	if order is None:
-		return False
-
-	BP.print_OCO_Buy_PlacedOrder(order)
-
-	return True
-
 # ---------------------------------------------------
 
 def orderMargin(client, symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0, prcStop = 0.0, limit = 0.0) -> bool:
 	print(f"MARGIN Order {typeOrd}")
 
 	if BU.getExportXLS() == True:
-		print("Symbol\tSide\tQuantity\tPrice\tStop Price\tType")
-		print(f"{symbOrd}\t{sideOrd}\t{qtdOrd}\t{prcOrd}\t{prcStop}{typeOrd}\t]")
+		print("Symbol\tSide\tQuantity\tPrice\tStop Price\tLimit OCO\tType")
+		print(f"{symbOrd}\t{sideOrd}\t{qtdOrd}\t{prcOrd}\t{prcStop}\t{limit}\t{typeOrd}\t]")
 	else:
 		print(f"Symbol....: [{symbOrd}]")
 		print(f"Side......: [{sideOrd}]")
 		print(f"Quantity..: [{qtdOrd}]")
 		print(f"Price.....: [{prcOrd}]")
 		print(f"Stop Price: [{prcStop}]")
+		print(f"Limit OCO.: [{limit}]")
 		print(f"Type......: [{typeOrd}]")
 
 	if BU.askConfirmation() == False:

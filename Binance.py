@@ -80,11 +80,12 @@ def accountInformation(client) -> bool:
 		print(f"Can trade\t{acc['canTrade']}\nCan withdraw\t{acc['canWithdraw']}\nCan deposit\t{acc['canDeposit']}\nAccount type\t{acc['accountType']}")
 		print(f"Account status detail\t{accStatus['msg']}\nSuccess\t{accStatus['success']}\n")
 	else:
-		print(f"Can trade...? [{acc['canTrade']}]")
-		print(f"Can withdraw? [{acc['canWithdraw']}]")
-		print(f"Can deposit.? [{acc['canDeposit']}]")
-		print(f"Account type: [{acc['accountType']}]")
-		print(f"(Account status detail: [{accStatus['msg']}] Success: [{accStatus['success']}]\n")
+		print(f"Can trade............? [{acc['canTrade']}]")
+		print(f"Can withdraw.........? [{acc['canWithdraw']}]")
+		print(f"Can deposit..........? [{acc['canDeposit']}]")
+		print(f"Account type.........: [{acc['accountType']}]")
+		print(f"Account status detail: [{accStatus['msg']}] Success: [{accStatus['success']}]")
+		print(f"Commissions..........: Maker: [{acc['makerCommission']}] | Taker: [{acc['takerCommission']}] | Buyer: [{acc['buyerCommission']}] | Seller: [{acc['sellerCommission']}]")
 
 	if len(acc['balances']) != 0:
 		if BU.getExportXLS() == True:
@@ -1281,17 +1282,34 @@ if __name__ == '__main__':
 
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
-			if BO.buyMarketOrder(client, sys.argv[3], sys.argv[4]) == True:
+			#if BO.buyMarketOrder(client, sys.argv[3], sys.argv[4]) == True:
+			if BO.orderSpot(client,
+			                symbOrd = sys.argv[3],
+			                qtdOrd  = sys.argv[4],
+			                sideOrd = Client.SIDE_BUY,
+			                typeOrd = Client.ORDER_TYPE_MARKET) == True:
 				BU.nmExitOk()
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			if BO.buyLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5]) == True:
+			#if BO.buyLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5]) == True:
+			if BO.orderSpot(client,
+			                symbOrd = sys.argv[3],
+			                qtdOrd  = sys.argv[4],
+			                prcOrd  = sys.argv[5],
+			                sideOrd = Client.SIDE_BUY,
+			                typeOrd = Client.ORDER_TYPE_LIMIT) == True:
 				BU.nmExitOk()
 
 		# Stop Limit
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
-			if BO.buyStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == True:
+			#if BO.buyStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == True:
+			if BO.orderSpotLimit(client,
+			                     symbOrd         = sys.argv[3],
+			                     qtdOrd          = sys.argv[4],
+			                     prcStopOrd      = sys.argv[5],
+			                     prcStopLimitOrd = sys.argv[6],
+			                     sideOrd         = Client.SIDE_BUY) == True:
 				BU.nmExitOk()
 
 		# OCO
@@ -1308,17 +1326,34 @@ if __name__ == '__main__':
 
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
-			if BO.sellMarketOrder(client, sys.argv[3], sys.argv[4]) == True:
+			#if BO.sellMarketOrder(client, sys.argv[3], sys.argv[4]) == True:
+			if BO.orderSpot(client,
+			                symbOrd = sys.argv[3],
+			                qtdOrd  = sys.argv[4],
+			                sideOrd = Client.SIDE_SELL,
+			                typeOrd = Client.ORDER_TYPE_MARKET) == True:
 				BU.nmExitOk()
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			if BO.sellLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5]) == True:
+			#if BO.sellLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5]) == True:
+			if BO.orderSpot(client,
+			                symbOrd = sys.argv[3],
+			                qtdOrd  = sys.argv[4],
+			                prcOrd  = sys.argv[5],
+			                sideOrd = Client.SIDE_SELL,
+			                typeOrd = Client.ORDER_TYPE_LIMIT) == True:
 				BU.nmExitOk()
 
 		# Stop Limit
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
-			if BO.sellStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == True:
+			#if BO.sellStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == True:
+			if BO.orderSpotLimit(client,
+			                     symbOrd         = sys.argv[3],
+			                     qtdOrd          = sys.argv[4],
+			                     prcStopOrd      = sys.argv[5],
+			                     prcStopLimitOrd = sys.argv[6],
+			                     sideOrd         = Client.SIDE_SELL) == True:
 				BU.nmExitOk()
 
 		# OCO

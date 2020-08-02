@@ -732,27 +732,6 @@ def printsubAccountsAssets(n, i, totSaa):
 
 # ----------------------------------------------------------------------------
 
-def print_OM_Sell_PlacedOrder(order):
-	printPlacedOrder(order)
-
-def print_OCO_Sell_PlacedOrder(order):
-	printPlacedOrder(order)
-
-def print_LO_Sell_PlacedOrder(order):
-	printPlacedOrder(order)
-
-def print_OCO_Buy_PlacedOrder(order):
-	printPlacedOrder(order)
-
-def print_OL_Buy_PlacedOrder(order):
-	printPlacedOrder(order)
-
-def print_OM_Buy_PlacedOrder(order):
-	printPlacedOrder(order)
-
-def print_Margin_Order(order):
-	printPlacedOrder(order)
-
 def printPlacedOrder(order):
 	print(f"Symbol: [{order['symbol']}]")
 	print(f"\tSide.................: [{order['side']}]")
