@@ -315,5 +315,5 @@ def orderMargin(client, symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcO
 		BU.errPrint(f"Erro create_margin_order generic exception: {e}")
 		return False
 
-	BP.print_Margin_Order(order)
+	BP.printMarginOrder(order)
 	return True

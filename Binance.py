@@ -1408,7 +1408,7 @@ if __name__ == '__main__':
 				               symbOrd = sys.argv[3],         sideOrd = "BUY",
 			                  typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
 			                  prcOrd  = sys.argv[5],         prcStop = sys.argv[6],
-			                  limit = argv[7] ) == True:
+			                  limit   = argv[7] ) == True:
 				BU.nmExitOk()
 
 		else:
@@ -1448,7 +1448,7 @@ if __name__ == '__main__':
 				               symbOrd = sys.argv[3],         sideOrd = "SELL",
 			                  typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
 			                  prcOrd  = sys.argv[5],         prcStop = sys.argv[6],
-			                  limit = argv[7] ) == True:
+			                  limit   = argv[7] ) == True:
 				BU.nmExitOk()
 
 		else:
