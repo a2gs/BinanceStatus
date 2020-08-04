@@ -25,31 +25,27 @@ def getTestOrder() -> bool:
 
 # ---------------------------------------------------
 
-def cancel_a_spot_order(client, symbOrd = '', ordrid = 0) -> bool:
+def cancel_a_spot_order(client, symbOrd = '', ordrid = 0) -> [bool, str]:
 	BU.errPrint(f"Cancel SPOT Order Id [{ordrid}] with Symbol [{symbOrd}]")
 
 	if BU.askConfirmation() == False:
-		return True
+		return True, "Canceled by confirmation!"
 
 	# TESTING
 	global LOCK
 	if LOCK == True:
-		BU.errPrint("PROGRAM LOCKED BY SECURITY!")
-		return False
+		return False, "Programmed flag order lock ON!"
 
 	try:
 		cancOrd = client.cancel_order(symbol = symbOrd, orderId = ordrid)
 	except BinanceRequestException as e:
-		BU.errPrint(f"Erro at client.cancel_order() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro BinanceRequestException: [{e.status_code} - {e.message}]"
 	except BinanceAPIException as e:
-		BU.errPrint(f"Erro at client.cancel_order() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro at client.cancel_order() BinanceAPIException: [{e.status_code} - {e.message}]"
 	except Exception as e:
-		BU.errPrint(f"Erro at client.cancel_order(): {e}")
-		return False
+		return False, f"Erro at client.cancel_order(): {e}"
 
-	BU.errPrint("Cancellation return")
+	#BU.errPrint("Cancellation return")
 	if BU.getExportXLS() == True:
 		BU.errPrint("Symbol\tOriginal Client Order Id\tOrder Id\tOrder List Id (OCO info)\tClient Order Id\tPrice\tOriginal Qtd\tExecuted Qty\tCummulative Quote Qty\tStatus\tTime In Force\tType\tSide")
 		BU.errPrint(f"{cancOrd['symbol']}\t{cancOrd['origClientOrderId']}\t{cancOrd['orderId']}\t{cancOrd['orderListId']}\t{cancOrd['clientOrderId']}\t{cancOrd['price']}\t{cancOrd['origQty']}\t{cancOrd['executedQty']}\t{cancOrd['cummulativeQuoteQty']}\t{cancOrd['status']}\t{cancOrd['timeInForce']}\t{cancOrd['timeInForce']}\t{cancOrd['type']}\t{cancOrd['side']}")
@@ -69,33 +65,29 @@ def cancel_a_spot_order(client, symbOrd = '', ordrid = 0) -> bool:
 		BU.errPrint(f"Type....................: [{cancOrd['type']}]")
 		BU.errPrint(f"Side....................: [{cancOrd['side']}]")
 
-	return True	
+	return True, "Ok"
 
-def cancel_a_margin_order(client, symbOrd = '', ordrid = 0) -> bool:
+def cancel_a_margin_order(client, symbOrd = '', ordrid = 0) -> [bool, str]:
 	BU.errPrint(f"Cancel Margin Order Id [{ordrid}] with Symbol [{symbOrd}]")
 
 	if BU.askConfirmation() == False:
-		return True
+		return True, "Cancelled by Confirmation!"
 
 	# TESTING
 	global LOCK
 	if LOCK == True:
-		BU.errPrint("PROGRAM LOCKED BY SECURITY!")
-		return False
+		return False, "Programmed flag order lock ON!"
 
 	try:
 		cancOrd = client.cancel_margin_order(symbol = symbOrd, orderId = ordrid)
 	except BinanceRequestException as e:
-		BU.errPrint(f"Erro at client.cancel_margin_order() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return False
-	except BinanceAPIException as e:
-		BU.errPrint(f"Erro at client.cancel_margin_order() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return False
-	except Exception as e:
-		BU.errPrint(f"Erro at client.cancel_margin_order(): {e}")
-		return False
+		return False, f"Erro at client.cancel_margin_order() BinanceRequestException: [{e.status_code} - {e.message}]"
 
-	BU.errPrint("Cancellation return")
+	except BinanceAPIException as e:
+		return False, f"Erro at client.cancel_margin_order() BinanceAPIException: [{e.status_code} - {e.message}]"
+
+	except Exception as e:
+		return False, f"Erro at client.cancel_margin_order(): {e}"
 
 	if BU.getExportXLS() == True:
 		BU.errPrint("Symbol\tOriginal Client Order Id\tOrder Id\tClient Order Id\tPrice\tOriginal Qtd\tExecuted Qty\tCummulative Quote Qty\tStatus\tTime In Force\tType\tSide")
@@ -115,7 +107,7 @@ def cancel_a_margin_order(client, symbOrd = '', ordrid = 0) -> bool:
 		BU.errPrint(f"Type....................: [{cancOrd['type']}]")
 		BU.errPrint(f"Side....................: [{cancOrd['side']}]")
 
-	return True	
+	return True, 'Ok'
 
 # ---------------------------------------------------
 

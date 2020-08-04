@@ -264,7 +264,7 @@ def BS_SpotLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
 
 	return True
 
-def ListOpenOrders(client)->bool:
+def ListOpenOrders(client)->[bool, str]:
 
 	def buildOrderList(ordList):
 		return [sg.CBox(f"{ordList['orderId']}", key=f"{ordList['orderId']}"),
@@ -274,14 +274,13 @@ def ListOpenOrders(client)->bool:
 		openOrders = client.get_open_orders() #recvWindow
 		openMarginOrders = client.get_open_margin_orders() #recvWindow
 	except BinanceRequestException as e:
-		BU.errPrint(f"Erro at client.get_open_orders() BinanceRequestException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro at client.get_open_orders() BinanceRequestException: [{e.status_code} - {e.message}]"
+
 	except BinanceAPIException as e:
-		BU.errPrint(f"Erro at client.get_open_orders() BinanceAPIException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro at client.get_open_orders() BinanceAPIException: [{e.status_code} - {e.message}]"
+
 	except Exception as e:
-		BU.errPrint(f"Erro at client.get_open_orders(): {e}")
-		return False
+		return False, f"Erro at client.get_open_orders(): {e}"
 
 	if len(openOrders) == 0:
 		layoutFrameSpotOpen = [[sg.Text("0 orders.", font=("Courier", 10))]]
@@ -305,26 +304,65 @@ def ListOpenOrders(client)->bool:
 
 	windowListOpenOrder = sg.Window('Open Orders', layoutListOpenOrders);
 
-	while True:
-		eventLOO, valuesLOO = windowListOpenOrder.read()
+	eventLOO, valuesLOO = windowListOpenOrder.read()
 
-		if eventLOO == sg.WIN_CLOSED or eventLOO == 'Close':
-			break
+	if eventLOO == sg.WIN_CLOSED or eventLOO == 'Close':
+		pass
 
-		elif eventLOO == 'Delete Margin Order':
-			pass
+	elif eventLOO == 'Delete Margin Order':
+		BU.errPrint("Deleting margin orders:")
 
-		elif eventLOO == 'Copy Margin data to clipboard':
-			pass
+		for i in [str(k) for k, v in valuesLOO.items() if v == True]:
 
-		elif eventLOO == 'Delete Spot Order':
-			pass
+			for j2 in openMarginOrders:
 
-		elif eventLOO == 'Copy Spot data to clipboard':
-			pass
+				if j2['orderId'] == int(i):
+					ret, msgRet = BO.cancel_a_margin_order(client, symbOrd = j2['symbol'], ordrid = j2['orderId'])
+					if ret == False:
+						BU.errPrint(f"Erro canceling MARGIN order {j2['orderId']}! {msgRet}")
 
-		print(valuesLOO)
-		print(eventLOO)
+						windowListOpenOrder.close()
+
+						del openOrders
+						del openMarginOrders
+						del windowListOpenOrder
+						del layoutFrameSpotOpen
+						del layoutFrameMarginOpen
+						del layoutListOpenOrders
+
+						return False, f"Erro canceling MARGIN order {j2['orderId']}! {msgRet}"
+
+	elif eventLOO == 'Copy Margin data to clipboard':
+		pass
+
+	elif eventLOO == 'Delete Spot Order':
+		BU.errPrint("Deleting spot orders:")
+
+		for i in [str(k) for k, v in valuesLOO.items() if v == True]:
+
+			for j1 in openOrders:
+
+				if j1['orderId'] == i:
+					ret, msgRet = cancel_a_BO.spot_order(client, symbOrd = j2['symbol'], ordrid = j2['orderId'])
+					if ret == False:
+						BU.errPrint(f"Erro canceling SPOT order {j1['orderId']}! {msgRet}")
+
+						windowListOpenOrder.close()
+
+						del openOrders
+						del openMarginOrders
+						del windowListOpenOrder
+						del layoutFrameSpotOpen
+						del layoutFrameMarginOpen
+						del layoutListOpenOrders
+
+						return False, f"Erro canceling SPOT order {j1['orderId']}! {msgRet}"
+
+	elif eventLOO == 'Copy Spot data to clipboard':
+		pass
+
+	print(valuesLOO)
+	print(eventLOO)
 
 	windowListOpenOrder.close()
 
@@ -335,13 +373,15 @@ def ListOpenOrders(client)->bool:
 	del layoutFrameMarginOpen
 	del layoutListOpenOrders
 
+	return True, 'Ok'
+
 def main(argv):
 
 	menu = [
 		[ '&Menu', ['Info', 'Config', 'Exit']],
 		[ '&Account', ['Infos acc', 'Taxes']],
 		[ '&Order', ['BUY',  ['B Spot Market', 'B Spot Limit','B Spot Stop Limit', '!B Spot OCO', '---', 'B Margin Market', 'B Margin Limit', 'B Margin Stop Limit', '!B Margin OCO'],
-		             'SELL', ['S Spot Market', 'S Spot Limit','S Spot Stop Limit', '!S Spot OCO', '---', 'S Margin Market', 'S Margin Limit', 'S Margin Stop Limit', '!S Margin OCO'], 'CANCEL', 'LIST or DELETE Open', 'LIST All']],
+		             'SELL', ['S Spot Market', 'S Spot Limit','S Spot Stop Limit', '!S Spot OCO', '---', 'S Margin Market', 'S Margin Limit', 'S Margin Stop Limit', '!S Margin OCO'], '!CANCEL', 'LIST or DELETE Open', '!LIST All']],
 		[ '&Binance', ['Infos binance', 'Assets', 'Symbols']]
 	]
 
@@ -360,12 +400,22 @@ def main(argv):
 	]
 
 	layout = [
-		  [sg.Menu(menu)],
-#		  [sg.Text('text1', key='-TEXT-')],
-#		  [sg.Text('Get symbol info:'), sg.InputText()],
-#	  [sg.Frame('Open Orders', openOrdersFrame, font='Any 12', title_color='blue', key = '-OpenOrdersFrame-')],
-#	  [sg.Frame('Watching symbols', favoriteSymbolsInfo, font='Any 12', title_color='blue', key = '-WatchingSymbolsFrame-')],
-#	  [sg.Button('REFRESH')],
+		[sg.Menu(menu)],
+		[sg.Button('Spot Market'      ,                key='BTTN_BSM' , button_color=('black','green'), size=(30,1)), sg.Button('Spot Market'      ,                key='BTTN_SSM' , button_color=('black', 'red'), size=(30,1))],
+		[sg.Button('Spot Limit'       ,                key='BTTN_BSL' , button_color=('black','green'), size=(30,1)), sg.Button('Spot Limit'       ,                key='BTTN_SSL' , button_color=('black','red'), size=(30,1))],
+		[sg.Button('Spot Stop Limit'  ,                key='BTTN_BSSL', button_color=('black','green'), size=(30,1)), sg.Button('Spot Stop Limit'  ,                key='BTTN_SSSL', button_color=('black','red'), size=(30,1))],
+		[sg.Button('Spot OCO'         , disabled=True, key='BTTN_BSO' , button_color=('black','green'), size=(30,1)), sg.Button('Spot OCO'         , disabled=True, key='BTTN_SSO' , button_color=('black','red'), size=(30,1))],
+		[sg.Button('Margin Market'    ,                key='BTTN_BMM' , button_color=('black','green'), size=(30,1)), sg.Button('Margin Market'    ,                key='BTTN_SMM' , button_color=('black','red'), size=(30,1))],
+		[sg.Button('Margin Limit'     ,                key='BTTN_BML' , button_color=('black','green'), size=(30,1)), sg.Button('Margin Limit'     ,                key='BTTN_SML' , button_color=('black','red'), size=(30,1))],
+		[sg.Button('Margin Stop Limit',                key='BTTN_BMSL', button_color=('black','green'), size=(30,1)), sg.Button('Margin Stop Limit',                key='BTTN_SMSL', button_color=('black','red'), size=(30,1))],
+		[sg.Button('Margin OCO'       , disabled=True, key='BTTN_BMO' , button_color=('black','green'), size=(30,1)), sg.Button('Margin OCO'       , disabled=True, key='BTTN_SMO' , button_color=('black','red'), size=(30,1))],
+
+		[sg.Button('LIST or DELETE Open', key='BTTN_LDOO')],
+
+		[sg.StatusBar('Last msg: Initialized', key='LASTMSG', auto_size_text=True, size=(250, 2), justification='left')],
+#		  [sg.Frame('Open Orders', openOrdersFrame, font='Any 12', title_color='blue', key = '-OpenOrdersFrame-')],
+#		  [sg.Frame('Watching symbols', favoriteSymbolsInfo, font='Any 12', title_color='blue', key = '-WatchingSymbolsFrame-')],
+#		  [sg.Button('REFRESH')],
 	]
 
 	binanceAPIKey = getenv("BINANCE_APIKEY", "NOTDEF_APIKEY")
@@ -409,7 +459,8 @@ def main(argv):
 
 	#sg.set_options(suppress_raise_key_errors=False, suppress_error_popups=False, suppress_key_guessing=False)
 
-	window = sg.Window('Binance Status GUI', layout, size = (215, 0)).Finalize()
+#	window = sg.Window('Binance Status GUI', layout, size = (215, 40)).Finalize()
+	window = sg.Window('Binance Status GUI', layout, size = (600, 400)).Finalize()
 
 	while True:
 		event, values = window.read()  #timeout=1000)
@@ -432,84 +483,90 @@ def main(argv):
 		elif event == 'Taxes':
 			pass
 
-		elif event == 'B Spot Market':
+		elif event == 'B Spot Market' or event == 'BTTN_BSM':
 			window.Hide()
 			BS_SpotMarket(client, 'green', 'Buy Spot Market', Client.SIDE_BUY)
 			window.UnHide()
 
-		elif event == 'B Spot Limit':
+		elif event == 'B Spot Limit' or event == 'BTTN_BSL':
 			window.Hide()
 			BS_SpotLimit(client, 'green', 'Buy Spot Limit', Client.SIDE_BUY)
 			window.UnHide()
 
-		elif event == 'B Spot Stop Limit':
+		elif event == 'B Spot Stop Limit' or event == 'BTTN_BSSL':
 			window.Hide()
 			BS_SpotStopLimit(client, 'green', 'Buy Spot Stop Limit', Client.SIDE_BUY)
 			window.UnHide()
 
-		elif event == 'B Spot OCO':
+		elif event == 'B Spot OCO' or event == 'BTTN_BSO':
 			pass
 
-		elif event == 'B Margin Market':
+		elif event == 'B Margin Market' or event == 'BTTN_BMM':
 			window.Hide()
 			BS_MarginMarket(client, 'red', 'Sell Margin Limit', Client.SIDE_SELL)
 			window.UnHide()
 
-		elif event == 'B Margin Limit':
+		elif event == 'B Margin Limit' or event == 'BTTN_BML':
 			window.Hide()
 			BS_MarginLimit(client, 'green', 'Buy Margin Limit', Client.SIDE_BUY)
 			window.UnHide()
 
-		elif event == 'B Margin Stop Limit':
+		elif event == 'B Margin Stop Limit' or event == 'BTTN_BMSL':
 			window.Hide()
 			BS_MarginStopLimit(client, 'green', 'Buy Margin Stop Limit', Client.SIDE_BUY)
 			window.UnHide()
 
-		elif event == 'B Margin OCO':
+		elif event == 'B Margin OCO' or event == 'BTTN_BMO':
 			pass
 
-		elif event == 'S Spot Market':
+		elif event == 'S Spot Market' or event == 'BTTN_SSM':
 			window.Hide()
 			BS_SpotMarket(client, 'red', 'Sell Spot Market', Client.SIDE_SELL)
 			window.UnHide()
 
-		elif event == 'S Spot Limit':
+		elif event == 'S Spot Limit' or event == 'BTTN_SSL':
 			window.Hide()
 			BS_SpotLimit(client, 'red', 'Sell Spot Limit', Client.SIDE_SELL)
 			window.UnHide()
 
-		elif event == 'S Spot Stop Limit':
+		elif event == 'S Spot Stop Limit' or event == 'BTTN_SSSL':
 			window.Hide()
 			BS_SpotStopLimit(client, 'red', 'Sell Spot Stop Limit', Client.SIDE_SELL)
 			window.UnHide()
 
-		elif event == 'S Spot OCO':
+		elif event == 'S Spot OCO' or event == 'BTTN_SSO':
 			pass
 
-		elif event == 'S Margin Market':
+		elif event == 'S Margin Market' or event == 'BTTN_SMM':
 			window.Hide()
 			BS_MarginMarket(client, 'red', 'Sell Margin Limit', Client.SIDE_SELL)
 			window.UnHide()
 
-		elif event == 'S Margin Limit':
+		elif event == 'S Margin Limit' or event == 'BTTN_SML':
 			window.Hide()
 			BS_MarginLimit(client, 'red', 'Sell Margin Limit', Client.SIDE_SELL)
 			window.UnHide()
 
-		elif event == 'S Margin Stop Limit':
+		elif event == 'S Margin Stop Limit' or event == 'BTTN_SMSL':
 			window.Hide()
 			BS_MarginStopLimit(client, 'red', 'Sell Margin Stop Limit', Client.SIDE_SELL)
 			window.UnHide()
 
-		elif event == 'S Margin OCO':
+		elif event == 'S Margin OCO' or event == 'BTTN_SMO':
 			pass
 
 		elif event == 'CANCEL':
 			pass
 
-		elif event == 'LIST or DELETE Open':
+		elif event == 'LIST or DELETE Open' or event == 'BTTN_LDOO':
 			window.Hide()
-			ListOpenOrders(client)
+
+			ret = bool()
+			msgRet = ''
+
+			ret, msgRet = ListOpenOrders(client)
+			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+
 			window.UnHide()
 
 		elif event == 'LIST All':

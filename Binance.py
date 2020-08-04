@@ -1372,8 +1372,11 @@ if __name__ == '__main__':
 			#BU.nmExitErro()
 
 	elif sys.argv[1] == "-c" and len(sys.argv) == 4:
-		if BO.cancel_a_spot_order(client, sys.argv[2], sys.argv[3]) == True:
-			BU.nmExitOk()
+		ret, msgRet = BO.cancel_a_spot_order(client, sys.argv[2], sys.argv[3])
+		if ret == False:
+			BU.nmExitErro(m = msgRet)
+
+		BU.nmExitOk(m = msgRet)
 
 	# MARGIN Buy order
 	elif sys.argv[1] == "-bm" and len(sys.argv) > 2:
@@ -1456,8 +1459,11 @@ if __name__ == '__main__':
 			#BU.nmExitErro()
 
 	elif sys.argv[1] == "-cm" and len(sys.argv) == 4:
-		if BO.cancel_a_margin_order(client, sys.argv[2], sys.argv[3]) == True:
-			BU.nmExitOk()
+		ret, msgRet = BO.cancel_a_margin_order(client, sys.argv[2], sys.argv[3])
+		if ret == False:
+			BU.nmExitErro(m = msgRet)
+
+		BU.nmExitOk(m = msgRet)
 
 	else:
 		BU.errPrint("Parameters error.")
