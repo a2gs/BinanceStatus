@@ -266,6 +266,10 @@ def BS_SpotLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
 
 def ListOpenOrders(client)->bool:
 
+	def buildOrderList(ordList):
+		return [sg.CBox(f"{ordList['orderId']}", key=f"{ordList['orderId']}"),
+		        sg.Text(f"{ordList['symbol']}\t\t{ordList['side']}\t\t{ordList['price']}\t\t{ordList['origQty']}\t\t{ordList['type']}", font=("Courier", 10))]
+
 	try:
 		openOrders = client.get_open_orders() #recvWindow
 		openMarginOrders = client.get_open_margin_orders() #recvWindow
@@ -279,19 +283,57 @@ def ListOpenOrders(client)->bool:
 		BU.errPrint(f"Erro at client.get_open_orders(): {e}")
 		return False
 
-	layoutOpenSpot = []
-	[layoutOpenSpot.append({'orderId' : i['orderId'], 'symb': i['symbol'], 'prc' : i['price'], 'qtd' : i['origQty'], 'type' : i['type'], 'side' : i['side']}) for i in openOrders]
+	if len(openOrders) == 0:
+		layoutFrameSpotOpen = [[sg.Text("0 orders.", font=("Courier", 10))]]
+	else:
+		layoutFrameSpotOpen = [[sg.Text("Order Id\tSymbol\tSide\tPrice\tQtd\tType", font=("Courier", 10))]]
+		[layoutFrameSpotOpen.append(buildOrderList(i)) for i in openOrders]
+		layoutFrameSpotOpen.append([sg.Button('Delete Spot Order'), sg.Button('Copy Spot data to clipboard')])
+
+	if len(openMarginOrders) == 0:
+		layoutFrameMarginOpen = [[sg.Text("0 orders.", font=("Courier", 10))]]
+	else:
+		layoutFrameMarginOpen = [[sg.Text("Order Id\tSymbol\tSide\tPrice\tQtd\tType", font=("Courier", 10))]]
+		[layoutFrameMarginOpen.append(buildOrderList(i)) for i in openMarginOrders]
+		layoutFrameMarginOpen.append([sg.Button('Delete Margin Order'), sg.Button('Copy Margin data to clipboard')])
+
+	layoutListOpenOrders = [
+		[sg.Frame('SPOT', layoutFrameSpotOpen, title_color='blue')],
+		[sg.Frame('MARGIN', layoutFrameMarginOpen, title_color='blue')],
+		[sg.Button('Close')]
+	]
+
+	windowListOpenOrder = sg.Window('Open Orders', layoutListOpenOrders);
+
+	while True:
+		eventLOO, valuesLOO = windowListOpenOrder.read()
+
+		if eventLOO == sg.WIN_CLOSED or eventLOO == 'Close':
+			break
+
+		elif eventLOO == 'Delete Margin Order':
+			pass
+
+		elif eventLOO == 'Copy Margin data to clipboard':
+			pass
+
+		elif eventLOO == 'Delete Spot Order':
+			pass
+
+		elif eventLOO == 'Copy Spot data to clipboard':
+			pass
+
+		print(valuesLOO)
+		print(eventLOO)
+
+	windowListOpenOrder.close()
+
 	del openOrders
-
-	layoutOpenMargin = []
-	[layoutOpenMargin.append({'orderId' : i['orderId'], 'symb': i['symbol'], 'prc' : i['price'], 'qtd' : i['origQty'], 'type' : i['type'], 'side' : i['side']}) for i in openMarginOrders]
 	del openMarginOrders
-
-	print('---')
-	print(layoutOpenSpot)
-	print('---')
-	print(layoutOpenMargin)
-	print('---')
+	del windowListOpenOrder
+	del layoutFrameSpotOpen
+	del layoutFrameMarginOpen
+	del layoutListOpenOrders
 
 def main(argv):
 
@@ -299,7 +341,7 @@ def main(argv):
 		[ '&Menu', ['Info', 'Config', 'Exit']],
 		[ '&Account', ['Infos acc', 'Taxes']],
 		[ '&Order', ['BUY',  ['B Spot Market', 'B Spot Limit','B Spot Stop Limit', '!B Spot OCO', '---', 'B Margin Market', 'B Margin Limit', 'B Margin Stop Limit', '!B Margin OCO'],
-		             'SELL', ['S Spot Market', 'S Spot Limit','S Spot Stop Limit', '!S Spot OCO', '---', 'S Margin Market', 'S Margin Limit', 'S Margin Stop Limit', '!S Margin OCO'], 'CANCEL', 'LIST Open', 'LIST All']],
+		             'SELL', ['S Spot Market', 'S Spot Limit','S Spot Stop Limit', '!S Spot OCO', '---', 'S Margin Market', 'S Margin Limit', 'S Margin Stop Limit', '!S Margin OCO'], 'CANCEL', 'LIST or DELETE Open', 'LIST All']],
 		[ '&Binance', ['Infos binance', 'Assets', 'Symbols']]
 	]
 
@@ -374,9 +416,6 @@ def main(argv):
 
 		if event == sg.WIN_CLOSED or event == 'Exit':
 			break
-
-#		elif event == 'REFRESH':
-#			window['cb4'].update(f"aaaaaaaaaaaaa")
 
 		elif event == "Infos":
 			sg.popup('INFOS')
@@ -468,7 +507,7 @@ def main(argv):
 		elif event == 'CANCEL':
 			pass
 
-		elif event == 'LIST Open':
+		elif event == 'LIST or DELETE Open':
 			window.Hide()
 			ListOpenOrders(client)
 			window.UnHide()
