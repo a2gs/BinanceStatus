@@ -89,7 +89,7 @@ def printHelp(execName):
 	BU.errPrint("-bt [SYMBOL]\n\tLatest ticker/price for a symbol.")
 	BU.errPrint("")
 	BU.errPrint("6) MISCELLANEOUS")
-	BU.errPrint("[...] -xls > output.xls\n\tOutput with TAB separator.")
+	BU.errPrint("[...] -xls 2> output.xls\n\tOutput with TAB separator.")
 	BU.errPrint("[...] -Y\n\tForce ALL CONFIRMATIONS = YES")
 	BU.errPrint("[...] -TS\n\tPrint Binance timestamp, does not convert to human datetime.")
 

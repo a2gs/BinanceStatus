@@ -264,6 +264,35 @@ def BS_SpotLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
 
 	return True
 
+def ListOpenOrders(client)->bool:
+
+	try:
+		openOrders = client.get_open_orders() #recvWindow
+		openMarginOrders = client.get_open_margin_orders() #recvWindow
+	except BinanceRequestException as e:
+		BU.errPrint(f"Erro at client.get_open_orders() BinanceRequestException: [{e.status_code} - {e.message}]")
+		return False
+	except BinanceAPIException as e:
+		BU.errPrint(f"Erro at client.get_open_orders() BinanceAPIException: [{e.status_code} - {e.message}]")
+		return False
+	except Exception as e:
+		BU.errPrint(f"Erro at client.get_open_orders(): {e}")
+		return False
+
+	layoutOpenSpot = []
+	[layoutOpenSpot.append({'orderId' : i['orderId'], 'symb': i['symbol'], 'prc' : i['price'], 'qtd' : i['origQty'], 'type' : i['type'], 'side' : i['side']}) for i in openOrders]
+	del openOrders
+
+	layoutOpenMargin = []
+	[layoutOpenMargin.append({'orderId' : i['orderId'], 'symb': i['symbol'], 'prc' : i['price'], 'qtd' : i['origQty'], 'type' : i['type'], 'side' : i['side']}) for i in openMarginOrders]
+	del openMarginOrders
+
+	print('---')
+	print(layoutOpenSpot)
+	print('---')
+	print(layoutOpenMargin)
+	print('---')
+
 def main(argv):
 
 	menu = [
@@ -440,7 +469,9 @@ def main(argv):
 			pass
 
 		elif event == 'LIST Open':
-			pass
+			window.Hide()
+			ListOpenOrders(client)
+			window.UnHide()
 
 		elif event == 'LIST All':
 			pass
