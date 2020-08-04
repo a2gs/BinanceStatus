@@ -17,7 +17,7 @@ recvWindow = int(0)
 binanceTimestamp = False
 
 def nmExit(n: int = 0, m: str = ""):
-	print(m)
+	errPrint(m)
 	exit(n)
 
 def nmExitOk(n : int = 0, m : str = "Ok."):
@@ -72,7 +72,7 @@ def askConfirmation() -> bool:
 		conf = input("Confirm operation? (N/y) \n")
 
 		if conf != 'Y' and conf != 'y':
-			print("CANCELED!")
+			errPrint("CANCELED!")
 			return False
 
 	return True

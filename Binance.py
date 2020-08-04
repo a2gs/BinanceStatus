@@ -37,24 +37,24 @@ def binanceInfo(client) -> bool:
 		return False
 
 	if BU.getExportXLS() == True:
-		print("Server Status")
+		BU.errPrint("Server Status")
 		BP.printSystemStatusXLS(sst)
 
-		print("\nTime")
+		BU.errPrint("\nTime")
 		BP.printServerTimeXLS(st)
 
 	else:
-		print("Server Status:")
+		BU.errPrint("Server Status:")
 		BP.printSystemStatus(sst)
 
-		print("")
+		BU.errPrint("")
 		BP.printServerTime(st)
 
 	return True
 
 def accountInformation(client) -> bool:
 
-	print("Spot accoutn information:")
+	BU.errPrint("Spot accoutn information:")
 	try:
 		acc = client.get_account(recvWindow = BU.getRecvWindow())
 	except BinanceAPIException as e:
@@ -77,15 +77,15 @@ def accountInformation(client) -> bool:
 		return False
 
 	if BU.getExportXLS() == True:
-		print(f"Can trade\t{acc['canTrade']}\nCan withdraw\t{acc['canWithdraw']}\nCan deposit\t{acc['canDeposit']}\nAccount type\t{acc['accountType']}\nCommissions Maker\t{acc['makerCommission']}\nCommissions Taker\t{acc['takerCommission']}\nCommissions Buyer\t{acc['buyerCommission']}\nCommissions Seller\t{acc['sellerCommission']}\n")
-		print(f"Account status detail\t{accStatus['msg']}\nSuccess\t{accStatus['success']}\n")
+		BU.errPrint(f"Can trade\t{acc['canTrade']}\nCan withdraw\t{acc['canWithdraw']}\nCan deposit\t{acc['canDeposit']}\nAccount type\t{acc['accountType']}\nCommissions Maker\t{acc['makerCommission']}\nCommissions Taker\t{acc['takerCommission']}\nCommissions Buyer\t{acc['buyerCommission']}\nCommissions Seller\t{acc['sellerCommission']}\n")
+		BU.errPrint(f"Account status detail\t{accStatus['msg']}\nSuccess\t{accStatus['success']}\n")
 	else:
-		print(f"Can trade............? [{acc['canTrade']}]")
-		print(f"Can withdraw.........? [{acc['canWithdraw']}]")
-		print(f"Can deposit..........? [{acc['canDeposit']}]")
-		print(f"Account type.........: [{acc['accountType']}]")
-		print(f"Account status detail: [{accStatus['msg']}] Success: [{accStatus['success']}]")
-		print(f"Commissions..........: Maker: [{acc['makerCommission']}] | Taker: [{acc['takerCommission']}] | Buyer: [{acc['buyerCommission']}] | Seller: [{acc['sellerCommission']}]")
+		BU.errPrint(f"Can trade............? [{acc['canTrade']}]")
+		BU.errPrint(f"Can withdraw.........? [{acc['canWithdraw']}]")
+		BU.errPrint(f"Can deposit..........? [{acc['canDeposit']}]")
+		BU.errPrint(f"Account type.........: [{acc['accountType']}]")
+		BU.errPrint(f"Account status detail: [{accStatus['msg']}] Success: [{accStatus['success']}]")
+		BU.errPrint(f"Commissions..........: Maker: [{acc['makerCommission']}] | Taker: [{acc['takerCommission']}] | Buyer: [{acc['buyerCommission']}] | Seller: [{acc['sellerCommission']}]")
 
 	if len(acc['balances']) != 0:
 		if BU.getExportXLS() == True:
@@ -94,7 +94,7 @@ def accountInformation(client) -> bool:
 		else:
 			[BP.printAccount(n) for n in acc['balances'] if float(n['free']) != 0.0 or float(n['locked']) != 0.0]
 
-	print("\nMargin accoutn information:")
+	BU.errPrint("\nMargin accoutn information:")
 	try:
 		marginInfo = client.get_margin_account(recvWindow = BU.getRecvWindow())
 	except BinanceRequestException as e:
@@ -110,21 +110,21 @@ def accountInformation(client) -> bool:
 	cleanedMarginAssets = [n for n in marginInfo['userAssets'] if float(n['netAsset']) != 0.0]
 
 	if BU.getExportXLS() == True:
-		print("Margin level\tTotal asset of BTC\tTotal liability of BTC\tTotal Net asset of BTC\tTrade enabled")
-		print(f"{marginInfo['marginLevel']}\t{marginInfo['totalAssetOfBtc']}\t{marginInfo['totalLiabilityOfBtc']}\t{marginInfo['totalNetAssetOfBtc']}\t{marginInfo['tradeEnabled']}\n")
+		BU.errPrint("Margin level\tTotal asset of BTC\tTotal liability of BTC\tTotal Net asset of BTC\tTrade enabled")
+		BU.errPrint(f"{marginInfo['marginLevel']}\t{marginInfo['totalAssetOfBtc']}\t{marginInfo['totalLiabilityOfBtc']}\t{marginInfo['totalNetAssetOfBtc']}\t{marginInfo['tradeEnabled']}\n")
 
-		print('Borrowed assets:')
+		BU.errPrint('Borrowed assets:')
 		BP.printMarginAssetsXLSHEADER()
 		[BP.printMarginAssetsXLS(n) for n in cleanedMarginAssets]
 	else:
-		print(f"Borrow Enabled........? [{marginInfo['borrowEnabled']}]")
-		print(f"Trade enabled.........? [{marginInfo['tradeEnabled']}]")
-		print(f"Level.................: [{marginInfo['marginLevel']}]")
-		print(f"Total asset of BTC....: [{marginInfo['totalAssetOfBtc']}]")
-		print(f"Total liability of BTC: [{marginInfo['totalLiabilityOfBtc']}]")
-		print(f"Total Net asset of BTC: [{marginInfo['totalNetAssetOfBtc']}]\n")
+		BU.errPrint(f"Borrow Enabled........? [{marginInfo['borrowEnabled']}]")
+		BU.errPrint(f"Trade enabled.........? [{marginInfo['tradeEnabled']}]")
+		BU.errPrint(f"Level.................: [{marginInfo['marginLevel']}]")
+		BU.errPrint(f"Total asset of BTC....: [{marginInfo['totalAssetOfBtc']}]")
+		BU.errPrint(f"Total liability of BTC: [{marginInfo['totalLiabilityOfBtc']}]")
+		BU.errPrint(f"Total Net asset of BTC: [{marginInfo['totalNetAssetOfBtc']}]\n")
 
-		print('Borrowed assets:')
+		BU.errPrint('Borrowed assets:')
 		[BP.printMarginAssets(n, i) for i, n in enumerate(cleanedMarginAssets, 1)]
 
 	return True
@@ -154,12 +154,12 @@ def spotOpenOrders(client) -> bool:
 
 		else:
 
-			if   totOpenOrder == 1: print("Open spot order:")
-			elif totOpenOrder <  1: print(f"Open spot orders ({totOpenOrder}):")
+			if   totOpenOrder == 1: BU.errPrint("Open spot order:")
+			elif totOpenOrder <  1: BU.errPrint(f"Open spot orders ({totOpenOrder}):")
 
 			[BP.printOrder(n, i, totOpenOrder) for i, n in enumerate(openOrders, 1)]
 	else:
-		print("No spot open orders")
+		BU.errPrint("No spot open orders")
 
 	return True
 
@@ -190,12 +190,12 @@ def marginOpenOrders(client) -> bool:
 
 		else:
 
-			if   totOpenMarginOrder == 1: print("Margin open order:")
-			elif totOpenMarginOrder <  1: print(f"Margin open orders ({totOpenMarginOrder}):")
+			if   totOpenMarginOrder == 1: BU.errPrint("Margin open order:")
+			elif totOpenMarginOrder <  1: BU.errPrint(f"Margin open orders ({totOpenMarginOrder}):")
 
 			[BP.printMarginOrder(n, i, totOpenMarginOrder) for i, n in enumerate(openMarginOrders, 1)]
 	else:
-		print('No margin open orders')
+		BU.errPrint('No margin open orders')
 
 	return True
 
@@ -217,14 +217,14 @@ def marginSymbPriceIndex(client, symb = '') -> bool:
 		return False
 
 	if BU.getExportXLS() == True:
-		print("Symbol\tPrice\tTime")
-		print(f"{mp['symbol']}\t{mp['price']}\t{BU.completeMilliTime(mp['calcTime'])}")
+		BU.errPrint("Symbol\tPrice\tTime")
+		BU.errPrint(f"{mp['symbol']}\t{mp['price']}\t{BU.completeMilliTime(mp['calcTime'])}")
 
 	else:
-		print(f"Margin symbol price index [{symb}]\n")
+		BU.errPrint(f"Margin symbol price index [{symb}]\n")
 
-		print(f"Price: [{mp['price']}]")
-		print(f"Time.: [{BU.completeMilliTime(mp['calcTime'])}]")
+		BU.errPrint(f"Price: [{mp['price']}]")
+		BU.errPrint(f"Time.: [{BU.completeMilliTime(mp['calcTime'])}]")
 
 	return True
 
@@ -246,19 +246,19 @@ def marginSymbInfo(client, symb = '') -> bool:
 		return False
 
 	if BU.getExportXLS() == True:
-		print("Symbol\tQuote\tBase\tId\tIs Buy Allowed\tIs Margin Trade\tIs Sell Allowed")
-		print(f"{mi['symbol']}\t{mi['quote']}\t{mi['base']}\t{mi['id']}\t{mi['isBuyAllowed']}\t{mi['isMarginTrade']}\t{mi['isSellAllowed']}")
+		BU.errPrint("Symbol\tQuote\tBase\tId\tIs Buy Allowed\tIs Margin Trade\tIs Sell Allowed")
+		BU.errPrint(f"{mi['symbol']}\t{mi['quote']}\t{mi['base']}\t{mi['id']}\t{mi['isBuyAllowed']}\t{mi['isMarginTrade']}\t{mi['isSellAllowed']}")
 
 	else:
-		print(f"Margin symbol info [{symb}]\n")
+		BU.errPrint(f"Margin symbol info [{symb}]\n")
 
-		print(f"Symbol.........: [{mi['symbol']}]")
-		print(f"Quote..........: [{mi['quote']}]")
-		print(f"Base...........: [{mi['base']}]")
-		print(f"Id.............: [{mi['id']}]")
-		print(f"Is Buy Allowed.: [{mi['isBuyAllowed']}]")
-		print(f"Is Margin Trade: [{mi['isMarginTrade']}]")
-		print(f"Is Sell Allowed: [{mi['isSellAllowed']}]")
+		BU.errPrint(f"Symbol.........: [{mi['symbol']}]")
+		BU.errPrint(f"Quote..........: [{mi['quote']}]")
+		BU.errPrint(f"Base...........: [{mi['base']}]")
+		BU.errPrint(f"Id.............: [{mi['id']}]")
+		BU.errPrint(f"Is Buy Allowed.: [{mi['isBuyAllowed']}]")
+		BU.errPrint(f"Is Margin Trade: [{mi['isMarginTrade']}]")
+		BU.errPrint(f"Is Sell Allowed: [{mi['isSellAllowed']}]")
 
 	return True
 
@@ -280,17 +280,17 @@ def marginAsset(client, ass = '') -> bool:
 		return False
 
 	if BU.getExportXLS() == True:
-		print("Full Name\tName\tIs Borrowable\tIs Mortgageable\tUser Minimum Borrow\tUser Minimum Repay")
-		print(f"{mo['assetFullName']}\t{mo['assetName']}\t{mo['isBorrowable']}\t{mo['isMortgageable']}\t{mo['userMinBorrow']}\t{mo['userMinRepay']}")
+		BU.errPrint("Full Name\tName\tIs Borrowable\tIs Mortgageable\tUser Minimum Borrow\tUser Minimum Repay")
+		BU.errPrint(f"{mo['assetFullName']}\t{mo['assetName']}\t{mo['isBorrowable']}\t{mo['isMortgageable']}\t{mo['userMinBorrow']}\t{mo['userMinRepay']}")
 	else:
-		print(f"Query margin asset [{ass}]")
+		BU.errPrint(f"Query margin asset [{ass}]")
 
-		print(f"Name...............: [{mo['assetName']}]")
-		print(f"Full name..........: [{mo['assetFullName']}]")
-		print(f"Is borrowable......? [{mo['isBorrowable']}]")
-		print(f"Is mortageable.....? [{mo['isMortgageable']}]")
-		print(f"User minimum borrow: [{mo['userMinBorrow']}]")
-		print(f"User monimum repay.: [{mo['userMinRepay']}]")
+		BU.errPrint(f"Name...............: [{mo['assetName']}]")
+		BU.errPrint(f"Full name..........: [{mo['assetFullName']}]")
+		BU.errPrint(f"Is borrowable......? [{mo['isBorrowable']}]")
+		BU.errPrint(f"Is mortageable.....? [{mo['isMortgageable']}]")
+		BU.errPrint(f"User minimum borrow: [{mo['userMinBorrow']}]")
+		BU.errPrint(f"User monimum repay.: [{mo['userMinRepay']}]")
 
 	return True
 
@@ -318,9 +318,9 @@ def marginTrades(client, symb = '', fromordid = '', lim = '1000') -> bool:
 		[BP.printMarginTradesXLS(n) for n in mt]
 	else:
 		if fromordid == '':
-			print(f"Margin accounts trades [{symb}] (limit: [{lim}]).")
+			BU.errPrint(f"Margin accounts trades [{symb}] (limit: [{lim}]).")
 		else:
-			print(f"Margin accounts trades from order id [{fromordid}] for symbol [{symb}] (limit: [{lim}]).")
+			BU.errPrint(f"Margin accounts trades from order id [{fromordid}] for symbol [{symb}] (limit: [{lim}]).")
 
 		[BP.printMarginTrades(n, i, mttot) for i, n in enumerate(mt, 1)]
 
@@ -350,9 +350,9 @@ def allMarginOrders(client, symb = '', ordid = '', lim = '1000') -> bool:
 		[BP.printTradeAllHistXLS(n) for n in mo]
 	else:
 		if ordid == '':
-			print(f"All margin accounts orders for symbol [{symb}] (limit: [{lim}]).")
+			BU.errPrint(f"All margin accounts orders for symbol [{symb}] (limit: [{lim}]).")
 		else:
-			print(f"Margin accounts order [{ordid}] for symbol [{symb}] (limit: [{lim}]).")
+			BU.errPrint(f"Margin accounts order [{ordid}] for symbol [{symb}] (limit: [{lim}]).")
 
 		[BP.printTradeAllHist(n, i, motot) for i, n in enumerate(mo, 1)]
 
@@ -363,14 +363,14 @@ def allMarginOrders(client, symb = '', ordid = '', lim = '1000') -> bool:
 def withdrawRequest(client, ass = '', addr = '', amnt = 0) -> bool:
 
 	if BU.getExportXLS() == True:
-		print("Asset\tAddress\tAmount")
-		print(f"{ass}\t{addr}\t{amnt}")
+		BU.errPrint("Asset\tAddress\tAmount")
+		BU.errPrint(f"{ass}\t{addr}\t{amnt}")
 	else:
-		print("Withdraw Request")
+		BU.errPrint("Withdraw Request")
 
-		print(f"Asset..: [{ass}]")
-		print(f"Address: [{addr}]")
-		print(f"Amount.: [{amnt}]")
+		BU.errPrint(f"Asset..: [{ass}]")
+		BU.errPrint(f"Address: [{addr}]")
+		BU.errPrint(f"Amount.: [{amnt}]")
 
 	if BU.askConfirmation() == False:
 		return False
@@ -421,7 +421,7 @@ def withdrawHistory(client, ass = '') -> bool:
 
 	else:
 
-		print("Withdraw History")
+		BU.errPrint("Withdraw History")
 		[BP.printWithdrawHistory(n) for n in withdraw['withdrawList']]
 
 	return True
@@ -450,7 +450,7 @@ def depositHistory(client, ass = '') -> bool:
 
 	else:
 
-		print(f"Deposit History for [{ass}]")
+		BU.errPrint(f"Deposit History for [{ass}]")
 		[BP.printDepositHistory(n) for n in deposits['depositList']]
 
 	return True
@@ -476,7 +476,7 @@ def depositAddress(client, ass) -> bool:
 		BP.printDepositAddressXLS(depAdd)
 
 	else:
-		print(f"Deposit Address for [{ass}]")
+		BU.errPrint(f"Deposit Address for [{ass}]")
 		BP.printDepositAddress(depAdd)
 
 	return True
@@ -499,30 +499,30 @@ def orderStatus(client, symb, ordrId) -> bool:
 		return False
 
 	if BU.getExportXLS() == True:
-		print("Symbol\tOrder Id\tOrder List Id\tClient Order Id\tPrice\tOrig Qty\tExecuted Qty\tCummulative Quote Qty\tStatus\tTime In Force\tType\tSide\tStop Price\tIceberg Qty\tTime\tUpdate Time\tIs Working\tOrig Quote Order Qty")
-		print(f"{ogs['symbol']}\t{ogs['orderId']}\t{ogs['orderListId']}\t{ogs['clientOrderId']}\t{ogs['price']}\t{ogs['origQty']}\t{ogs['executedQty']}\t{ogs['cummulativeQuoteQty']}\t{ogs['status']}\t{ogs['timeInForce']}\t{ogs['type']}\t{ogs['side']}\t{ogs['stopPrice']}\t{ogs['icebergQty']}\t{BU.completeMilliTime(ogs['time'])}\t{BU.completeMilliTime(ogs['updateTime'])}\t{ogs['isWorking']}\t{ogs['origQuoteOrderQty']}")
+		BU.errPrint("Symbol\tOrder Id\tOrder List Id\tClient Order Id\tPrice\tOrig Qty\tExecuted Qty\tCummulative Quote Qty\tStatus\tTime In Force\tType\tSide\tStop Price\tIceberg Qty\tTime\tUpdate Time\tIs Working\tOrig Quote Order Qty")
+		BU.errPrint(f"{ogs['symbol']}\t{ogs['orderId']}\t{ogs['orderListId']}\t{ogs['clientOrderId']}\t{ogs['price']}\t{ogs['origQty']}\t{ogs['executedQty']}\t{ogs['cummulativeQuoteQty']}\t{ogs['status']}\t{ogs['timeInForce']}\t{ogs['type']}\t{ogs['side']}\t{ogs['stopPrice']}\t{ogs['icebergQty']}\t{BU.completeMilliTime(ogs['time'])}\t{BU.completeMilliTime(ogs['updateTime'])}\t{ogs['isWorking']}\t{ogs['origQuoteOrderQty']}")
 
 	else:
-		print(f"Check an order's id [{ordrId}] and symbol [{symb}] status")
+		BU.errPrint(f"Check an order's id [{ordrId}] and symbol [{symb}] status")
 
-		print(f"Symbol...............: [{ogs['symbol']}]")
-		print(f"Order Id.............: [{ogs['orderId']}]")
-		print(f"Order List Id........: [{ogs['orderListId']}]")
-		print(f"Client Order Id......: [{ogs['clientOrderId']}]")
-		print(f"Price................: [{ogs['price']}]")
-		print(f"Orig Qty.............: [{ogs['origQty']}]")
-		print(f"Executed Qty.........: [{ogs['executedQty']}]")
-		print(f"Cummulative Quote Qty: [{ogs['cummulativeQuoteQty']}]")
-		print(f"Status...............: [{ogs['status']}]")
-		print(f"Time In Force........: [{ogs['timeInForce']}]")
-		print(f"Type.................: [{ogs['type']}]")
-		print(f"Side.................: [{ogs['side']}]")
-		print(f"Stop Price...........: [{ogs['stopPrice']}]")
-		print(f"Iceberg Qty..........: [{ogs['icebergQty']}]")
-		print(f"Time.................: [{BU.completeMilliTime(ogs['time'])}]")
-		print(f"Update Time..........: [{BU.completeMilliTime(ogs['updateTime'])}]")
-		print(f"Is Working...........: [{ogs['isWorking']}]")
-		print(f"Orig Quote Order Qty.: [{ogs['origQuoteOrderQty']}]")
+		BU.errPrint(f"Symbol...............: [{ogs['symbol']}]")
+		BU.errPrint(f"Order Id.............: [{ogs['orderId']}]")
+		BU.errPrint(f"Order List Id........: [{ogs['orderListId']}]")
+		BU.errPrint(f"Client Order Id......: [{ogs['clientOrderId']}]")
+		BU.errPrint(f"Price................: [{ogs['price']}]")
+		BU.errPrint(f"Orig Qty.............: [{ogs['origQty']}]")
+		BU.errPrint(f"Executed Qty.........: [{ogs['executedQty']}]")
+		BU.errPrint(f"Cummulative Quote Qty: [{ogs['cummulativeQuoteQty']}]")
+		BU.errPrint(f"Status...............: [{ogs['status']}]")
+		BU.errPrint(f"Time In Force........: [{ogs['timeInForce']}]")
+		BU.errPrint(f"Type.................: [{ogs['type']}]")
+		BU.errPrint(f"Side.................: [{ogs['side']}]")
+		BU.errPrint(f"Stop Price...........: [{ogs['stopPrice']}]")
+		BU.errPrint(f"Iceberg Qty..........: [{ogs['icebergQty']}]")
+		BU.errPrint(f"Time.................: [{BU.completeMilliTime(ogs['time'])}]")
+		BU.errPrint(f"Update Time..........: [{BU.completeMilliTime(ogs['updateTime'])}]")
+		BU.errPrint(f"Is Working...........: [{ogs['isWorking']}]")
+		BU.errPrint(f"Orig Quote Order Qty.: [{ogs['origQuoteOrderQty']}]")
 
 	return True
 
@@ -547,7 +547,7 @@ def olderTrades(client, ass = '') -> bool:
 		BP.printHistoricalTradesXLSHEADER()
 		[BP.printHistoricalTradesXLS(n) for n in th]
 	else:
-		print("500 older trades for [{ass}]")
+		BU.errPrint("500 older trades for [{ass}]")
 
 		thTot = len(th)
 		[BP.printHistoricalTrades(n, i, thTot) for i, n in enumerate(th, 1)]
@@ -578,10 +578,10 @@ def subAccountsList(client) -> bool:
 			BP.printsubAccountsListXLSHEADER()
 			[BP.printsubAccountsListXLS(n) for n in sal['subAccounts']]
 		else:
-			print("Sub account(s):")
+			BU.errPrint("Sub account(s):")
 			[BP.printsubAccountsList(n, i, totSal) for i, n in enumerate(sal['subAccounts'], 1)]
 	else:
-		print("There are no sub accounts.")
+		BU.errPrint("There are no sub accounts.")
 
 	return True
 
@@ -606,10 +606,10 @@ def subAccountTransferHistory(client, em: str = "") -> bool:
 			[BP.printsubAccountTransferHistoryXLS(n) for n in sath['transfers']]
 		else:
 			totSath = len(sath['transfers'])
-			print("Sub account(s) transfer history:")
+			BU.errPrint("Sub account(s) transfer history:")
 			[BP.printsubAccountTransferHistory(n, i, totSath) for i, n in enumerate(sath['transfers'], 1)]
 	else:
-		print(f"Sub accounts transfer history returned: [{sath['msg']}]")
+		BU.errPrint(f"Sub accounts transfer history returned: [{sath['msg']}]")
 
 	return True
 
@@ -633,11 +633,11 @@ def subAccountsAssets(client, em: str = "", symb: str = "") -> bool:
 			BP.printsubAccountsAssetsXLSHEADER()
 			[BP.printsubAccountsAssetsXLS(n) for n in saa['balances']]
 		else:
-			print("Sub account(s):")
+			BU.errPrint("Sub account(s):")
 			totSaa = len(saa['balances'])
 			[BP.printsubAccountsAssets(n, i, totSaa) for i, n in enumerate(saa['balances'], 1)]
 	else:
-		print(f"Sub accounts assets returned: [{saa['msg']}]")
+		BU.errPrint(f"Sub accounts assets returned: [{saa['msg']}]")
 
 	return True
 
@@ -657,10 +657,10 @@ def accountHistory(client, symb) -> bool:
 		BP.printTradeHistoryXLSHEADER()
 		[BP.printTradeHistoryXLS(n) for n in tradeHist]
 	else:
-		print(f"Trade history {symb}:")
+		BU.errPrint(f"Trade history {symb}:")
 		[BP.printTradeHistory(n, i, tradeHistTot) for i, n in enumerate(tradeHist, 1)]
 
-	print(f"All trade history {symb}:")
+	BU.errPrint(f"All trade history {symb}:")
 
 	try:
 		tradeAllHist = client.get_all_orders(symbol=symb, recvWindow = BU.getRecvWindow())
@@ -674,7 +674,7 @@ def accountHistory(client, symb) -> bool:
 		BP.printTradeAllHistXLSHEADER()
 		[BP.printTradeAllHistXLS(n) for n in tradeAllHist]
 	else:
-		print(f"Trade history [{symb}]:")
+		BU.errPrint(f"Trade history [{symb}]:")
 		[BP.printTradeAllHist(n, i, tradeAllHistTot) for i, n in enumerate(tradeAllHist, 1)]
 
 	try:
@@ -689,9 +689,9 @@ def accountHistory(client, symb) -> bool:
 	allDustTot = len(allDust['results']['rows'])
 
 	if BU.getExportXLS() == True:
-		print("============== UNDERCONSTRUCTION ==========================")
+		BU.errPrint("============== UNDERCONSTRUCTION ==========================")
 	else:
-		print("Log of small amounts exchanged for BNB:")
+		BU.errPrint("Log of small amounts exchanged for BNB:")
 		[BP.printDustTrade(n, i, allDustTot) for i, n in enumerate(allDust['results']['rows'], 1)]
 
 	return True
@@ -711,20 +711,20 @@ def accountDetails(client) -> bool:
 		return False
 
 	if BU.getExportXLS() == True:
-		print('Details on Assets')
+		BU.errPrint('Details on Assets')
 		BP.printDetailsAssetsXLSHEADER()
 		[BP.printDetailsAssetsXLS(n, assDet['assetDetail'][n]) for n in assDet['assetDetail'].keys()]
 
-		print('\nTrade Fee')
+		BU.errPrint('\nTrade Fee')
 		BP.printTradeFeeXLSHEADER()
 		[BP.printTradeFeeXLS(n) for n in tradFee['tradeFee']]
 
 	else:
-		print('Details on Assets:')
+		BU.errPrint('Details on Assets:')
 		adTot = len(assDet['assetDetail'])
 		[BP.printDetailsAssets(n, assDet['assetDetail'][n], i, adTot) for i, n in enumerate(assDet['assetDetail'].keys(), 1)]
 
-		print('Trade Fee:')
+		BU.errPrint('Trade Fee:')
 		adTot = len(tradFee['tradeFee'])
 		[BP.printTradeFee(n, i, adTot) for i, n in enumerate(tradFee['tradeFee'], 1)]
 
@@ -753,7 +753,7 @@ def infoSymbol(client, symb, interv, candlesTot) -> bool:
 		BP.printInfoSymbolValuesXLSHEADER()
 		[BP.printInfoSymbolValuesXLS(n) for n in sumbPrc]
 	else:
-		print(f"Symbol [{symb}] in interval [{interv}]");
+		BU.errPrint(f"Symbol [{symb}] in interval [{interv}]");
 		totsumbPrc = len(sumbPrc)
 		[BP.printInfoSymbolValues(n, i, totsumbPrc) for i, n in enumerate(sumbPrc, 1)]
 
@@ -776,20 +776,20 @@ def listSymbolsRateLimits(client) -> bool:
 		return False
 
 	if BU.getExportXLS() == True:
-		print("Rate Limits")
+		BU.errPrint("Rate Limits")
 		BP.printListRateLimitXLSHEADER()
 		[BP.printListRateLimitXLS(n) for n in ei['rateLimits']]
 
-		print("\nSymbols")
+		BU.errPrint("\nSymbols")
 		BP.printListSymbolsXLSHEADER()
 		[BP.printListSymbolsXLS(n) for n in ei['symbols']]
 
 	else:
-		print("Rate Limits:")
+		BU.errPrint("Rate Limits:")
 		totei = len(ei['rateLimits'])
 		[BP.printListRateLimit(n, i, totei) for i, n in enumerate(ei['rateLimits'], 1)]
 
-		print("Symbols:")
+		BU.errPrint("Symbols:")
 		totei = len(ei['symbols'])
 		[BP.printListSymbols(n, i, totei) for i, n in enumerate(ei['symbols'], 1)]
 
@@ -798,7 +798,7 @@ def listSymbolsRateLimits(client) -> bool:
 # ---------------------------------------------------
 
 def transfSpotToMargin(client, ass = '', ap = '0.0') -> bool:
-	print(f"Tranfering [{ap}] of [{ass}] from Spot to Margin account")
+	BU.errPrint(f"Tranfering [{ap}] of [{ass}] from Spot to Margin account")
 
 	try:
 		transfer = client.transfer_spot_to_margin(asset = ass, amount = ap)	
@@ -812,12 +812,12 @@ def transfSpotToMargin(client, ass = '', ap = '0.0') -> bool:
 		BU.errPrint(f"Erro at client.transfer_spot_to_margin(): {e}")
 		return False
 
-	print("Return Ok. Spot to Margin transaction Id: [{transfer['tranId']}] ")
+	BU.errPrint("Return Ok. Spot to Margin transaction Id: [{transfer['tranId']}] ")
 
 	return True
 
 def transfMarginToSpot(client, ass = '', ap = '0.0') -> bool:
-	print(f"Tranfering [{ap}] of [{ass}] from Margin to Spot account")
+	BU.errPrint(f"Tranfering [{ap}] of [{ass}] from Margin to Spot account")
 
 	try:
 		transfer = client.transfer_margin_to_spot(asset = ass, amount = ap)	
@@ -831,7 +831,7 @@ def transfMarginToSpot(client, ass = '', ap = '0.0') -> bool:
 		BU.errPrint(f"Erro at client.transfer_margin_to_spot(): {e}")
 		return False
 
-	print("Return Ok. Margin to Spot transaction Id: [{transfer['tranId']}] ")
+	BU.errPrint("Return Ok. Margin to Spot transaction Id: [{transfer['tranId']}] ")
 
 	return True
 
@@ -852,17 +852,17 @@ def bookTicker(client, symb = '') -> bool:
 		return False
 
 	if BU.getExportXLS() == True:
-		print("Symbol\tBid Price\tBid Qty\tAsk Price\tAsk Qty")
-		print(f"{bt['symbol']}\t{bt['bidPrice']}\t{bt['bidQty']}\t{bt['askPrice']}\t{bt['askQty']}")
+		BU.errPrint("Symbol\tBid Price\tBid Qty\tAsk Price\tAsk Qty")
+		BU.errPrint(f"{bt['symbol']}\t{bt['bidPrice']}\t{bt['bidQty']}\t{bt['askPrice']}\t{bt['askQty']}")
 
 	else:
-		print(f"Latest ticker/price for [{symb}] symbol\n")
+		BU.errPrint(f"Latest ticker/price for [{symb}] symbol\n")
 
-		print(f"Symbol...: [{bt['symbol']}]")
-		print(f"Bid Price: [{bt['bidPrice']}]")
-		print(f"Bid Qtd..: [{bt['bidQty']}]")
-		print(f"Ask Price: [{bt['askPrice']}]")
-		print(f"Ask Qtd..: [{bt['askQty']}]")
+		BU.errPrint(f"Symbol...: [{bt['symbol']}]")
+		BU.errPrint(f"Bid Price: [{bt['bidPrice']}]")
+		BU.errPrint(f"Bid Qtd..: [{bt['bidQty']}]")
+		BU.errPrint(f"Ask Price: [{bt['askPrice']}]")
+		BU.errPrint(f"Ask Qtd..: [{bt['askQty']}]")
 
 	return True
 
@@ -883,13 +883,13 @@ def balanceAccAsset(client, ass = '') -> bool:
 		return False
 
 	if BU.getExportXLS() == True:
-		print("Asset\tFree\tLocked")
-		print(f"{ba['asset']}\t{ba['free']}\t{ba['locked']}")
+		BU.errPrint("Asset\tFree\tLocked")
+		BU.errPrint(f"{ba['asset']}\t{ba['free']}\t{ba['locked']}")
 	else:
-		print(f"Account balance for asset [{ass}]")
-		print(f"Asset.: [{ba['asset']}]")
-		print(f"Free..: [{ba['free']}]")
-		print(f"Locked: [{ba['locked']}]")
+		BU.errPrint(f"Account balance for asset [{ass}]")
+		BU.errPrint(f"Asset.: [{ba['asset']}]")
+		BU.errPrint(f"Free..: [{ba['free']}]")
+		BU.errPrint(f"Locked: [{ba['locked']}]")
 
 	try:
 		bl = client.get_max_margin_loan(asset = ass, recvWindow = BU.getRecvWindow())
@@ -905,11 +905,11 @@ def balanceAccAsset(client, ass = '') -> bool:
 		return False
 
 	if BU.getExportXLS() == True:
-		print(f"Margin max borrow amount for {ass}\tMargin max transfer-out amount for {ass}")
-		print(f"{bl['amount']}\t{bt['amount']}")
+		BU.errPrint(f"Margin max borrow amount for {ass}\tMargin max transfer-out amount for {ass}")
+		BU.errPrint(f"{bl['amount']}\t{bt['amount']}")
 	else:
-		print(f"Margin max borrow amount for [{ass}]......: [{bl['amount']}]")
-		print(f"Margin max transfer-out amount for [{ass}]: [{bt['amount']}]")
+		BU.errPrint(f"Margin max borrow amount for [{ass}]......: [{bl['amount']}]")
+		BU.errPrint(f"Margin max transfer-out amount for [{ass}]: [{bt['amount']}]")
 
 	return True
 
@@ -930,15 +930,15 @@ def orderBook(client, symb = '', lim = 1000) -> bool:
 		return False
 
 	if BU.getExportXLS() == True:
-		print(f"Update id\t{ob['lastUpdateId']}")
+		BU.errPrint(f"Update id\t{ob['lastUpdateId']}")
 		BP.printOrderBookXLSHEADER()
 		[BP.printOrderBookXLS(n) for n in zip(ob['bids'], ob['asks'])]
 
 	else:
-		print(f"Order Book: [{symb}]\n")
-		print(f"(Update id: [{ob['lastUpdateId']}])")
-		print("\tBids\t\t\t|\t\tAsks")
-		print("Qtd\t\tPrice\t\t|\tPrice\t\tQtd")
+		BU.errPrint(f"Order Book: [{symb}]\n")
+		BU.errPrint(f"(Update id: [{ob['lastUpdateId']}])")
+		BU.errPrint("\tBids\t\t\t|\t\tAsks")
+		BU.errPrint("Qtd\t\tPrice\t\t|\tPrice\t\tQtd")
 		[BP.printOrderBook(n) for n in zip(ob['bids'], ob['asks'])]
 
 	return True
@@ -967,7 +967,7 @@ def infoDetailsSymbol(client, symb) -> bool:
 		BP.printListSymbolsXLS(si)
 
 	else:
-		print("Symbol: [{symb}]")
+		BU.errPrint("Symbol: [{symb}]")
 		BP.printListSymbols(si)
 
 	return True
@@ -989,14 +989,14 @@ def averagePrice(client, symb = '') -> bool:
 		return False
 
 	if BU.getExportXLS() == True:
-		print("Symbol\tPrice\tMins")
-		print(f"{symb}\t{pa['price']}\t{pa['mins']}")
+		BU.errPrint("Symbol\tPrice\tMins")
+		BU.errPrint(f"{symb}\t{pa['price']}\t{pa['mins']}")
 	else:
-		print("Current average price for a symbol")
+		BU.errPrint("Current average price for a symbol")
 
-		print(f"Symbol...: [{symb}]")
-		print(f"Price....: [{pa['price']}]")
-		print(f"Mins.....: [{pa['mins']}]")
+		BU.errPrint(f"Symbol...: [{symb}]")
+		BU.errPrint(f"Price....: [{pa['price']}]")
+		BU.errPrint(f"Mins.....: [{pa['mins']}]")
 
 	return True
 
@@ -1020,7 +1020,7 @@ def h24PriceChangeStats(client) -> bool:
 		BP.print24hPrcChangStsXLSHEADER()
 		[BP.print24hPrcChangStsXLS(n) for n in ga]
 	else:
-		print("24 hour price change statistics:")
+		BU.errPrint("24 hour price change statistics:")
 		[BP.print24hPrcChangSts(n, i, totGa) for i, n in enumerate(ga, 1)]
 
 # ---------------------------------------------------
@@ -1033,12 +1033,12 @@ if __name__ == '__main__':
 
 	binanceAPIKey = os.getenv("BINANCE_APIKEY", "NOTDEF_APIKEY")
 	if binanceAPIKey == "NOTDEF_APIKEY":
-		print("Environment variable BINANCE_APIKEY not defined!")
+		BU.errPrint("Environment variable BINANCE_APIKEY not defined!")
 		BU.nmExitErro()
 
 	binanceSEKKey = os.getenv("BINANCE_SEKKEY", "NOTDEF_APIKEY")
 	if binanceSEKKey == "NOTDEF_APIKEY":
-		print("Environment variable BINANCE_SEKKEY not defined!")
+		BU.errPrint("Environment variable BINANCE_SEKKEY not defined!")
 		BU.nmExitErro()
 
 	BU.setRecvWindow(os.getenv("BINANCE_RECVWINDOW", 5000))
@@ -1047,19 +1047,19 @@ if __name__ == '__main__':
 		client = Client(binanceAPIKey, binanceSEKKey, {"verify": True, "timeout": 20})
 
 	except BinanceAPIException as e:
-		print(f"Binance API exception: [{e.status_code} - {e.message}]")
+		BU.errPrint(f"Binance API exception: [{e.status_code} - {e.message}]")
 		BU.nmExitErro()
 
 	except BinanceRequestException as e:
-		print(f"Binance request exception: [{e.status_code} - {e.message}]")
+		BU.errPrint(f"Binance request exception: [{e.status_code} - {e.message}]")
 		BU.nmExitErro()
 
 	except BinanceWithdrawException as e:
-		print(f"Binance withdraw exception: [{e.status_code} - {e.message}]")
+		BU.errPrint(f"Binance withdraw exception: [{e.status_code} - {e.message}]")
 		BU.nmExitErro()
 
 	except Exception as e:
-		print(f"Binance connection error: {e}")
+		BU.errPrint(f"Binance connection error: {e}")
 		BU.nmExitErro()
 
 	# Exchange status
@@ -1147,7 +1147,7 @@ if __name__ == '__main__':
 		elif len(sys.argv) == 4:
 			if subAccountsAssets(client, em = sys.argv[2], symb = sys.argv[3]) == True:
 				BU.nmExitOk()
-		else: print("-saa parameters error")
+		else: BU.errPrint("-saa parameters error")
 
 	# Query all margin accounts orders
 	elif sys.argv[1] == "-mh":
@@ -1160,7 +1160,7 @@ if __name__ == '__main__':
 		elif len(sys.argv) == 5:
 			if allMarginOrders(client, sys.argv[2], sys.argv[3], sys.argv[4]) == True:
 				BU.nmExitOk()
-		else: print("-mh parameters error")
+		else: BU.errPrint("-mh parameters error")
 
 	# Query margin accounts trades
 	elif sys.argv[1] == "-mt":
@@ -1173,7 +1173,7 @@ if __name__ == '__main__':
 		elif len(sys.argv) == 5:
 			if marginTrades(client, sys.argv[2], sys.argv[3], sys.argv[4]) == True:
 				BU.nmExitOk()
-		else: print("-mt parameters error")
+		else: BU.errPrint("-mt parameters error")
 
 	# Query margin asset
 	elif sys.argv[1] == "-mm" and len(sys.argv) == 3:
@@ -1213,7 +1213,7 @@ if __name__ == '__main__':
 		elif len(sys.argv) == 4:
 			if orderBook(client, symb = sys.argv[2], lim = int(sys.argv[3])) == True:
 				BU.nmExitOk()
-		else: print("-bp parameters error")
+		else: BU.errPrint("-bp parameters error")
 
 	# 24 hour price change statistics
 	elif sys.argv[1] == "-p" and len(sys.argv) == 2:
@@ -1324,7 +1324,7 @@ if __name__ == '__main__':
 				BU.nmExitOk()
 
 		else:
-			print("Parameters error for SPOT buy order.")
+			BU.errPrint("Parameters error for SPOT buy order.")
 			#BU.nmExitErro()
 
 	# SPOT Sell order
@@ -1368,7 +1368,7 @@ if __name__ == '__main__':
 				BU.nmExitOk()
 
 		else:
-			print("Parameters error for SPOT sell order.")
+			BU.errPrint("Parameters error for SPOT sell order.")
 			#BU.nmExitErro()
 
 	elif sys.argv[1] == "-c" and len(sys.argv) == 4:
@@ -1412,7 +1412,7 @@ if __name__ == '__main__':
 				BU.nmExitOk()
 
 		else:
-			print("Parameters error for MARGIN buy order.")
+			BU.errPrint("Parameters error for MARGIN buy order.")
 			#BU.nmExitErro()
 
 	# MARGIN Sell order
@@ -1452,7 +1452,7 @@ if __name__ == '__main__':
 				BU.nmExitOk()
 
 		else:
-			print("Parameters error for MARGIN sell order.")
+			BU.errPrint("Parameters error for MARGIN sell order.")
 			#BU.nmExitErro()
 
 	elif sys.argv[1] == "-cm" and len(sys.argv) == 4:
@@ -1460,7 +1460,7 @@ if __name__ == '__main__':
 			BU.nmExitOk()
 
 	else:
-		print("Parameters error.")
+		BU.errPrint("Parameters error.")
 		BP.printHelp(sys.argv[0])
 
 	BU.nmExitErro()
