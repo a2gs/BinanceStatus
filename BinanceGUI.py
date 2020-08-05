@@ -3,7 +3,6 @@
 
 # Andre Augusto Giannotti Scota (https://sites.google.com/view/a2gs/)
 
-#import time
 from os import getenv
 from sys import exit, argv
 import configparser
@@ -54,6 +53,82 @@ class cfg_c:
 				return NONE
 
 cfgbnb = cfg_c()
+
+def printAccountInfo(client)->[bool, str]:
+
+	def printAccount(accBalance)->str:
+		return f"Asset balance [{accBalance['asset']}] | Free [{accBalance['free']}] | Locked [{accBalance['locked']}]"
+
+	def printMarginAssets(asset, seq = 0)->str:
+		return f"{seq}) Asset: [{asset['asset']}]\n\tBorrowed.: [{asset['borrowed']}]\n\tFree.....: [{asset['free']}]\n\tLocked...: [{asset['locked']}]\n\tNet asset: [{asset['netAsset']}]\n"
+
+	try:
+		acc = client.get_account() #recvWindow = BU.getRecvWindow())
+	except BinanceAPIException as e:
+		return False, f"Erro at client.get_account() BinanceAPIException: [{e.status_code} - {e.message}]"
+	except BinanceRequestException as e:
+		return False, f"Erro at client.get_account() BinanceRequestException: [{e.status_code} - {e.message}]"
+	except Exception as e:
+		return False, f"Erro at client.get_account(): {e}"
+
+	try:
+		accStatus = client.get_account_status() # recvWindow = BU.getRecvWindow())
+	except BinanceWithdrawException as e:
+		return False, f"Erro at client.get_account_status() BinanceWithdrawException: [{e.status_code} - {e.message}]"
+	except Exception as e:
+		return False, f"Erro at client.get_account_status(): {e}"
+
+
+	totalinfos = f"Can trade............? [{acc['canTrade']}]\n"
+	totalinfos += f"Can withdraw.........? [{acc['canWithdraw']}]\n"
+	totalinfos += f"Can deposit..........? [{acc['canDeposit']}]\n"
+	totalinfos += f"Account type.........: [{acc['accountType']}]\n"
+	totalinfos += f"Account status detail: [{accStatus['msg']}] Success: [{accStatus['success']}]\n"
+	totalinfos += f"Commissions..........: Maker: [{acc['makerCommission']}] | Taker: [{acc['takerCommission']}] | Buyer: [{acc['buyerCommission']}] | Seller: [{acc['sellerCommission']}]\n\n"
+
+	totalinfos += "Balances:\n"
+	if len(acc['balances']) != 0:
+		totalinfos += '\n'.join([printAccount(n) for n in acc['balances'] if float(n['free']) != 0.0 or float(n['locked']) != 0.0]) + '\n\n'
+	else:
+		totalinfos += 'Zero.\n\n'
+
+	totalinfos += "Margin accoutn information:\n"
+	try:
+		marginInfo = client.get_margin_account() #recvWindow = BU.getRecvWindow())
+	except BinanceRequestException as e:
+		return False, f"Erro at client.get_margin_account() BinanceRequestException: [{e.status_code} - {e.message}]"
+	except BinanceAPIException as e:
+		return False, f"Erro at client.get_margin_account() BinanceAPIException: [{e.status_code} - {e.message}]"
+	except Exception as e:
+		return False, f"Erro at client.get_margin_account(): {e}"
+
+	cleanedMarginAssets = [n for n in marginInfo['userAssets'] if float(n['netAsset']) != 0.0]
+
+	totalinfos += f"Borrow Enabled........? [{marginInfo['borrowEnabled']}]\n"
+	totalinfos += f"Trade enabled.........? [{marginInfo['tradeEnabled']}]\n"
+	totalinfos += f"Level.................: [{marginInfo['marginLevel']}]\n"
+	totalinfos += f"Total asset of BTC....: [{marginInfo['totalAssetOfBtc']}]\n"
+	totalinfos += f"Total liability of BTC: [{marginInfo['totalLiabilityOfBtc']}]\n"
+	totalinfos += f"Total Net asset of BTC: [{marginInfo['totalNetAssetOfBtc']}]\n\n"
+
+	totalinfos += 'Borrowed assets:\n'
+	totalinfos += '\n'.join ([printMarginAssets(n, i) for i, n in enumerate(cleanedMarginAssets, 1)])
+
+	layoutAccInfo = [[sg.Multiline(totalinfos, size=(100,25), font='Courier 10', write_only=True)], [sg.Button('Ok')]]
+
+	windowInfoAcc = sg.Window("Acc Infos", layoutAccInfo).Finalize()
+	eventInfoAcc, valuesInfoAcc = windowInfoAcc.read()
+
+	windowInfoAcc.close()
+	del windowInfoAcc
+	del layoutAccInfo
+
+	return True, "Ok"
+
+
+
+
+
 
 def COPYTRADE_IsEnable()->bool:
 	global cfgbnb
@@ -390,14 +465,14 @@ def ListOpenOrders(client)->[bool, str]:
 	else:
 		layoutFrameSpotOpen = [[sg.Text("Order Id\tSymbol\tSide\tPrice\tQtd\tType", font=("Courier", 10))]]
 		[layoutFrameSpotOpen.append(buildOrderList(i)) for i in openOrders]
-		layoutFrameSpotOpen.append([sg.Button('Delete Spot Order'), sg.Button('Copy Spot data to clipboard')])
+		layoutFrameSpotOpen.append([sg.Button('Delete Spot Order'), sg.Button('Copy Spot data to clipboard'), sg.Button('CopyTrade')])
 
 	if len(openMarginOrders) == 0:
 		layoutFrameMarginOpen = [[sg.Text("0 orders.", font=("Courier", 10))]]
 	else:
 		layoutFrameMarginOpen = [[sg.Text("Order Id\tSymbol\tSide\tPrice\tQtd\tType", font=("Courier", 10))]]
 		[layoutFrameMarginOpen.append(buildOrderList(i)) for i in openMarginOrders]
-		layoutFrameMarginOpen.append([sg.Button('Delete Margin Order'), sg.Button('Copy Margin data to clipboard')])
+		layoutFrameMarginOpen.append([sg.Button('Delete Margin Order'), sg.Button('Copy Margin data to clipboard'), sg.Button('CopyTrade')])
 
 	layoutListOpenOrders = [
 		[sg.Frame('SPOT', layoutFrameSpotOpen, title_color='blue')],
@@ -438,6 +513,8 @@ def ListOpenOrders(client)->[bool, str]:
 
 	elif eventLOO == 'Copy Margin data to clipboard':
 		pass
+	elif eventLOO == 'CopyTrade':
+		pass
 
 	elif eventLOO == 'Delete Spot Order':
 		BU.errPrint("Deleting spot orders:")
@@ -461,6 +538,8 @@ def ListOpenOrders(client)->[bool, str]:
 						return False, f"Erro canceling SPOT order {j1['orderId']}! {msgRet}"
 
 	elif eventLOO == 'Copy Spot data to clipboard':
+		pass
+	elif eventLOO == 'CopyTrade':
 		pass
 
 	windowListOpenOrder.close()
@@ -557,7 +636,12 @@ def main(argv):
 			pass
 
 		elif event == 'Infos acc':
-			pass
+			window.Hide()
+
+			ret, msgRet = printAccountInfo(client)
+			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+
+			window.UnHide()
 
 		elif event == 'Taxes':
 			pass

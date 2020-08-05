@@ -1411,7 +1411,7 @@ if __name__ == '__main__':
 			ret, msgRet = BO.orderMargin(client,
 			                             symbOrd = sys.argv[3],         sideOrd = "BUY",
 			                             typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
-			                             prcOrd  = sys.argv[5],         prcStop = sys.argv[6]) == True:
+			                             prcOrd  = sys.argv[5],         prcStop = sys.argv[6])
 			if ret == False:
 				BU.nmExitErro(m = msgRet)
 
@@ -1423,7 +1423,7 @@ if __name__ == '__main__':
 			                             symbOrd = sys.argv[3],         sideOrd = "BUY",
 			                             typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
 			                             prcOrd  = sys.argv[5],         prcStop = sys.argv[6],
-			                             limit   = argv[7] ) == True:
+			                             limit   = argv[7] )
 			if ret == False:
 				BU.nmExitErro(m = msgRet)
 
@@ -1441,7 +1441,7 @@ if __name__ == '__main__':
 			ret, msgRet = BO.orderMargin(client,
 			                             symbOrd = sys.argv[3], sideOrd = "SELL",
 			                             typeOrd = "MARKET",    qtdOrd  = sys.argv[4],
-			                             prcOrd  = 0.0,         prcStop = 0.0) == True:
+			                             prcOrd  = 0.0,         prcStop = 0.0)
 			if ret == False:
 				BU.nmExitErro(m = msgRet)
 
@@ -1452,7 +1452,7 @@ if __name__ == '__main__':
 			ret, msgRet = BO.orderMargin(client,
 			                             symbOrd = sys.argv[3], sideOrd = "SELL",
 			                             typeOrd = "LIMIT",     qtdOrd  = sys.argv[4],
-			                             prcOrd  = sys.argv[5], prcStop = 0.0) == True:
+			                             prcOrd  = sys.argv[5], prcStop = 0.0)
 			if ret == False:
 				BU.nmExitErro(m = msgRet)
 
@@ -1463,7 +1463,7 @@ if __name__ == '__main__':
 			ret, msgRet = BO.orderMargin(client,
 			                             symbOrd = sys.argv[3],         sideOrd = "SELL",
 			                             typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
-			                             prcOrd  = sys.argv[5],         prcStop = sys.argv[6]) == True:
+			                             prcOrd  = sys.argv[5],         prcStop = sys.argv[6])
 			if ret == False:
 				BU.nmExitErro(m = msgRet)
 
@@ -1475,7 +1475,7 @@ if __name__ == '__main__':
 			                             symbOrd = sys.argv[3],         sideOrd = "SELL",
 			                             typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
 			                             prcOrd  = sys.argv[5],         prcStop = sys.argv[6],
-			                             limit   = argv[7] ) == True:
+			                             limit   = argv[7])
 			if ret == False:
 				BU.nmExitErro(m = msgRet)
 
