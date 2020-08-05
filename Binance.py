@@ -1298,7 +1298,6 @@ if __name__ == '__main__':
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			#if BO.buyLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5]) == True:
 			if BO.orderSpot(client,
 			                symbOrd = sys.argv[3],
 			                qtdOrd  = sys.argv[4],
@@ -1309,14 +1308,16 @@ if __name__ == '__main__':
 
 		# Stop Limit
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
-			#if BO.buyStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == True:
-			if BO.orderSpotLimit(client,
+			ret, msgRet = BO.orderSpotLimit(client,
 			                     symbOrd         = sys.argv[3],
 			                     qtdOrd          = sys.argv[4],
 			                     prcStopOrd      = sys.argv[5],
 			                     prcStopLimitOrd = sys.argv[6],
-			                     sideOrd         = Client.SIDE_BUY) == True:
-				BU.nmExitOk()
+			                     sideOrd         = Client.SIDE_BUY)
+			if ret == False:
+				BU.nmExitErro(m = msgRet)
+
+			BU.nmExitOk(m = msgRet)
 
 		# OCO
 		elif sys.argv[2] == "OCO" and len(sys.argv) == 8:
@@ -1342,7 +1343,6 @@ if __name__ == '__main__':
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			#if BO.sellLimitOrder(client, sys.argv[3], sys.argv[4], sys.argv[5]) == True:
 			if BO.orderSpot(client,
 			                symbOrd = sys.argv[3],
 			                qtdOrd  = sys.argv[4],
@@ -1353,14 +1353,16 @@ if __name__ == '__main__':
 
 		# Stop Limit
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
-			#if BO.sellStopOrder(client, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]) == True:
-			if BO.orderSpotLimit(client,
+			ret, msgRet = BO.orderSpotLimit(client,
 			                     symbOrd         = sys.argv[3],
 			                     qtdOrd          = sys.argv[4],
 			                     prcStopOrd      = sys.argv[5],
 			                     prcStopLimitOrd = sys.argv[6],
-			                     sideOrd         = Client.SIDE_SELL) == True:
-				BU.nmExitOk()
+			                     sideOrd         = Client.SIDE_SELL)
+			if ret == False:
+				BU.nmExitErro(m = msgRet)
+
+			BU.nmExitOk(m = msgRet)
 
 		# OCO
 		elif sys.argv[2] == "OCO" and len(sys.argv) == 8:
@@ -1369,50 +1371,63 @@ if __name__ == '__main__':
 
 		else:
 			BU.errPrint("Parameters error for SPOT sell order.")
-			#BU.nmExitErro()
 
 	elif sys.argv[1] == "-c" and len(sys.argv) == 4:
 		ret, msgRet = BO.cancel_a_spot_order(client, sys.argv[2], sys.argv[3])
 		if ret == False:
 			BU.nmExitErro(m = msgRet)
 
-		BU.nmExitOk(m = msgRet)
+		BU.nmExitOk()
 
 	# MARGIN Buy order
 	elif sys.argv[1] == "-bm" and len(sys.argv) > 2:
 
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
-			if BO.orderMargin(client,
-				               symbOrd = sys.argv[3], sideOrd = "BUY",
-			                  typeOrd = "MARKET",    qtdOrd  = sys.argv[4],
-			                  prcOrd  = 0.0,         prcStop = 0.0) == True:
-				BU.nmExitOk()
+
+			ret, msgRet = BO.orderMargin(client,
+			                             symbOrd = sys.argv[3], sideOrd = "BUY",
+			                             typeOrd = "MARKET",    qtdOrd  = sys.argv[4],
+			                             prcOrd  = 0.0,         prcStop = 0.0)
+
+			if ret == False:
+				BU.nmExitErro(m = msgRet)
+
+			BU.nmExitOk()
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			if BO.orderMargin(client,
-				               symbOrd = sys.argv[3], sideOrd = "BUY",
-			                  typeOrd = "LIMIT",     qtdOrd  = sys.argv[4],
-			                  prcOrd  = sys.argv[5], prcStop = 0.0) == True:
-				BU.nmExitOk()
+			ret, msgRet = BO.orderMargin(client,
+			                             symbOrd = sys.argv[3], sideOrd = "BUY",
+			                             typeOrd = "LIMIT",     qtdOrd  = sys.argv[4],
+			                             prcOrd  = sys.argv[5], prcStop = 0.0)
+			if ret == False:
+				BU.nmExitErro(m = msgRet)
+
+			BU.nmExitOk()
 
 		# Stop limit
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
-			if BO.orderMargin(client,
-				               symbOrd = sys.argv[3],         sideOrd = "BUY",
-			                  typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
-			                  prcOrd  = sys.argv[5],         prcStop = sys.argv[6]) == True:
-				BU.nmExitOk()
+			ret, msgRet = BO.orderMargin(client,
+			                             symbOrd = sys.argv[3],         sideOrd = "BUY",
+			                             typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
+			                             prcOrd  = sys.argv[5],         prcStop = sys.argv[6]) == True:
+			if ret == False:
+				BU.nmExitErro(m = msgRet)
+
+			BU.nmExitOk()
 
 		# OCO
 		elif sys.argv[2] == "OCO" and len(sys.argv) == 8:
-			if BO.orderMargin(client,
-				               symbOrd = sys.argv[3],         sideOrd = "BUY",
-			                  typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
-			                  prcOrd  = sys.argv[5],         prcStop = sys.argv[6],
-			                  limit   = argv[7] ) == True:
-				BU.nmExitOk()
+			ret, msgRet = BO.orderMargin(client,
+			                             symbOrd = sys.argv[3],         sideOrd = "BUY",
+			                             typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
+			                             prcOrd  = sys.argv[5],         prcStop = sys.argv[6],
+			                             limit   = argv[7] ) == True:
+			if ret == False:
+				BU.nmExitErro(m = msgRet)
+
+			BU.nmExitOk()
 
 		else:
 			BU.errPrint("Parameters error for MARGIN buy order.")
@@ -1423,36 +1438,48 @@ if __name__ == '__main__':
 
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
-			if BO.orderMargin(client,
-				               symbOrd = sys.argv[3], sideOrd = "SELL",
-			                  typeOrd = "MARKET",    qtdOrd  = sys.argv[4],
-			                  prcOrd  = 0.0,         prcStop = 0.0) == True:
-				BU.nmExitOk()
+			ret, msgRet = BO.orderMargin(client,
+			                             symbOrd = sys.argv[3], sideOrd = "SELL",
+			                             typeOrd = "MARKET",    qtdOrd  = sys.argv[4],
+			                             prcOrd  = 0.0,         prcStop = 0.0) == True:
+			if ret == False:
+				BU.nmExitErro(m = msgRet)
+
+			BU.nmExitOk()
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			if BO.orderMargin(client,
-				               symbOrd = sys.argv[3], sideOrd = "SELL",
-			                  typeOrd = "LIMIT",     qtdOrd  = sys.argv[4],
-			                  prcOrd  = sys.argv[5], prcStop = 0.0) == True:
-				BU.nmExitOk()
+			ret, msgRet = BO.orderMargin(client,
+			                             symbOrd = sys.argv[3], sideOrd = "SELL",
+			                             typeOrd = "LIMIT",     qtdOrd  = sys.argv[4],
+			                             prcOrd  = sys.argv[5], prcStop = 0.0) == True:
+			if ret == False:
+				BU.nmExitErro(m = msgRet)
+
+			BU.nmExitOk()
 
 		# Stop limit
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
-			if BO.orderMargin(client,
-				               symbOrd = sys.argv[3],         sideOrd = "SELL",
-			                  typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
-			                  prcOrd  = sys.argv[5],         prcStop = sys.argv[6]) == True:
-				BU.nmExitOk()
+			ret, msgRet = BO.orderMargin(client,
+			                             symbOrd = sys.argv[3],         sideOrd = "SELL",
+			                             typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
+			                             prcOrd  = sys.argv[5],         prcStop = sys.argv[6]) == True:
+			if ret == False:
+				BU.nmExitErro(m = msgRet)
+
+			BU.nmExitOk()
 
 		# OCO
 		elif sys.argv[2] == "OCO" and len(sys.argv) == 8:
-			if BO.orderMargin(client,
-				               symbOrd = sys.argv[3],         sideOrd = "SELL",
-			                  typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
-			                  prcOrd  = sys.argv[5],         prcStop = sys.argv[6],
-			                  limit   = argv[7] ) == True:
-				BU.nmExitOk()
+			ret, msgRet = BO.orderMargin(client,
+			                             symbOrd = sys.argv[3],         sideOrd = "SELL",
+			                             typeOrd = "TAKE_PROFIT_LIMIT", qtdOrd  = sys.argv[4],
+			                             prcOrd  = sys.argv[5],         prcStop = sys.argv[6],
+			                             limit   = argv[7] ) == True:
+			if ret == False:
+				BU.nmExitErro(m = msgRet)
+
+			BU.nmExitOk()
 
 		else:
 			BU.errPrint("Parameters error for MARGIN sell order.")

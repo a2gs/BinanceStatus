@@ -111,16 +111,15 @@ def cancel_a_margin_order(client, symbOrd = '', ordrid = 0) -> [bool, str]:
 
 # ---------------------------------------------------
 
-def orderSpotLimit(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prcStopOrd = 0.0, prcStopLimitOrd = 0.0, sideOrd = 0) -> bool:
+def orderSpotLimit(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prcStopOrd = 0.0, prcStopLimitOrd = 0.0, sideOrd = 0) -> [bool, str]:
 
 	if BU.askConfirmation() == False:
-		return False
+		return True, "Cancelled by Confirmation!"
 
 	# TESTING
 	global LOCK
 	if LOCK == True:
-		BU.errPrint("PROGRAM LOCKED BY SECURITY!")
-		return False
+		return False, "Programmed flag order lock ON!"
 
 	try:
 		order = client.create_oco_order(symbol               = symbOrd,
@@ -133,36 +132,27 @@ def orderSpotLimit(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prcStopOrd = 
 		                                newOrderRespType     = Client.ORDER_RESP_TYPE_FULL)
 
 	except BinanceRequestException as e:
-		BU.errPrint(f"Erro create_oco_order BinanceRequestException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_oco_order BinanceRequestException: [{e.status_code} - {e.message}]"
 	except BinanceAPIException as e:
-		BU.errPrint(f"Erro create_oco_order BinanceAPIException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_oco_order BinanceAPIException: [{e.status_code} - {e.message}]"
 	except BinanceOrderException as e:
-		BU.errPrint(f"Erro create_oco_order BinanceOrderException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_oco_order BinanceOrderException: [{e.status_code} - {e.message}]"
 	except BinanceOrderMinAmountException as e:
-		BU.errPrint(f"Erro create_oco_order BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_oco_order BinanceOrderMinAmountException: [{e.status_code} - {e.message}]"
 	except BinanceOrderMinPriceException as e:
-		BU.errPrint(f"Erro create_oco_order BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_oco_order BinanceOrderMinPriceException: [{e.status_code} - {e.message}]"
 	except BinanceOrderMinTotalException as e:
-		BU.errPrint(f"Erro create_oco_order BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_oco_order BinanceOrderMinTotalException: [{e.status_code} - {e.message}]"
 	except BinanceOrderUnknownSymbolException as e:
-		BU.errPrint(f"Erro create_oco_order BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_oco_order BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]"
 	except BinanceOrderInactiveSymbolException as e:
-		BU.errPrint(f"Erro create_oco_order BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_oco_order BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]"
 	except Expcetion as e:
-		BU.errPrint(f"Erro create_oco_order generic exception: {e}")
-		return False
+		return False, f"Erro create_oco_order generic exception: {e}"
 
 	printPlacedOrder(order)
 
-	return True
+	return True, "Ok"
 
 def orderSpot(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, typeOrd = 0) -> bool:
 
@@ -236,7 +226,7 @@ def sellOCOOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0, limit =
 
 # ---------------------------------------------------
 
-def orderMargin(client, symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0, prcStop = 0.0, limit = 0.0) -> bool:
+def orderMargin(client, symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0, prcStop = 0.0, limit = 0.0) ->[bool, str]:
 	BU.errPrint(f"MARGIN Order {typeOrd}")
 
 	if BU.getExportXLS() == True:
@@ -252,13 +242,12 @@ def orderMargin(client, symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcO
 		BU.errPrint(f"Type......: [{typeOrd}]")
 
 	if BU.askConfirmation() == False:
-		return False
+		return True, "Cancelled by Confirmation!"
 
 	# TESTING
 	global LOCK
 	if LOCK == True:
-		BU.errPrint("PROGRAM LOCKED BY SECURITY!")
-		return False
+		return False, "Programmed flag order lock ON!"
 
 	try:
 		if typeOrd == 'LIMIT':
@@ -280,32 +269,24 @@ def orderMargin(client, symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcO
 		                                      newOrderRespType = Client.ORDER_RESP_TYPE_FULL)
 
 	except BinanceRequestException as e:
-		BU.errPrint(f"Erro create_margin_order BinanceRequestException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_margin_order BinanceRequestException: [{e.status_code} - {e.message}]"
 	except BinanceAPIException as e:
-		BU.errPrint(f"Erro create_margin_order BinanceAPIException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_margin_order BinanceAPIException: [{e.status_code} - {e.message}]"
 	except BinanceOrderException as e:
-		BU.errPrint(f"Erro create_margin_order BinanceOrderException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_margin_order BinanceOrderException: [{e.status_code} - {e.message}]"
 	except BinanceOrderMinAmountException as e:
-		BU.errPrint(f"Erro create_margin_order BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_margin_order BinanceOrderMinAmountException: [{e.status_code} - {e.message}]"
 	except BinanceOrderMinPriceException as e:
-		BU.errPrint(f"Erro create_margin_order BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_margin_order BinanceOrderMinPriceException: [{e.status_code} - {e.message}]"
 	except BinanceOrderMinTotalException as e:
-		BU.errPrint(f"Erro create_margin_order BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_margin_order BinanceOrderMinTotalException: [{e.status_code} - {e.message}]"
 	except BinanceOrderUnknownSymbolException as e:
-		BU.errPrint(f"Erro create_margin_order BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_margin_order BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]"
 	except BinanceOrderInactiveSymbolException as e:
-		BU.errPrint(f"Erro create_margin_order BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro create_margin_order BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]"
 	except Exception as e:
-		BU.errPrint(f"Erro create_margin_order generic exception: {e}")
-		return False
+		return False, f"Erro create_margin_order generic exception: {e}"
 
 	BP.printMarginOrder(order)
-	return True
+
+	return True, "Ok"

@@ -59,7 +59,7 @@ def COPYTRADE_IsEnable()->bool:
 	global cfgbnb
 	return True if cfgbnb.get('COPYTRADE') == 'YES' else False
 
-def BS_MarginStopLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
+def BS_MarginStopLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)->[bool, str]:
 	layoutMSL = [
 		[sg.Text('Symbol: ', background_color = bgcolor), sg.InputText(key = '-SYMBOL-')],
 		[sg.Text('Qtd: ', background_color = bgcolor), sg.InputText(key = '-QTD-')],
@@ -79,18 +79,24 @@ def BS_MarginStopLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)->
 
 			if sg.popup_yes_no('CONFIRM?', text_color='yellow', background_color='red') == 'No':
 				BU.errPrint(f'{windowTitle} - CANCELLED!')
-				break;
+				continue
 
-			if BO.orderMargin(client,
-			                  symbOrd = valuesMSL['-SYMBOL-'],
-			                  qtdOrd = valuesMSL['-QTD-'],
-			                  prcOrd = valuesMSL['-STOP PRICE-'],
-			                  prcStop = valuesMSL['-LIMIT PRICE-'],
-			                  sideOrd = clientSide,
-			                  typeOrd = "TAKE_PROFIT_LIMIT",
-			                  limit = 0.0 ) == False:
+			ret, retMsg = BO.orderMargin(client,
+			                             symbOrd = valuesMSL['-SYMBOL-'],
+			                             qtdOrd = valuesMSL['-QTD-'],
+			                             prcOrd = valuesMSL['-STOP PRICE-'],
+			                             prcStop = valuesMSL['-LIMIT PRICE-'],
+			                             sideOrd = clientSide,
+			                             typeOrd = "TAKE_PROFIT_LIMIT",
+			                             limit = 0.0 )
+			if ret == False:
 				sg.popup('ERRO! Order didnt post!')
-				break;
+
+				windowMSL.close()
+				del windowMSL
+				del layoutMSL
+
+				return False, f"Erro posting order {retMsg}!"
 
 			if valuesMSL['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
 				BU.errPrint(f"COPYTRADE: [MARGINSTOPLIMIT | TAKE_PROFIT_LIMIT | {valuesMSL['-SYMBOL-']} | {valuesMSL['-QTD-']} | {valuesMSL['-STOP PRICE-']} | {valuesMSL['-LIMIT PRICE-']} | {clientSide}]")
@@ -105,7 +111,7 @@ def BS_MarginStopLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)->
 	del windowMSL
 	del layoutMSL
 
-	return True
+	return True, "Ok"
 
 def BS_MarginMarket(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
 	layoutMM = [
@@ -125,15 +131,21 @@ def BS_MarginMarket(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bo
 
 			if sg.popup_yes_no('CONFIRM?', text_color='yellow', background_color='red') == 'No':
 				BU.errPrint(f'{windowTitle} - CANCELLED!')
-				break;
+				continue
 
-			if BO.orderMargin(client,
-			                  symbOrd = valuesMM['-SYMBOL-'],
-			                  qtdOrd  = valuesMM['-QTD-'],
-			                  sideOrd = clientSide,
-			                  typeOrd = Client.ORDER_TYPE_MARKET) == False:
+			ret, msgRet = BO.orderMargin(client,
+			                             symbOrd = valuesMM['-SYMBOL-'],
+			                             qtdOrd  = valuesMM['-QTD-'],
+			                             sideOrd = clientSide,
+			                             typeOrd = Client.ORDER_TYPE_MARKET)
+			if ret == False:
 				sg.popup('ERRO! Order didnt post!')
-				break;
+
+				windowMM.close()
+				del windowMM
+				del layoutMM
+
+				return False, f"Erro placing order! {msgRet}"
 
 			if valuesMM['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
 				print("Call COPYTRADE...")
@@ -149,9 +161,9 @@ def BS_MarginMarket(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bo
 	del windowMM
 	del layoutMM
 
-	return True
+	return True, "Ok"
 
-def BS_MarginLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
+def BS_MarginLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)->[bool, str]:
 	layoutML = [
 		[sg.Text('Symbol: ', background_color = bgcolor), sg.InputText(key = '-SYMBOL-')],
 		[sg.Text('Qtd: ', background_color = bgcolor), sg.InputText(key = '-QTD-')],
@@ -170,16 +182,23 @@ def BS_MarginLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> boo
 
 			if sg.popup_yes_no('CONFIRM?', text_color='yellow', background_color='red') == 'No':
 				BU.errPrint(f'{windowTitle} - CANCELLED!')
-				break;
+				continue
 
-			if BO.orderMargin(client,
+			ret, msgRet = BO.orderMargin(client,
 			                  symbOrd = valuesML['-SYMBOL-'],
 			                  qtdOrd  = valuesML['-QTD-'],
 			                  prcOrd  = valuesML['-PRICE-'],
 			                  sideOrd = clientSide,
-			                  typeOrd = Client.ORDER_TYPE_LIMIT) == False:
+			                  typeOrd = Client.ORDER_TYPE_LIMIT)
+
+			if ret == False:
 				sg.popup('ERRO! Order didnt post!')
-				break;
+
+				windowML.close()
+				del windowML
+				del layoutML
+
+				return False, f"Eror posting order! {msgRet}"
 
 			if valuesML['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
 				print("Call COPYTRADE...")
@@ -194,9 +213,9 @@ def BS_MarginLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> boo
 	del windowML
 	del layoutML
 
-	return True
+	return True, "Ok"
 
-def BS_SpotStopLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
+def BS_SpotStopLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)->[ bool, str]:
 	layoutSSL = [
 		[sg.Text('Symbol: ', background_color = bgcolor), sg.InputText(key = '-SYMBOL-')],
 		[sg.Text('Qtd: ', background_color = bgcolor), sg.InputText(key = '-QTD-')],
@@ -216,16 +235,23 @@ def BS_SpotStopLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> b
 
 			if sg.popup_yes_no('CONFIRM?', text_color='yellow', background_color='red') == 'No':
 				BU.errPrint(f'{windowTitle} - CANCELLED!')
-				break;
+				continue
 
-			if BO.orderSpotLimit(client,
-			                     symbOrd = valuesSSL['-SYMBOL-'],
-			                     qtdOrd = valuesSSL['-QTD-'],
-			                     prcStopOrd = valuesSSL['-STOP PRICE-'],
-			                     prcStopLimitOrd = valuesSSL['-LIMIT PRICE-'],
-			                     sideOrd = clientSide) == False:
+			ret, msgRet = BO.orderSpotLimit(client,
+			                                symbOrd = valuesSSL['-SYMBOL-'],
+			                                qtdOrd = valuesSSL['-QTD-'],
+			                                prcStopOrd = valuesSSL['-STOP PRICE-'],
+			                                prcStopLimitOrd = valuesSSL['-LIMIT PRICE-'],
+			                                sideOrd = clientSide)
+
+			if ret == False:
 				sg.popup('ERRO! Order didnt post!')
-				break;
+
+				windowSSL.close()
+				del windowSSL
+				del layoutSSL
+
+				return False, "Eror posting order!"
 
 			if valuesSSL['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
 				print("Call COPYTRADE...")
@@ -240,9 +266,9 @@ def BS_SpotStopLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> b
 	del windowSSL
 	del layoutSSL
 
-	return True
+	return True, "Ok"
 
-def BS_SpotMarket(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
+def BS_SpotMarket(client, bgcolor = '', windowTitle = '', clientSide = 0)->[bool, str]:
 	layoutSM = [
 		[sg.Text('Symbol: ', background_color = bgcolor), sg.InputText(key = '-SYMBOL-')],
 		[sg.Text('Qtd: ', background_color = bgcolor), sg.InputText(key = '-QTD-')],
@@ -260,7 +286,7 @@ def BS_SpotMarket(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool
 
 			if sg.popup_yes_no('CONFIRM?', text_color='yellow', background_color='red') == 'No':
 				BU.errPrint(f'{windowTitle} - CANCELLED!')
-				break;
+				continue
 
 			if BO.orderSpot(client,
 			                symbOrd = valuesSM['-SYMBOL-'],
@@ -268,7 +294,12 @@ def BS_SpotMarket(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool
 			                sideOrd = clientSide,
 			                typeOrd = Client.ORDER_TYPE_MARKET) == False:
 				sg.popup('ERRO! Order didnt post!')
-				break;
+
+				windowSM.close()
+				del windowSM
+				del layoutSM
+
+				return False, "Erro posting order!"
 
 			if valuesSM['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
 				print("Call COPYTRADE...")
@@ -284,9 +315,9 @@ def BS_SpotMarket(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool
 	del windowSM
 	del layoutSM
 
-	return True
+	return True, "Ok"
 
-def BS_SpotLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
+def BS_SpotLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)->[bool, str]:
 	layoutSL = [
 		[sg.Text('Symbol: ', background_color = bgcolor), sg.InputText(key = '-SYMBOL-')],
 		[sg.Text('Qtd: ', background_color = bgcolor), sg.InputText(key = '-QTD-')],
@@ -305,7 +336,7 @@ def BS_SpotLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
 
 			if sg.popup_yes_no('CONFIRM?', text_color='yellow', background_color='red') == 'No':
 				BU.errPrint(f'{windowTitle} - CANCELLED!')
-				break;
+				continue
 
 			if BO.orderSpot(client,
 			                symbOrd = valuesSL['-SYMBOL-'],
@@ -314,7 +345,12 @@ def BS_SpotLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
 			                sideOrd = clientSide,
 			                typeOrd = Client.ORDER_TYPE_LIMIT) == False:
 				sg.popup('ERRO! Order didnt post!')
-				break;
+
+				windowSL.close()
+				del windowSL
+				del layoutSL
+
+				return False, "Erro posting order!"
 
 			if valuesSL['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
 				print("Call COPYTRADE...")
@@ -329,7 +365,7 @@ def BS_SpotLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
 	del windowSL
 	del layoutSL
 
-	return True
+	return True, "Ok"
 
 def ListOpenOrders(client)->[bool, str]:
 
@@ -464,20 +500,6 @@ def main(argv):
 		[ '&Binance', ['Infos binance', 'Assets', 'Symbols']]
 	]
 
-#orderListButton.py
-	openOrdersFrame = [
-		[sg.CB(''), sg.Text('Order ID ... Symb ... Qtd ... Price', key='cb1')],
-		[sg.CB(''), sg.Text('Order ID ... Symb ... Qtd ... Price', key='cb2')],
-		[sg.CB(''), sg.Text('Order ID ... Symb ... Qtd ... Price', key='cb3')],
-		[sg.CB(''), sg.Text('Order ID ... Symb ... Qtd ... Price', key='cb4')],
-		[sg.CB(''), sg.Text('Order ID ... Symb ... Qtd ... Price', key='cb5')],
-		[sg.Button('Cancel Order'), sg.Button('Prev page'), sg.Button('Next page')],
-	]
-
-	favoriteSymbolsInfo = [
-		  [sg.T('empty...')],
-	]
-
 	layout = [
 		[sg.Menu(menu)],
 		[sg.Button('Spot Market'      ,                key='BTTN_BSM' , button_color=('black','green'), size=(30,1)), sg.Button('Spot Market'      ,                key='BTTN_SSM' , button_color=('black', 'red'), size=(30,1))],
@@ -493,9 +515,6 @@ def main(argv):
 
 		[sg.Button('CLOSE', key='BTTN_CLOSE')],
 		[sg.StatusBar('Last msg: Initialized', key='LASTMSG', auto_size_text=True, size=(250, 2), justification='left')],
-#		  [sg.Frame('Open Orders', openOrdersFrame, font='Any 12', title_color='blue', key = '-OpenOrdersFrame-')],
-#		  [sg.Frame('Watching symbols', favoriteSymbolsInfo, font='Any 12', title_color='blue', key = '-WatchingSymbolsFrame-')],
-#		  [sg.Button('REFRESH')],
 	]
 
 	BU.setConfirmationYES(True)
@@ -545,17 +564,26 @@ def main(argv):
 
 		elif event == 'B Spot Market' or event == 'BTTN_BSM':
 			window.Hide()
-			BS_SpotMarket(client, 'green', 'Buy Spot Market', Client.SIDE_BUY)
+
+			ret, msgRet = BS_SpotMarket(client, 'green', 'Buy Spot Market', Client.SIDE_BUY)
+			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+
 			window.UnHide()
 
 		elif event == 'B Spot Limit' or event == 'BTTN_BSL':
 			window.Hide()
-			BS_SpotLimit(client, 'green', 'Buy Spot Limit', Client.SIDE_BUY)
+
+			ret, msgRet = BS_SpotLimit(client, 'green', 'Buy Spot Limit', Client.SIDE_BUY)
+			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+
 			window.UnHide()
 
 		elif event == 'B Spot Stop Limit' or event == 'BTTN_BSSL':
 			window.Hide()
-			BS_SpotStopLimit(client, 'green', 'Buy Spot Stop Limit', Client.SIDE_BUY)
+
+			ret, msgRet = BS_SpotStopLimit(client, 'green', 'Buy Spot Stop Limit', Client.SIDE_BUY)
+			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+
 			window.UnHide()
 
 		elif event == 'B Spot OCO' or event == 'BTTN_BSO':
@@ -563,17 +591,26 @@ def main(argv):
 
 		elif event == 'B Margin Market' or event == 'BTTN_BMM':
 			window.Hide()
-			BS_MarginMarket(client, 'red', 'Sell Margin Limit', Client.SIDE_SELL)
+
+			ret, msgRet = BS_MarginMarket(client, 'red', 'Sell Margin Limit', Client.SIDE_SELL)
+			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+
 			window.UnHide()
 
 		elif event == 'B Margin Limit' or event == 'BTTN_BML':
 			window.Hide()
-			BS_MarginLimit(client, 'green', 'Buy Margin Limit', Client.SIDE_BUY)
+
+			ret, msgRet = BS_MarginLimit(client, 'green', 'Buy Margin Limit', Client.SIDE_BUY)
+			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+
 			window.UnHide()
 
 		elif event == 'B Margin Stop Limit' or event == 'BTTN_BMSL':
 			window.Hide()
-			BS_MarginStopLimit(client, 'green', 'Buy Margin Stop Limit', Client.SIDE_BUY)
+
+			ret, retMsg = BS_MarginStopLimit(client, 'green', 'Buy Margin Stop Limit', Client.SIDE_BUY)
+			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+
 			window.UnHide()
 
 		elif event == 'B Margin OCO' or event == 'BTTN_BMO':
@@ -581,17 +618,26 @@ def main(argv):
 
 		elif event == 'S Spot Market' or event == 'BTTN_SSM':
 			window.Hide()
-			BS_SpotMarket(client, 'red', 'Sell Spot Market', Client.SIDE_SELL)
+
+			ret, msgRet = BS_SpotMarket(client, 'red', 'Sell Spot Market', Client.SIDE_SELL)
+			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+
 			window.UnHide()
 
 		elif event == 'S Spot Limit' or event == 'BTTN_SSL':
 			window.Hide()
-			BS_SpotLimit(client, 'red', 'Sell Spot Limit', Client.SIDE_SELL)
+
+			ret, retMsg = BS_SpotLimit(client, 'red', 'Sell Spot Limit', Client.SIDE_SELL)
+			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+
 			window.UnHide()
 
 		elif event == 'S Spot Stop Limit' or event == 'BTTN_SSSL':
 			window.Hide()
-			BS_SpotStopLimit(client, 'red', 'Sell Spot Stop Limit', Client.SIDE_SELL)
+
+			ret, retMsg = BS_SpotStopLimit(client, 'red', 'Sell Spot Stop Limit', Client.SIDE_SELL)
+			window['LASTMSG'].update(f'Last operation returned: {retMsg}')
+
 			window.UnHide()
 
 		elif event == 'S Spot OCO' or event == 'BTTN_SSO':
@@ -599,17 +645,26 @@ def main(argv):
 
 		elif event == 'S Margin Market' or event == 'BTTN_SMM':
 			window.Hide()
-			BS_MarginMarket(client, 'red', 'Sell Margin Limit', Client.SIDE_SELL)
+
+			ret, retMsg = BS_MarginMarket(client, 'red', 'Sell Margin Limit', Client.SIDE_SELL)
+			window['LASTMSG'].update(f'Last operation returned: {retMsg}')
+
 			window.UnHide()
 
 		elif event == 'S Margin Limit' or event == 'BTTN_SML':
 			window.Hide()
-			BS_MarginLimit(client, 'red', 'Sell Margin Limit', Client.SIDE_SELL)
+
+			ret, retMsg = BS_MarginLimit(client, 'red', 'Sell Margin Limit', Client.SIDE_SELL)
+			window['LASTMSG'].update(f'Last operation returned: {retMsg}')
+
 			window.UnHide()
 
 		elif event == 'S Margin Stop Limit' or event == 'BTTN_SMSL':
 			window.Hide()
-			BS_MarginStopLimit(client, 'red', 'Sell Margin Stop Limit', Client.SIDE_SELL)
+
+			ret, retMsg = BS_MarginStopLimit(client, 'red', 'Sell Margin Stop Limit', Client.SIDE_SELL)
+			window['LASTMSG'].update(f'Last operation returned: {retMsg}')
+
 			window.UnHide()
 
 		elif event == 'S Margin OCO' or event == 'BTTN_SMO':
@@ -620,9 +675,6 @@ def main(argv):
 
 		elif event == 'LIST or DELETE Open' or event == 'BTTN_LDOO':
 			window.Hide()
-
-			ret = bool()
-			msgRet = ''
 
 			ret, msgRet = ListOpenOrders(client)
 			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
