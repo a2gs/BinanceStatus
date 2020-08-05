@@ -3,9 +3,10 @@
 
 # Andre Augusto Giannotti Scota (https://sites.google.com/view/a2gs/)
 
-import time
+#import time
 from os import getenv
 from sys import exit, argv
+import configparser
 
 import PySimpleGUI as sg
 from binance.client import Client
@@ -16,12 +17,55 @@ import binanceUtil as BU
 
 #from gui.orderListButton import getOrderList, orderListFixed
 
+class cfg_c:
+	cfgFile = 0;
+	cfgHeader = ''
+	cfg = 0
+
+	def __init__(self, cfgFileName : str = "BinanceGUI.cfg", cfgHead : str = "DEFAULT"):
+		self.cfg = configparser.ConfigParser()
+		self.cfgFile = cfgFileName
+		self.cfgHeader = cfgHead
+
+	def load(self)->[bool, str]:
+		try:
+			self.cfg.read(self.cfgFile)
+		except Exception as e:
+			return False, e
+
+		return True, "Ok"
+
+	def get(self, k : str = ''):
+		try:
+			return self.cfg[self.cfgHeader][k]
+		except:
+			# Default values:
+			if k == 'BINANCE_APIKEY':
+				return ''
+			elif k == 'BINANCE_SEKKEY':
+				return ''
+			elif k == 'BINANCE_RECVWINDOW':
+				return '5000'
+			elif k == 'COPYTRADE':
+				return 'NO'
+			elif k == 'THEME':
+				return 'Dark Blue 3'
+			else:
+				return NONE
+
+cfgbnb = cfg_c()
+
+def COPYTRADE_IsEnable()->bool:
+	global cfgbnb
+	return True if cfgbnb.get('COPYTRADE') == 'YES' else False
+
 def BS_MarginStopLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
 	layoutMSL = [
 		[sg.Text('Symbol: ', background_color = bgcolor), sg.InputText(key = '-SYMBOL-')],
 		[sg.Text('Qtd: ', background_color = bgcolor), sg.InputText(key = '-QTD-')],
 		[sg.Text('Stop Price: ', background_color = bgcolor), sg.InputText(key = '-STOP PRICE-')],
 		[sg.Text('Limit Price: ', background_color = bgcolor), sg.InputText(key = '-LIMIT PRICE-')],
+		[sg.Checkbox('send to CopyTrade', key='CB_COPYTRADE', disabled=False)],
 		[sg.Button('SEND!'), sg.Button('CANCEL')],
 	]
 
@@ -48,6 +92,9 @@ def BS_MarginStopLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)->
 				sg.popup('ERRO! Order didnt post!')
 				break;
 
+			if valuesMSL['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
+				BU.errPrint(f"COPYTRADE: [MARGINSTOPLIMIT | TAKE_PROFIT_LIMIT | {valuesMSL['-SYMBOL-']} | {valuesMSL['-QTD-']} | {valuesMSL['-STOP PRICE-']} | {valuesMSL['-LIMIT PRICE-']} | {clientSide}]")
+
 			BU.errPrint(f'{windowTitle} - CONFIRMED!')
 
 		elif eventMSL == sg.WIN_CLOSED or eventMSL == 'CANCEL':
@@ -64,6 +111,7 @@ def BS_MarginMarket(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bo
 	layoutMM = [
 		[sg.Text('Symbol: ', background_color = bgcolor), sg.InputText(key = '-SYMBOL-')],
 		[sg.Text('Qtd: ', background_color = bgcolor), sg.InputText(key = '-QTD-')],
+		[sg.Checkbox('send to CopyTrade', key='CB_COPYTRADE', disabled=False)],
 		[sg.Button('SEND!'), sg.Button('CANCEL')],
 	]
 
@@ -87,6 +135,9 @@ def BS_MarginMarket(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bo
 				sg.popup('ERRO! Order didnt post!')
 				break;
 
+			if valuesMM['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
+				print("Call COPYTRADE...")
+
 			BU.errPrint(f'{windowTitle} - CONFIRMED!')
 
 		elif eventMM == sg.WIN_CLOSED or eventMM == 'CANCEL':
@@ -105,6 +156,7 @@ def BS_MarginLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> boo
 		[sg.Text('Symbol: ', background_color = bgcolor), sg.InputText(key = '-SYMBOL-')],
 		[sg.Text('Qtd: ', background_color = bgcolor), sg.InputText(key = '-QTD-')],
 		[sg.Text('Price: ', background_color = bgcolor), sg.InputText(key = '-PRICE-')],
+		[sg.Checkbox('send to CopyTrade', key='CB_COPYTRADE', disabled=False)],
 		[sg.Button('SEND!'), sg.Button('CANCEL')],
 	]
 
@@ -129,6 +181,9 @@ def BS_MarginLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> boo
 				sg.popup('ERRO! Order didnt post!')
 				break;
 
+			if valuesML['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
+				print("Call COPYTRADE...")
+
 			BU.errPrint(f'{windowTitle} - CONFIRMED!')
 
 		elif eventML == sg.WIN_CLOSED or eventML == 'CANCEL':
@@ -147,6 +202,7 @@ def BS_SpotStopLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> b
 		[sg.Text('Qtd: ', background_color = bgcolor), sg.InputText(key = '-QTD-')],
 		[sg.Text('Stop Price: ', background_color = bgcolor), sg.InputText(key = '-STOP PRICE-')],
 		[sg.Text('Limit Price: ', background_color = bgcolor), sg.InputText(key = '-LIMIT PRICE-')],
+		[sg.Checkbox('send to CopyTrade', key='CB_COPYTRADE', disabled=False)],
 		[sg.Button('SEND!'), sg.Button('CANCEL')],
 	]
 
@@ -171,6 +227,9 @@ def BS_SpotStopLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> b
 				sg.popup('ERRO! Order didnt post!')
 				break;
 
+			if valuesSSL['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
+				print("Call COPYTRADE...")
+
 			BU.errPrint(f'{windowTitle} - CONFIRMED!')
 
 		elif eventSSL == sg.WIN_CLOSED or eventSSL == 'CANCEL':
@@ -187,6 +246,7 @@ def BS_SpotMarket(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool
 	layoutSM = [
 		[sg.Text('Symbol: ', background_color = bgcolor), sg.InputText(key = '-SYMBOL-')],
 		[sg.Text('Qtd: ', background_color = bgcolor), sg.InputText(key = '-QTD-')],
+		[sg.Checkbox('send to CopyTrade', key='CB_COPYTRADE', disabled=False)],
 		[sg.Button('SEND!'), sg.Button('CANCEL')],
 	]
 
@@ -210,6 +270,9 @@ def BS_SpotMarket(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool
 				sg.popup('ERRO! Order didnt post!')
 				break;
 
+			if valuesSM['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
+				print("Call COPYTRADE...")
+
 			BU.errPrint(f'{windowTitle} - CONFIRMED!')
 
 		elif eventSM == sg.WIN_CLOSED or eventSM == 'CANCEL':
@@ -228,6 +291,7 @@ def BS_SpotLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
 		[sg.Text('Symbol: ', background_color = bgcolor), sg.InputText(key = '-SYMBOL-')],
 		[sg.Text('Qtd: ', background_color = bgcolor), sg.InputText(key = '-QTD-')],
 		[sg.Text('Price: ', background_color = bgcolor), sg.InputText(key = '-PRICE-')],
+		[sg.Checkbox('send to CopyTrade', key='CB_COPYTRADE', disabled=False)],
 		[sg.Button('SEND!'), sg.Button('CANCEL')],
 	]
 
@@ -251,6 +315,9 @@ def BS_SpotLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)-> bool:
 			                typeOrd = Client.ORDER_TYPE_LIMIT) == False:
 				sg.popup('ERRO! Order didnt post!')
 				break;
+
+			if valuesSL['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
+				print("Call COPYTRADE...")
 
 			BU.errPrint(f'{windowTitle} - CONFIRMED!')
 
@@ -306,6 +373,9 @@ def ListOpenOrders(client)->[bool, str]:
 
 	eventLOO, valuesLOO = windowListOpenOrder.read()
 
+	del layoutFrameSpotOpen
+	del layoutFrameMarginOpen
+
 	if eventLOO == sg.WIN_CLOSED or eventLOO == 'Close':
 		pass
 
@@ -326,8 +396,6 @@ def ListOpenOrders(client)->[bool, str]:
 						del openOrders
 						del openMarginOrders
 						del windowListOpenOrder
-						del layoutFrameSpotOpen
-						del layoutFrameMarginOpen
 						del layoutListOpenOrders
 
 						return False, f"Erro canceling MARGIN order {j2['orderId']}! {msgRet}"
@@ -352,8 +420,6 @@ def ListOpenOrders(client)->[bool, str]:
 						del openOrders
 						del openMarginOrders
 						del windowListOpenOrder
-						del layoutFrameSpotOpen
-						del layoutFrameMarginOpen
 						del layoutListOpenOrders
 
 						return False, f"Erro canceling SPOT order {j1['orderId']}! {msgRet}"
@@ -361,24 +427,37 @@ def ListOpenOrders(client)->[bool, str]:
 	elif eventLOO == 'Copy Spot data to clipboard':
 		pass
 
-	print(valuesLOO)
-	print(eventLOO)
-
 	windowListOpenOrder.close()
 
 	del openOrders
 	del openMarginOrders
 	del windowListOpenOrder
-	del layoutFrameSpotOpen
-	del layoutFrameMarginOpen
 	del layoutListOpenOrders
 
 	return True, 'Ok'
 
 def main(argv):
 
+	global cfgbnb
+	cfgbnb.load()
+
+	binanceAPIKey = cfgbnb.get('BINANCE_APIKEY')
+	if cfgbnb.get('BINANCE_APIKEY') == '':
+		binanceAPIKey = getenv("BINANCE_APIKEY", "NOTDEF_APIKEY")
+		if binanceAPIKey == "NOTDEF_APIKEY":
+			BU.nmExitErro("Environment variable BINANCE_APIKEY not defined!")
+
+	binanceSEKKey = cfgbnb.get('BINANCE_SEKKEY')
+	if cfgbnb.get('BINANCE_SEKKEY') == '':
+		binanceSEKKey = getenv("BINANCE_SEKKEY", "NOTDEF_APIKEY")
+		if binanceSEKKey == "NOTDEF_APIKEY":
+			BU.nmExitErro("Environment variable BINANCE_SEKKEY not defined!")
+
+	if cfgbnb.get('BINANCE_RECVWINDOW') == '':
+		binanceRecvWindow = int(getenv("BINANCE_RECVWINDOW", 5000))
+
 	menu = [
-		[ '&Menu', ['Info', 'Config', 'Exit']],
+		[ '&Menu', ['Info', 'Config', '---', 'Read cfg', 'Write cfg', 'Create Empty Cfg file', '---', 'Exit']],
 		[ '&Account', ['Infos acc', 'Taxes']],
 		[ '&Order', ['BUY',  ['B Spot Market', 'B Spot Limit','B Spot Stop Limit', '!B Spot OCO', '---', 'B Margin Market', 'B Margin Limit', 'B Margin Stop Limit', '!B Margin OCO'],
 		             'SELL', ['S Spot Market', 'S Spot Limit','S Spot Stop Limit', '!S Spot OCO', '---', 'S Margin Market', 'S Margin Limit', 'S Margin Stop Limit', '!S Margin OCO'], '!CANCEL', 'LIST or DELETE Open', '!LIST All']],
@@ -412,23 +491,12 @@ def main(argv):
 
 		[sg.Button('LIST or DELETE Open', key='BTTN_LDOO')],
 
+		[sg.Button('CLOSE', key='BTTN_CLOSE')],
 		[sg.StatusBar('Last msg: Initialized', key='LASTMSG', auto_size_text=True, size=(250, 2), justification='left')],
 #		  [sg.Frame('Open Orders', openOrdersFrame, font='Any 12', title_color='blue', key = '-OpenOrdersFrame-')],
 #		  [sg.Frame('Watching symbols', favoriteSymbolsInfo, font='Any 12', title_color='blue', key = '-WatchingSymbolsFrame-')],
 #		  [sg.Button('REFRESH')],
 	]
-
-	binanceAPIKey = getenv("BINANCE_APIKEY", "NOTDEF_APIKEY")
-	if binanceAPIKey == "NOTDEF_APIKEY":
-		BU.errPrint("Environment variable BINANCE_APIKEY not defined!")
-		exit(1)
-
-	binanceSEKKey = getenv("BINANCE_SEKKEY", "NOTDEF_APIKEY")
-	if binanceSEKKey == "NOTDEF_APIKEY":
-		BU.errPrint("Environment variable BINANCE_SEKKEY not defined!")
-		exit(1)
-
-	binanceRecvWindow = int(getenv("BINANCE_RECVWINDOW", 5000))
 
 	BU.setConfirmationYES(True)
 
@@ -437,35 +505,27 @@ def main(argv):
 		client = Client(binanceAPIKey, binanceSEKKey, {"verify": True, "timeout": 20})
 
 	except BinanceAPIException as e:
-		BU.errPrint(f"Binance API exception: [{e.status_code} - {e.message}]")
-		exit(1)
+		BU.nmExitErro(f"Binance API exception: [{e.status_code} - {e.message}]")
 
 	except BinanceRequestException as e:
-		BU.errPrint(f"Binance request exception: [{e.status_code} - {e.message}]")
-		exit(1)
+		BU.nmExitErro(f"Binance request exception: [{e.status_code} - {e.message}]")
 
 	except BinanceWithdrawException as e:
-		BU.errPrint(f"Binance withdraw exception: [{e.status_code} - {e.message}]")
-		exit(1)
+		BU.nmExitErro(f"Binance withdraw exception: [{e.status_code} - {e.message}]")
 
 	except Exception as e:
-		BU.errPrint(f"Binance connection error: {e}")
-		exit(1)
+		BU.nmExitErro(f"Binance connection error: {e}")
 
-#import pudb
-#pudb.set_trace()
-
-	sg.theme('Dark Blue 3')
+	sg.theme(cfgbnb.get('THEME'))
 
 	#sg.set_options(suppress_raise_key_errors=False, suppress_error_popups=False, suppress_key_guessing=False)
 
-#	window = sg.Window('Binance Status GUI', layout, size = (215, 40)).Finalize()
 	window = sg.Window('Binance Status GUI', layout, size = (600, 400)).Finalize()
 
 	while True:
 		event, values = window.read()  #timeout=1000)
 
-		if event == sg.WIN_CLOSED or event == 'Exit':
+		if event == sg.WIN_CLOSED or event == 'Exit' or event == 'BTTN_CLOSE':
 			break
 
 		elif event == "Infos":
