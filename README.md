@@ -27,3 +27,9 @@ Canceling margin order.<br>
 <br>
 ![placinganorder](https://i.imgur.com/UWBeJIE.jpg)<br>
 Placing a margin order.<br>
+<br>
+<br>
+under construction:<br>
+![binancestatusgui1](https://i.imgur.com/kKMHVDY.jpg)<br>
+![binancestatusgui2](https://i.imgur.com/uTfyiXe.jpg)<br>
+![binancestatusgui3](https://i.imgur.com/3IQ22uY.jpg)<br>
