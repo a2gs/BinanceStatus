@@ -16,6 +16,10 @@ import binanceUtil as BU
 
 #from gui.orderListButton import getOrderList, orderListFixed
 
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+
 class cfg_c:
 	cfgFile = 0;
 	cfgHeader = ''
@@ -52,7 +56,15 @@ class cfg_c:
 			else:
 				return NONE
 
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+
 cfgbnb = cfg_c()
+
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
 def printAccountInfo(client)->[bool, str]:
 
@@ -77,7 +89,6 @@ def printAccountInfo(client)->[bool, str]:
 		return False, f"Erro at client.get_account_status() BinanceWithdrawException: [{e.status_code} - {e.message}]"
 	except Exception as e:
 		return False, f"Erro at client.get_account_status(): {e}"
-
 
 	totalinfos = f"Can trade............? [{acc['canTrade']}]\n"
 	totalinfos += f"Can withdraw.........? [{acc['canWithdraw']}]\n"
@@ -114,21 +125,22 @@ def printAccountInfo(client)->[bool, str]:
 	totalinfos += 'Borrowed assets:\n'
 	totalinfos += '\n'.join ([printMarginAssets(n, i) for i, n in enumerate(cleanedMarginAssets, 1)])
 
-	layoutAccInfo = [[sg.Multiline(totalinfos, size=(100,25), font='Courier 10', write_only=True)], [sg.Button('Ok')]]
+	layoutAccInfo = [[sg.Multiline(totalinfos, size=(100,25), font='Courier 10', disabled=True)], [sg.Button('Ok')]]
 
 	windowInfoAcc = sg.Window("Acc Infos", layoutAccInfo).Finalize()
 	eventInfoAcc, valuesInfoAcc = windowInfoAcc.read()
 
 	windowInfoAcc.close()
+
+	del totalinfos
+	del acc
+	del accStatus
+	del marginInfo
+	del cleanedMarginAssets
 	del windowInfoAcc
 	del layoutAccInfo
 
 	return True, "Ok"
-
-
-
-
-
 
 def COPYTRADE_IsEnable()->bool:
 	global cfgbnb
