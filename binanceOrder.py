@@ -113,6 +113,17 @@ def cancel_a_margin_order(client, symbOrd = '', ordrid = 0) -> [bool, str]:
 
 def orderSpotLimit(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prcStopOrd = 0.0, prcStopLimitOrd = 0.0, sideOrd = 0) -> [bool, str]:
 
+	if BU.getExportXLS() == True:
+		BU.errPrint("Symbol\tSide\tQuantity\tPrice\tStop Price\tLimit OCO")
+		BU.errPrint(f"{symbOrd}\t{sideOrd}\t{qtdOrd}\t{prcOrd}\t{prcStopOrd}\t{prcStopLimitOrd}")
+	else:
+		print(f"Symbol....: [{symbOrd}]")
+		print(f"Side......: [{sideOrd}]")
+		print(f"Quantity..: [{qtdOrd}]")
+		print(f"Price.....: [{prcOrd}]")
+		print(f"Stop Price: [{prcStopOrd}]")
+		print(f"Limit OCO.: [{prcStopLimitOrd}]")
+
 	if BU.askConfirmation() == False:
 		return True, "Cancelled by Confirmation!"
 
@@ -154,16 +165,25 @@ def orderSpotLimit(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, prcStopOrd = 
 
 	return True, "Ok"
 
-def orderSpot(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, typeOrd = 0) -> bool:
+def orderSpot(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, typeOrd = 0) ->[bool, str]:
+
+	if BU.getExportXLS() == True:
+		BU.errPrint("Symbol\tSide\tQuantity\tPrice\tStop Price\tLimit OCO\tType")
+		BU.errPrint(f"{symbOrd}\t{sideOrd}\t{qtdOrd}\t{prcOrd}\t{typeOrd}")
+	else:
+		print(f"Symbol....: [{symbOrd}]")
+		print(f"Side......: [{sideOrd}]")
+		print(f"Quantity..: [{qtdOrd}]")
+		print(f"Price.....: [{prcOrd}]")
+		print(f"Type......: [{typeOrd}]")
 
 	if BU.askConfirmation() == False:
-		return False
+		return True, "Cancelled by Confirmation!"
 
 	# TESTING
 	global LOCK
 	if LOCK == True:
-		print("PROGRAM LOCKED BY SECURITY!")
-		return False
+		return False, "Programmed flag order lock ON!"
 
 	try:
 
@@ -185,36 +205,27 @@ def orderSpot(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, typeO
 			                            newOrderRespType = Client.ORDER_RESP_TYPE_FULL)
 
 	except BinanceRequestException as e:
-		print(f"Erro order_limit_buy BinanceRequestException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro order_limit_buy BinanceRequestException: [{e.status_code} - {e.message}]"
 	except BinanceAPIException as e:
-		print(f"Erro order_limit_buy BinanceAPIException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro order_limit_buy BinanceAPIException: [{e.status_code} - {e.message}]"
 	except BinanceOrderException as e:
-		print(f"Erro order_limit_buy BinanceOrderException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro order_limit_buy BinanceOrderException: [{e.status_code} - {e.message}]"
 	except BinanceOrderMinAmountException as e:
-		print(f"Erro order_limit_buy BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro order_limit_buy BinanceOrderMinAmountException: [{e.status_code} - {e.message}]"
 	except BinanceOrderMinPriceException as e:
-		print(f"Erro order_limit_buy BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro order_limit_buy BinanceOrderMinPriceException: [{e.status_code} - {e.message}]"
 	except BinanceOrderMinTotalException as e:
-		print(f"Erro order_limit_buy BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro order_limit_buy BinanceOrderMinTotalException: [{e.status_code} - {e.message}]"
 	except BinanceOrderUnknownSymbolException as e:
-		print(f"Erro order_limit_buy BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro order_limit_buy BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]"
 	except BinanceOrderInactiveSymbolException as e:
-		print(f"Erro order_limit_buy BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
-		return False
+		return False, f"Erro order_limit_buy BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]"
 	except Exception as e:
-		print(f"Erro order_limit_buy generic exception: {e}")
-		return False
+		return False, f"Erro order_limit_buy generic exception: {e}"
 
 	printPlacedOrder(order)
 
-	return True
+	return True, "Ok"
 
 # ---------------------------------------------------
 
@@ -231,7 +242,7 @@ def orderMargin(client, symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcO
 
 	if BU.getExportXLS() == True:
 		BU.errPrint("Symbol\tSide\tQuantity\tPrice\tStop Price\tLimit OCO\tType")
-		BU.errPrint(f"{symbOrd}\t{sideOrd}\t{qtdOrd}\t{prcOrd}\t{prcStop}\t{limit}\t{typeOrd}\t]")
+		BU.errPrint(f"{symbOrd}\t{sideOrd}\t{qtdOrd}\t{prcOrd}\t{prcStop}\t{limit}\t{typeOrd}")
 	else:
 		print(f"Symbol....: [{symbOrd}]")
 		print(f"Side......: [{sideOrd}]")

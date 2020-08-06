@@ -1289,22 +1289,28 @@ if __name__ == '__main__':
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
 			#if BO.buyMarketOrder(client, sys.argv[3], sys.argv[4]) == True:
-			if BO.orderSpot(client,
+			ret, msgRet = BO.orderSpot(client,
 			                symbOrd = sys.argv[3],
 			                qtdOrd  = sys.argv[4],
 			                sideOrd = Client.SIDE_BUY,
-			                typeOrd = Client.ORDER_TYPE_MARKET) == True:
-				BU.nmExitOk()
+			                typeOrd = Client.ORDER_TYPE_MARKET)
+			if ret == False:
+				BU.nmExitErro(m = msgRet)
+
+			BU.nmExitOk(m = msgRet)
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			if BO.orderSpot(client,
+			ret, msgRet = BO.orderSpot(client,
 			                symbOrd = sys.argv[3],
 			                qtdOrd  = sys.argv[4],
 			                prcOrd  = sys.argv[5],
 			                sideOrd = Client.SIDE_BUY,
-			                typeOrd = Client.ORDER_TYPE_LIMIT) == True:
-				BU.nmExitOk()
+			                typeOrd = Client.ORDER_TYPE_LIMIT)
+			if ret == False:
+				BU.nmExitErro(m = msgRet)
+
+			BU.nmExitOk(m = msgRet)
 
 		# Stop Limit
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
@@ -1334,22 +1340,28 @@ if __name__ == '__main__':
 		# Market order
 		if sys.argv[2] == "MARKET" and len(sys.argv) == 5:
 			#if BO.sellMarketOrder(client, sys.argv[3], sys.argv[4]) == True:
-			if BO.orderSpot(client,
+			ret, msgRet = BO.orderSpot(client,
 			                symbOrd = sys.argv[3],
 			                qtdOrd  = sys.argv[4],
 			                sideOrd = Client.SIDE_SELL,
-			                typeOrd = Client.ORDER_TYPE_MARKET) == True:
-				BU.nmExitOk()
+			                typeOrd = Client.ORDER_TYPE_MARKET)
+				if ret == False:
+					BU.nmExitErro(m = msgRet)
+
+				BU.nmExitOk(m = msgRet)
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
-			if BO.orderSpot(client,
+			ret, msgRet = BO.orderSpot(client,
 			                symbOrd = sys.argv[3],
 			                qtdOrd  = sys.argv[4],
 			                prcOrd  = sys.argv[5],
 			                sideOrd = Client.SIDE_SELL,
-			                typeOrd = Client.ORDER_TYPE_LIMIT) == True:
-				BU.nmExitOk()
+			                typeOrd = Client.ORDER_TYPE_LIMIT)
+				if ret == False:
+					BU.nmExitErro(m = msgRet)
+
+				BU.nmExitOk(m = msgRet)
 
 		# Stop Limit
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:

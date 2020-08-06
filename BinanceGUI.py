@@ -5,6 +5,7 @@
 
 from os import getenv
 from sys import exit, argv
+from textwrap import fill
 import configparser
 
 import PySimpleGUI as sg
@@ -338,7 +339,7 @@ def BS_SpotStopLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)->[ 
 				del windowSSL
 				del layoutSSL
 
-				return False, "Eror posting order!"
+				return False, f"Eror posting order! {msgRet}"
 
 			if valuesSSL['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
 				print("Call COPYTRADE...")
@@ -375,18 +376,19 @@ def BS_SpotMarket(client, bgcolor = '', windowTitle = '', clientSide = 0)->[bool
 				BU.errPrint(f'{windowTitle} - CANCELLED!')
 				continue
 
-			if BO.orderSpot(client,
+			ret, msgRet = BO.orderSpot(client,
 			                symbOrd = valuesSM['-SYMBOL-'],
 			                qtdOrd  = valuesSM['-QTD-'],
 			                sideOrd = clientSide,
-			                typeOrd = Client.ORDER_TYPE_MARKET) == False:
+			                typeOrd = Client.ORDER_TYPE_MARKET)
+			if ret == False:
 				sg.popup('ERRO! Order didnt post!')
 
 				windowSM.close()
 				del windowSM
 				del layoutSM
 
-				return False, "Erro posting order!"
+				return False, f"Erro posting order! {msgRet}"
 
 			if valuesSM['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
 				print("Call COPYTRADE...")
@@ -425,19 +427,20 @@ def BS_SpotLimit(client, bgcolor = '', windowTitle = '', clientSide = 0)->[bool,
 				BU.errPrint(f'{windowTitle} - CANCELLED!')
 				continue
 
-			if BO.orderSpot(client,
+			ret, msgRet = BO.orderSpot(client,
 			                symbOrd = valuesSL['-SYMBOL-'],
 			                qtdOrd  = valuesSL['-QTD-'],
 			                prcOrd  = valuesSL['-PRICE-'],
 			                sideOrd = clientSide,
-			                typeOrd = Client.ORDER_TYPE_LIMIT) == False:
+			                typeOrd = Client.ORDER_TYPE_LIMIT)
+			if ret == False:
 				sg.popup('ERRO! Order didnt post!')
 
 				windowSL.close()
 				del windowSL
 				del layoutSL
 
-				return False, "Erro posting order!"
+				return False, f"Erro posting order! {msgRet}"
 
 			if valuesSL['CB_COPYTRADE'] == True and COPYTRADE_IsEnable() == True:
 				print("Call COPYTRADE...")
@@ -565,6 +568,8 @@ def ListOpenOrders(client)->[bool, str]:
 
 def main(argv):
 
+	STATUSBAR_WRAP = 100
+
 	global cfgbnb
 	cfgbnb.load()
 
@@ -605,7 +610,7 @@ def main(argv):
 		[sg.Button('LIST or DELETE Open', key='BTTN_LDOO')],
 
 		[sg.Button('CLOSE', key='BTTN_CLOSE')],
-		[sg.StatusBar('Last msg: Initialized', key='LASTMSG', auto_size_text=True, size=(250, 2), justification='left')],
+		[sg.StatusBar('Last msg: Initialized', key='LASTMSG', size=(250, 3), justification='left')],
 	]
 
 	BU.setConfirmationYES(True)
@@ -651,7 +656,7 @@ def main(argv):
 			window.Hide()
 
 			ret, msgRet = printAccountInfo(client)
-			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -662,7 +667,7 @@ def main(argv):
 			window.Hide()
 
 			ret, msgRet = BS_SpotMarket(client, 'green', 'Buy Spot Market', Client.SIDE_BUY)
-			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -670,7 +675,7 @@ def main(argv):
 			window.Hide()
 
 			ret, msgRet = BS_SpotLimit(client, 'green', 'Buy Spot Limit', Client.SIDE_BUY)
-			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -678,7 +683,7 @@ def main(argv):
 			window.Hide()
 
 			ret, msgRet = BS_SpotStopLimit(client, 'green', 'Buy Spot Stop Limit', Client.SIDE_BUY)
-			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -689,7 +694,7 @@ def main(argv):
 			window.Hide()
 
 			ret, msgRet = BS_MarginMarket(client, 'red', 'Sell Margin Limit', Client.SIDE_SELL)
-			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -697,7 +702,7 @@ def main(argv):
 			window.Hide()
 
 			ret, msgRet = BS_MarginLimit(client, 'green', 'Buy Margin Limit', Client.SIDE_BUY)
-			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -705,7 +710,7 @@ def main(argv):
 			window.Hide()
 
 			ret, retMsg = BS_MarginStopLimit(client, 'green', 'Buy Margin Stop Limit', Client.SIDE_BUY)
-			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -716,7 +721,7 @@ def main(argv):
 			window.Hide()
 
 			ret, msgRet = BS_SpotMarket(client, 'red', 'Sell Spot Market', Client.SIDE_SELL)
-			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -724,7 +729,7 @@ def main(argv):
 			window.Hide()
 
 			ret, retMsg = BS_SpotLimit(client, 'red', 'Sell Spot Limit', Client.SIDE_SELL)
-			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -732,7 +737,7 @@ def main(argv):
 			window.Hide()
 
 			ret, retMsg = BS_SpotStopLimit(client, 'red', 'Sell Spot Stop Limit', Client.SIDE_SELL)
-			window['LASTMSG'].update(f'Last operation returned: {retMsg}')
+			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -743,7 +748,7 @@ def main(argv):
 			window.Hide()
 
 			ret, retMsg = BS_MarginMarket(client, 'red', 'Sell Margin Limit', Client.SIDE_SELL)
-			window['LASTMSG'].update(f'Last operation returned: {retMsg}')
+			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -751,15 +756,15 @@ def main(argv):
 			window.Hide()
 
 			ret, retMsg = BS_MarginLimit(client, 'red', 'Sell Margin Limit', Client.SIDE_SELL)
-			window['LASTMSG'].update(f'Last operation returned: {retMsg}')
+			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
 		elif event == 'S Margin Stop Limit' or event == 'BTTN_SMSL':
 			window.Hide()
 
-			ret, retMsg = BS_MarginStopLimit(client, 'red', 'Sell Margin Stop Limit', Client.SIDE_SELL)
-			window['LASTMSG'].update(f'Last operation returned: {retMsg}')
+			ret, msgRet = BS_MarginStopLimit(client, 'red', 'Sell Margin Stop Limit', Client.SIDE_SELL)
+			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -773,7 +778,7 @@ def main(argv):
 			window.Hide()
 
 			ret, msgRet = ListOpenOrders(client)
-			window['LASTMSG'].update(f'Last operation returned: {msgRet}')
+			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
