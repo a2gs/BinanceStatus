@@ -26,7 +26,7 @@ def getTestOrder() -> bool:
 # ---------------------------------------------------
 
 def cancel_a_spot_order(client, symbOrd = '', ordrid = 0) -> [bool, str]:
-	BU.errPrint(f"Cancel SPOT Order Id [{ordrid}] with Symbol [{symbOrd}]")
+	print(f"Cancel SPOT Order Id [{ordrid}] with Symbol [{symbOrd}]")
 
 	if BU.askConfirmation() == False:
 		return True, "Canceled by confirmation!"
@@ -45,30 +45,30 @@ def cancel_a_spot_order(client, symbOrd = '', ordrid = 0) -> [bool, str]:
 	except Exception as e:
 		return False, f"Erro at client.cancel_order(): {e}"
 
-	#BU.errPrint("Cancellation return")
+	#print("Cancellation return")
 	if BU.getExportXLS() == True:
 		BU.errPrint("Symbol\tOriginal Client Order Id\tOrder Id\tOrder List Id (OCO info)\tClient Order Id\tPrice\tOriginal Qtd\tExecuted Qty\tCummulative Quote Qty\tStatus\tTime In Force\tType\tSide")
 		BU.errPrint(f"{cancOrd['symbol']}\t{cancOrd['origClientOrderId']}\t{cancOrd['orderId']}\t{cancOrd['orderListId']}\t{cancOrd['clientOrderId']}\t{cancOrd['price']}\t{cancOrd['origQty']}\t{cancOrd['executedQty']}\t{cancOrd['cummulativeQuoteQty']}\t{cancOrd['status']}\t{cancOrd['timeInForce']}\t{cancOrd['timeInForce']}\t{cancOrd['type']}\t{cancOrd['side']}")
 
 	else:
-		BU.errPrint(f"Symbol..................: [{cancOrd['symbol']}]")
-		BU.errPrint(f"Original Client Order Id: [{cancOrd['origClientOrderId']}]")
-		BU.errPrint(f"Order Id................: [{cancOrd['orderId']}]")
-		BU.errPrint(f"Order List Id (OCO info): [{cancOrd['orderListId']}]")
-		BU.errPrint(f"Client Order Id.........: [{cancOrd['clientOrderId']}]")
-		BU.errPrint(f"Price...................: [{cancOrd['price']}]")
-		BU.errPrint(f"Original Qtd............: [{cancOrd['origQty']}]")
-		BU.errPrint(f"Executed Qty............: [{cancOrd['executedQty']}]")
-		BU.errPrint(f"Cummulative Quote Qty...: [{cancOrd['cummulativeQuoteQty']}]")
-		BU.errPrint(f"Status..................: [{cancOrd['status']}]")
-		BU.errPrint(f"Time In Force...........: [{cancOrd['timeInForce']}]")
-		BU.errPrint(f"Type....................: [{cancOrd['type']}]")
-		BU.errPrint(f"Side....................: [{cancOrd['side']}]")
+		print(f"Symbol..................: [{cancOrd['symbol']}]")
+		print(f"Original Client Order Id: [{cancOrd['origClientOrderId']}]")
+		print(f"Order Id................: [{cancOrd['orderId']}]")
+		print(f"Order List Id (OCO info): [{cancOrd['orderListId']}]")
+		print(f"Client Order Id.........: [{cancOrd['clientOrderId']}]")
+		print(f"Price...................: [{cancOrd['price']}]")
+		print(f"Original Qtd............: [{cancOrd['origQty']}]")
+		print(f"Executed Qty............: [{cancOrd['executedQty']}]")
+		print(f"Cummulative Quote Qty...: [{cancOrd['cummulativeQuoteQty']}]")
+		print(f"Status..................: [{cancOrd['status']}]")
+		print(f"Time In Force...........: [{cancOrd['timeInForce']}]")
+		print(f"Type....................: [{cancOrd['type']}]")
+		print(f"Side....................: [{cancOrd['side']}]")
 
 	return True, "Ok"
 
 def cancel_a_margin_order(client, symbOrd = '', ordrid = 0) -> [bool, str]:
-	BU.errPrint(f"Cancel Margin Order Id [{ordrid}] with Symbol [{symbOrd}]")
+	print(f"Cancel Margin Order Id [{ordrid}] with Symbol [{symbOrd}]")
 
 	if BU.askConfirmation() == False:
 		return True, "Cancelled by Confirmation!"
@@ -94,18 +94,18 @@ def cancel_a_margin_order(client, symbOrd = '', ordrid = 0) -> [bool, str]:
 		BU.errPrint(f"{cancOrd['symbol']}\t{cancOrd['origClientOrderId']}\t{cancOrd['orderId']}\t{cancOrd['clientOrderId']}\t{cancOrd['price']}\t{cancOrd['origQty']}\t{cancOrd['executedQty']}\t{cancOrd['cummulativeQuoteQty']}\t{cancOrd['status']}\t{cancOrd['timeInForce']}\t{cancOrd['timeInForce']}\t{cancOrd['type']}\t{cancOrd['side']}")
 
 	else:
-		BU.errPrint(f"Symbol..................: [{cancOrd['symbol']}]")
-		BU.errPrint(f"Original Client Order Id: [{cancOrd['origClientOrderId']}]")
-		BU.errPrint(f"OrderId.................: [{cancOrd['orderId']}]")
-		BU.errPrint(f"Client Order Id.........: [{cancOrd['clientOrderId']}]")
-		BU.errPrint(f"Price...................: [{cancOrd['price']}]")
-		BU.errPrint(f"Original Qtd............: [{cancOrd['origQty']}]")
-		BU.errPrint(f"Executed Qty............: [{cancOrd['executedQty']}]")
-		BU.errPrint(f"Cummulative Quote Qty...: [{cancOrd['cummulativeQuoteQty']}]")
-		BU.errPrint(f"Status..................: [{cancOrd['status']}]")
-		BU.errPrint(f"Time In Force...........: [{cancOrd['timeInForce']}]")
-		BU.errPrint(f"Type....................: [{cancOrd['type']}]")
-		BU.errPrint(f"Side....................: [{cancOrd['side']}]")
+		print(f"Symbol..................: [{cancOrd['symbol']}]")
+		print(f"Original Client Order Id: [{cancOrd['origClientOrderId']}]")
+		print(f"OrderId.................: [{cancOrd['orderId']}]")
+		print(f"Client Order Id.........: [{cancOrd['clientOrderId']}]")
+		print(f"Price...................: [{cancOrd['price']}]")
+		print(f"Original Qtd............: [{cancOrd['origQty']}]")
+		print(f"Executed Qty............: [{cancOrd['executedQty']}]")
+		print(f"Cummulative Quote Qty...: [{cancOrd['cummulativeQuoteQty']}]")
+		print(f"Status..................: [{cancOrd['status']}]")
+		print(f"Time In Force...........: [{cancOrd['timeInForce']}]")
+		print(f"Type....................: [{cancOrd['type']}]")
+		print(f"Side....................: [{cancOrd['side']}]")
 
 	return True, 'Ok'
 
@@ -162,13 +162,13 @@ def orderSpot(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, typeO
 	# TESTING
 	global LOCK
 	if LOCK == True:
-		BU.errPrint("PROGRAM LOCKED BY SECURITY!")
+		print("PROGRAM LOCKED BY SECURITY!")
 		return False
 
 	try:
 
 		if getTestOrder() == True:
-			BU.errPrint("TESTING ORDER")
+			print("TESTING ORDER")
 			order = client.create_test_order(symbol      = symbOrd,
 			                                 side        = sideOrd,
 			                                 type        = typeOrd,
@@ -185,31 +185,31 @@ def orderSpot(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, typeO
 			                            newOrderRespType = Client.ORDER_RESP_TYPE_FULL)
 
 	except BinanceRequestException as e:
-		BU.errPrint(f"Erro order_limit_buy BinanceRequestException: [{e.status_code} - {e.message}]")
+		print(f"Erro order_limit_buy BinanceRequestException: [{e.status_code} - {e.message}]")
 		return False
 	except BinanceAPIException as e:
-		BU.errPrint(f"Erro order_limit_buy BinanceAPIException: [{e.status_code} - {e.message}]")
+		print(f"Erro order_limit_buy BinanceAPIException: [{e.status_code} - {e.message}]")
 		return False
 	except BinanceOrderException as e:
-		BU.errPrint(f"Erro order_limit_buy BinanceOrderException: [{e.status_code} - {e.message}]")
+		print(f"Erro order_limit_buy BinanceOrderException: [{e.status_code} - {e.message}]")
 		return False
 	except BinanceOrderMinAmountException as e:
-		BU.errPrint(f"Erro order_limit_buy BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
+		print(f"Erro order_limit_buy BinanceOrderMinAmountException: [{e.status_code} - {e.message}]")
 		return False
 	except BinanceOrderMinPriceException as e:
-		BU.errPrint(f"Erro order_limit_buy BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
+		print(f"Erro order_limit_buy BinanceOrderMinPriceException: [{e.status_code} - {e.message}]")
 		return False
 	except BinanceOrderMinTotalException as e:
-		BU.errPrint(f"Erro order_limit_buy BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
+		print(f"Erro order_limit_buy BinanceOrderMinTotalException: [{e.status_code} - {e.message}]")
 		return False
 	except BinanceOrderUnknownSymbolException as e:
-		BU.errPrint(f"Erro order_limit_buy BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
+		print(f"Erro order_limit_buy BinanceOrderUnknownSymbolException: [{e.status_code} - {e.message}]")
 		return False
 	except BinanceOrderInactiveSymbolException as e:
-		BU.errPrint(f"Erro order_limit_buy BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
+		print(f"Erro order_limit_buy BinanceOrderInactiveSymbolException: [{e.status_code} - {e.message}]")
 		return False
 	except Exception as e:
-		BU.errPrint(f"Erro order_limit_buy generic exception: {e}")
+		print(f"Erro order_limit_buy generic exception: {e}")
 		return False
 
 	printPlacedOrder(order)
@@ -219,27 +219,27 @@ def orderSpot(client, symbOrd = '', qtdOrd = 0, prcOrd = 0.0, sideOrd = 0, typeO
 # ---------------------------------------------------
 
 def buyOCOOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0, limit = 0.0) -> bool:
-	BU.errPrint("NOT IMPLEMENTED")
+	print("NOT IMPLEMENTED")
 
 def sellOCOOrder(client, symb = '', qtd = 0, prc = 0.0, stopprice = 0.0, limit = 0.0) -> bool:
-	BU.errPrint("NOT IMPLEMENTED")
+	print("NOT IMPLEMENTED")
 
 # ---------------------------------------------------
 
 def orderMargin(client, symbOrd = '', sideOrd = 0, typeOrd = 0, qtdOrd = 0, prcOrd = 0.0, prcStop = 0.0, limit = 0.0) ->[bool, str]:
-	BU.errPrint(f"MARGIN Order {typeOrd}")
+	print(f"MARGIN Order {typeOrd}")
 
 	if BU.getExportXLS() == True:
 		BU.errPrint("Symbol\tSide\tQuantity\tPrice\tStop Price\tLimit OCO\tType")
 		BU.errPrint(f"{symbOrd}\t{sideOrd}\t{qtdOrd}\t{prcOrd}\t{prcStop}\t{limit}\t{typeOrd}\t]")
 	else:
-		BU.errPrint(f"Symbol....: [{symbOrd}]")
-		BU.errPrint(f"Side......: [{sideOrd}]")
-		BU.errPrint(f"Quantity..: [{qtdOrd}]")
-		BU.errPrint(f"Price.....: [{prcOrd}]")
-		BU.errPrint(f"Stop Price: [{prcStop}]")
-		BU.errPrint(f"Limit OCO.: [{limit}]")
-		BU.errPrint(f"Type......: [{typeOrd}]")
+		print(f"Symbol....: [{symbOrd}]")
+		print(f"Side......: [{sideOrd}]")
+		print(f"Quantity..: [{qtdOrd}]")
+		print(f"Price.....: [{prcOrd}]")
+		print(f"Stop Price: [{prcStop}]")
+		print(f"Limit OCO.: [{limit}]")
+		print(f"Type......: [{typeOrd}]")
 
 	if BU.askConfirmation() == False:
 		return True, "Cancelled by Confirmation!"
