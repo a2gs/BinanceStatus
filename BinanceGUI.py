@@ -126,7 +126,7 @@ def printAccountInfo(client)->[bool, str]:
 	totalinfos += 'Borrowed assets:\n'
 	totalinfos += '\n'.join ([printMarginAssets(n, i) for i, n in enumerate(cleanedMarginAssets, 1)])
 
-	layoutAccInfo = [[sg.Multiline(totalinfos, size=(100,25), font='Courier 10', disabled=True)], [sg.Button('Ok')]]
+	layoutAccInfo = [[sg.Multiline(totalinfos, key='-INFOMLINE-' + sg.WRITE_ONLY_KEY, size=(100,25), font='Courier 10', disabled=True)], [sg.Button('Ok')]]
 
 	windowInfoAcc = sg.Window("Acc Infos", layoutAccInfo).Finalize()
 	eventInfoAcc, valuesInfoAcc = windowInfoAcc.read()
@@ -710,7 +710,7 @@ def main(argv):
 			window.Hide()
 
 			ret, retMsg = BS_MarginStopLimit(client, 'green', 'Buy Margin Stop Limit', Client.SIDE_BUY)
-			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
+			window['LASTMSG'].update(fill(f'Last operation returned: {retMsg}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -729,7 +729,7 @@ def main(argv):
 			window.Hide()
 
 			ret, retMsg = BS_SpotLimit(client, 'red', 'Sell Spot Limit', Client.SIDE_SELL)
-			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
+			window['LASTMSG'].update(fill(f'Last operation returned: {retMsg}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -737,7 +737,7 @@ def main(argv):
 			window.Hide()
 
 			ret, retMsg = BS_SpotStopLimit(client, 'red', 'Sell Spot Stop Limit', Client.SIDE_SELL)
-			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
+			window['LASTMSG'].update(fill(f'Last operation returned: {retMsg}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -748,7 +748,7 @@ def main(argv):
 			window.Hide()
 
 			ret, retMsg = BS_MarginMarket(client, 'red', 'Sell Margin Limit', Client.SIDE_SELL)
-			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
+			window['LASTMSG'].update(fill(f'Last operation returned: {retMsg}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
@@ -756,7 +756,7 @@ def main(argv):
 			window.Hide()
 
 			ret, retMsg = BS_MarginLimit(client, 'red', 'Sell Margin Limit', Client.SIDE_SELL)
-			window['LASTMSG'].update(fill(f'Last operation returned: {msgRet}', STATUSBAR_WRAP))
+			window['LASTMSG'].update(fill(f'Last operation returned: {retMsg}', STATUSBAR_WRAP))
 
 			window.UnHide()
 
