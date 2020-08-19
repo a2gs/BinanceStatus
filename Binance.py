@@ -1345,10 +1345,10 @@ if __name__ == '__main__':
 			                qtdOrd  = sys.argv[4],
 			                sideOrd = Client.SIDE_SELL,
 			                typeOrd = Client.ORDER_TYPE_MARKET)
-				if ret == False:
-					BU.nmExitErro(m = msgRet)
+			if ret == False:
+				BU.nmExitErro(m = msgRet)
 
-				BU.nmExitOk(m = msgRet)
+			BU.nmExitOk(m = msgRet)
 
 		# Limit order
 		elif sys.argv[2] == "LIMIT" and len(sys.argv) == 6:
@@ -1358,10 +1358,10 @@ if __name__ == '__main__':
 			                prcOrd  = sys.argv[5],
 			                sideOrd = Client.SIDE_SELL,
 			                typeOrd = Client.ORDER_TYPE_LIMIT)
-				if ret == False:
-					BU.nmExitErro(m = msgRet)
+			if ret == False:
+				BU.nmExitErro(m = msgRet)
 
-				BU.nmExitOk(m = msgRet)
+			BU.nmExitOk(m = msgRet)
 
 		# Stop Limit
 		elif sys.argv[2] == "STOP" and len(sys.argv) == 7:
