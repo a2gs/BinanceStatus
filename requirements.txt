@@ -15,7 +15,7 @@ pudb==2019.2
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.20
-Pygments==2.7.2
+Pygments==2.7.4
 PyHamcrest==2.0.2
 pyOpenSSL==19.1.0
 PySimpleGUI==4.30.0
